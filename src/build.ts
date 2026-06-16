@@ -54,10 +54,14 @@ async function build() {
   const docsDir = path.join(__dirname, "..", "docs");
   fs.mkdirSync(docsDir, { recursive: true });
 
-  // Copy HTML
+  // Copy HTML files
   const htmlSrc = path.join(__dirname, "..", "public", "index.html");
   const htmlDst = path.join(docsDir, "index.html");
   fs.copyFileSync(htmlSrc, htmlDst);
+
+  const guideSrc = path.join(__dirname, "..", "public", "guide.html");
+  const guideDst = path.join(docsDir, "guide.html");
+  fs.copyFileSync(guideSrc, guideDst);
 
   // Write JSON data
   const jsonDst = path.join(docsDir, "data.json");

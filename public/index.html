@@ -39,7 +39,7 @@
 </head>
 <body>
 <h1>📊 Sector Rotation Scanner</h1>
-<div class="meta" id="meta">Loading...</div>
+<div class="meta" id="meta">Loading... &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this →</a></div>
 <div id="app"><div class="loading">⏳ Fetching data from finviz...</div></div>
 
 <script>
@@ -179,7 +179,7 @@ async function load() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    $('#meta').textContent = `${data.stockCount} stocks analyzed • ${data.timestamp}`;
+    $('#meta').innerHTML = `${data.stockCount} stocks analyzed &bull; ${data.timestamp} &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this &rarr;</a>`;
 
     const allRecs = [...data.actionSignals.sector, ...data.actionSignals.assetClass];
 
