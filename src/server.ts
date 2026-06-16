@@ -78,7 +78,7 @@ const server = http.createServer(async (req, res) => {
   // Serve static HTML
   if (url.pathname === "/" || url.pathname === "/index.html" || url.pathname === "/guide.html") {
     const filename = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
-    const htmlPath = path.join(__dirname, "..", "public", filename);
+    const htmlPath = path.join(__dirname, "..", "docs", filename);
     try {
       const html = fs.readFileSync(htmlPath, "utf-8");
       res.setHeader("Content-Type", "text/html");

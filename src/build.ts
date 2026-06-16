@@ -50,20 +50,11 @@ async function build() {
     actionSignals: { sector: sectorRecs, assetClass: assetClassRecs },
   };
 
-  // Write to docs/ for GitHub Pages
+  // Write to docs/ for GitHub Pages (HTML files live directly in docs/)
   const docsDir = path.join(__dirname, "..", "docs");
   fs.mkdirSync(docsDir, { recursive: true });
 
-  // Copy HTML files
-  const htmlSrc = path.join(__dirname, "..", "public", "index.html");
-  const htmlDst = path.join(docsDir, "index.html");
-  fs.copyFileSync(htmlSrc, htmlDst);
-
-  const guideSrc = path.join(__dirname, "..", "public", "guide.html");
-  const guideDst = path.join(docsDir, "guide.html");
-  fs.copyFileSync(guideSrc, guideDst);
-
-  // Write JSON data
+  // Write JSON data only — HTML files are edited directly in docs/
   const jsonDst = path.join(docsDir, "data.json");
   fs.writeFileSync(jsonDst, JSON.stringify(result, null, 2));
 
