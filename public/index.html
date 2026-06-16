@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sector Rotation Scanner</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --dim: #8b949e; --green: #3fb950; --red: #f85149; --yellow: #d29922; --blue: #58a6ff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.4; }
+  h1 { margin-bottom: 8px; font-size: 1.4em; }
+  h2 { margin: 24px 0 12px; font-size: 1.1em; color: var(--blue); border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .meta { color: var(--dim); font-size: 0.85em; margin-bottom: 16px; }
+  .loading { text-align: center; padding: 60px; color: var(--dim); font-size: 1.2em; }
+  .error { color: var(--red); padding: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82em; margin-bottom: 16px; }
+  th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { background: var(--card); color: var(--dim); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; }
+  tr:hover td { background: var(--card); }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .neutral { color: var(--yellow); }
+  .dim { color: var(--dim); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-weight: 700; font-size: 0.8em; }
+  .badge-buy { background: #238636; color: #fff; }
+  .badge-sell { background: #da3633; color: #fff; }
+  .badge-hold { background: #9e6a03; color: #fff; }
+  .badge-trim { background: #6e4b00; color: #fff; }
+  .confidence-bar { display: inline-block; width: 80px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; vertical-align: middle; margin-right: 6px; }
+  .confidence-fill { height: 100%; border-radius: 4px; }
+  .section { margin-bottom: 32px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 1200px) { .grid-2 { grid-template-columns: 1fr; } }
+  .factors { font-size: 0.78em; color: var(--dim); margin-top: 4px; }
+  .factors li { margin-left: 16px; }
+  .high-conviction { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .high-conviction h3 { font-size: 0.95em; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<h1>📊 Sector Rotation Scanner</h1>
+<div class="meta" id="meta">Loading...</div>
+<div id="app"><div class="loading">⏳ Fetching data from finviz...</div></div>
+
+<script>
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+function pct(v, decimals = 2) {
+  const s = `${v >= 0 ? '+' : ''}${v.toFixed(decimals)}%`;
+  return `<span class="${v > 0 ? 'pos' : v < 0 ? 'neg' : 'dim'}">${s}</span>`;
+}
+
+function badge(action) {
+  const cls = `badge-${action.toLowerCase()}`;
+  return `<span class="badge ${cls}">${action}</span>`;
+}
+
+function confidence(val) {
+  const color = val >= 70 ? 'var(--green)' : val >= 50 ? 'var(--yellow)' : 'var(--dim)';
+  return `<span class="confidence-bar"><span class="confidence-fill" style="width:${val}%;background:${color}"></span></span>${val}%`;
+}
+
+function trendBadge(phase) {
+  if (!phase) return '<span class="dim">—</span>';
+  const labels = {
+    EARLY_UPTREND: '⬆ Early',
+    ESTABLISHED_UPTREND: '⬆ Established',
+    EXTENDED: '⚡ Extended',
+    EARLY_DOWNTREND: '⬇ Early',
+    ESTABLISHED_DOWNTREND: '⬇ Established',
+    COUNTER_TREND_BOUNCE: '↩ Bounce',
+    PULLBACK_IN_UPTREND: '↪ Pullback',
+    NEUTRAL: '● Neutral',
+  };
+  const colors = {
+    EARLY_UPTREND: 'var(--green)',
+    ESTABLISHED_UPTREND: 'var(--green)',
+    EXTENDED: 'var(--yellow)',
+    EARLY_DOWNTREND: 'var(--red)',
+    ESTABLISHED_DOWNTREND: 'var(--red)',
+    COUNTER_TREND_BOUNCE: 'var(--yellow)',
+    PULLBACK_IN_UPTREND: 'var(--blue)',
+    NEUTRAL: 'var(--dim)',
+  };
+  return `<span style="color:${colors[phase] || 'var(--dim)'}">${labels[phase] || phase}</span>`;
+}
+
+function signal(s) {
+  if (s === 'INFLOW') return '<span class="pos">▲ INFLOW</span>';
+  if (s === 'OUTFLOW') return '<span class="neg">▼ OUTFLOW</span>';
+  return '<span class="neutral">● NEUTRAL</span>';
+}
+
+function table(headers, rows) {
+  const ths = headers.map(h => `<th>${h}</th>`).join('');
+  const trs = rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+  return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+}
+
+function renderActionSignals(recs, title) {
+  const rows = recs.map(r => [
+    `<b>${r.ticker}</b>`,
+    badge(r.action),
+    r.label,
+    confidence(r.confidence),
+    `<span class="dim">${r.rationale}</span>`,
+  ]);
+  return `<h2>${title}</h2>` + table(['ETF', 'Action', 'Name', 'Confidence', 'Rationale'], rows);
+}
+
+function renderTrends(trends, title) {
+  const rows = trends.map(t => [
+    `<b>${t.ticker}</b>`,
+    t.label,
+    pct(t.sma20),
+    pct(t.sma50),
+    pct(t.sma200),
+    t.rsi.toFixed(0),
+    trendBadge(t.trendPhase),
+  ]);
+  return `<h2>${title}</h2>` + table(['ETF', 'Name', 'vs SMA20', 'vs SMA50', 'vs SMA200', 'RSI', 'Trend'], rows);
+}
+
+function renderFlows(flows) {
+  const rows = flows.map(f => [
+    `<b>${f.assetClass}</b>`,
+    f.tickers.join(', '),
+    pct(f.avgPerf1W),
+    pct(f.avgPerf1M),
+    pct(f.avgPerf3M),
+    f.avgRelVolume.toFixed(2),
+    f.flowScore.toFixed(1),
+    signal(f.signal),
+    trendBadge(f.trendPhase),
+  ]);
+  return `<h2>🌍 Asset Class Flows</h2>` + table(['Class', 'ETFs', '1W', '1M', '3M', 'Rel Vol', 'Score', 'Signal', 'Trend'], rows);
+}
+
+function renderRotation(signals) {
+  const rows = signals.map(s => [
+    `<b>${s.sector}</b>`,
+    signal(s.signal),
+    `<span class="${s.rotationScore > 8 ? 'pos' : s.rotationScore < -8 ? 'neg' : 'neutral'}">${s.rotationScore.toFixed(1)}</span>`,
+    `<span class="${s.rankShift > 0 ? 'pos' : s.rankShift < 0 ? 'neg' : 'dim'}">${s.rankShift > 0 ? '+' : ''}${s.rankShift}</span>`,
+    s.rank1W,
+    s.rank3M,
+  ]);
+  return `<h2>🔄 Sector Rotation</h2>` + table(['Sector', 'Signal', 'Score', 'Rank Δ', 'Rank 1W', 'Rank 3M'], rows);
+}
+
+function renderHighConviction(recs) {
+  const high = recs.filter(r => r.confidence >= 65 && r.action !== 'HOLD');
+  if (high.length === 0) return '';
+  const cards = high.map(r => {
+    const color = r.action === 'BUY' ? 'var(--green)' : 'var(--red)';
+    const factorsHtml = r.factors.map(f => `<li>${f}</li>`).join('');
+    return `<div class="high-conviction">
+      <h3 style="color:${color}">${badge(r.action)} ${r.ticker} — ${r.label} (${r.confidence}%)</h3>
+      <p class="dim">${r.rationale}</p>
+      <ul class="factors">${factorsHtml}</ul>
+    </div>`;
+  }).join('');
+  return `<h2>🎯 High-Conviction Signals</h2>${cards}`;
+}
+
+async function load() {
+  try {
+    // Try /api/data (local server), fallback to static data.json (GitHub Pages)
+    let res;
+    try {
+      res = await fetch('/api/data');
+    } catch {
+      res = null;
+    }
+    if (!res || !res.ok) {
+      res = await fetch('data.json');
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    $('#meta').textContent = `${data.stockCount} stocks analyzed • ${data.timestamp}`;
+
+    const allRecs = [...data.actionSignals.sector, ...data.actionSignals.assetClass];
+
+    let html = '';
+    html += renderHighConviction(allRecs);
+    html += '<div class="grid-2">';
+    html += '<div>' + renderActionSignals(data.actionSignals.sector, '🎯 Sector Actions') + '</div>';
+    html += '<div>' + renderActionSignals(data.actionSignals.assetClass, '🎯 Asset Class Actions') + '</div>';
+    html += '</div>';
+    html += renderFlows(data.assetClassFlows);
+    html += renderRotation(data.rotationSignals);
+    html += '<div class="grid-2">';
+    html += '<div>' + renderTrends(data.sectorTrends, '📈 Sector Trends') + '</div>';
+    html += '<div>' + renderTrends(data.assetClassTrends, '📈 ETF Trends') + '</div>';
+    html += '</div>';
+
+    $('#app').innerHTML = html;
+  } catch (err) {
+    $('#app').innerHTML = `<div class="error">Error: ${err.message}</div>`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>

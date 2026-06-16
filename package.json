@@ -1,0 +1,22 @@
+{
+  "name": "finviz-sector-rotation",
+  "version": "1.0.0",
+  "description": "S&P 500 sector rotation scanner using finviz data",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "start:json": "tsx src/index.ts --json",
+    "web": "tsx src/server.ts",
+    "build": "tsx src/build.ts"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "cheerio": "^1.0.0",
+    "cli-table3": "^0.6.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}

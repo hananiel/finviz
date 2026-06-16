@@ -1,0 +1,34 @@
+name: Update Data
+
+on:
+  schedule:
+    # Run at 9:30 PM UTC (4:30 PM ET) on weekdays — after market close
+    - cron: '30 21 * * 1-5'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: npm run build
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      - name: Commit and push data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff --staged --quiet || git commit -m "Update market data $(date -u +%Y-%m-%d)"
+          git push
