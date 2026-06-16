@@ -19,7 +19,6 @@
   a { color: var(--blue); text-decoration: none; }
   a:hover { text-decoration: underline; }
   .back { display: inline-block; margin-bottom: 20px; font-size: 0.9em; }
-  code { background: var(--card); padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: var(--text); }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-weight: 700; font-size: 0.8em; color: #fff; }
   .badge-buy { background: #238636; }
   .badge-sell { background: #da3633; }
@@ -30,182 +29,247 @@
   th { background: var(--card); color: var(--dim); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; }
   .callout { background: var(--card); border-left: 3px solid var(--blue); padding: 16px 20px; margin: 16px 0; border-radius: 0 4px 4px 0; }
   .callout-warn { border-left-color: var(--yellow); }
+  .callout-green { border-left-color: var(--green); }
   .callout p { margin: 0; }
   .green { color: var(--green); }
   .red { color: var(--red); }
   .yellow { color: var(--yellow); }
+  .example { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; margin: 12px 0; }
+  .example h4 { font-size: 0.9em; margin-bottom: 8px; color: var(--text); }
+  .example p { font-size: 0.88em; margin-bottom: 6px; }
 </style>
 </head>
 <body>
 <div class="container">
 
-<a href="index.html" class="back">← Back to Dashboard</a>
+<a href="index.html" class="back">&larr; Back to Dashboard</a>
 
-<h1>📊 Sector Rotation Scanner</h1>
-<p>A daily-updated dashboard that tracks where institutional money is flowing across sectors and asset classes, classifies trend maturity, and generates actionable buy/sell signals.</p>
+<h1>📊 Sector Rotation Scanner — User Guide</h1>
+<p style="color: var(--text); font-size: 1.05em;">A simple guide to understanding what this tool shows you and how to act on it.</p>
 
-<h2>Investment Philosophy</h2>
+<!-- ===== QUICK START ===== -->
+<h2>⚡ Quick Start (30 seconds)</h2>
 
-<h3>Follow the Money, Respect the Trend</h3>
-<p>Markets move in rotations. Capital doesn't disappear — it flows from one sector or asset class to another. The goal is not to predict the future, but to <strong>identify where money is moving right now</strong> and whether that move is early enough to be actionable.</p>
-
-<p>This scanner is built on three principles:</p>
-<ol>
-  <li><strong>Capital flow direction tells you <em>what</em> to watch.</strong> If money is flowing into Utilities and out of Technology, that's a defensive rotation — pay attention.</li>
-  <li><strong>Trend maturity tells you <em>when</em> to act.</strong> An inflow signal into a sector that's already 15% above its 50-day moving average is late — you've missed the easy money. An inflow into a sector just crossing above its 50-day MA is early — that's opportunity.</li>
-  <li><strong>Conviction comes from convergence.</strong> A single indicator is noise. When capital flow, trend phase, RSI, and moving average alignment all point the same direction, confidence increases.</li>
-</ol>
-
-<div class="callout">
-  <p><strong>This is a rotation tool, not a stock picker.</strong> It tells you which sectors and asset classes have favorable conditions for new positions. You still need to pick individual stocks or use the sector ETFs directly.</p>
+<div class="callout callout-green">
+  <p><strong>Here's all you need to do:</strong></p>
 </div>
 
-<h2>How to Read the Dashboard</h2>
+<ol>
+  <li><strong>Open the <a href="index.html">dashboard</a>.</strong></li>
+  <li><strong>Look at the green "BUY" rows at the top.</strong> These are ETFs (exchange-traded funds — basically baskets of stocks you can buy like a single stock) where conditions are favorable.</li>
+  <li><strong>Check the confidence percentage.</strong> Higher = more factors agree. Stick to <strong>65% and above</strong> if you want high-conviction ideas.</li>
+  <li><strong>Read the rationale column.</strong> It tells you <em>why</em> in plain English.</li>
+  <li><strong>If you own something marked SELL or TRIM, consider reducing or exiting that position.</strong></li>
+</ol>
 
-<h3>🎯 Action Signals — Start Here</h3>
-<p>The top of the dashboard shows the bottom line: what to buy, hold, trim, or sell.</p>
+<p>That's the basics. The rest of this page explains what's behind those signals.</p>
+
+<!-- ===== THE BIG IDEA ===== -->
+<h2>💡 The Big Idea (No Jargon)</h2>
+
+<p>Think of the stock market like a building with different rooms — Technology, Healthcare, Energy, Gold, Bonds, etc. Money flows between these rooms constantly.</p>
+
+<p>This tool watches <strong>which rooms money is walking into</strong> (good sign for those sectors) and <strong>which rooms money is leaving</strong> (bad sign). It also checks whether a room just started filling up (early, good time to enter) or is already packed (late, crowded, risky).</p>
+
+<p>The ideal situation: money is flowing into a room that's <em>not yet crowded</em>. That's your opportunity.</p>
+
+<!-- ===== WHAT ARE ETFS ===== -->
+<h2>🏷️ What Are These Ticker Symbols?</h2>
+
+<p>Each row on the dashboard represents an <strong>ETF</strong> — a fund that tracks a group of stocks. You can buy and sell them in any brokerage account just like individual stocks.</p>
 
 <table>
-  <tr><th>Signal</th><th>Meaning</th><th>What to Do</th></tr>
+  <tr><th>Ticker</th><th>What It Holds</th><th>Category</th></tr>
+  <tr><td><strong>XLK</strong></td><td>Apple, Microsoft, Nvidia, etc.</td><td>Technology</td></tr>
+  <tr><td><strong>XLF</strong></td><td>JP Morgan, Berkshire, Goldman</td><td>Financial</td></tr>
+  <tr><td><strong>XLE</strong></td><td>Exxon, Chevron, ConocoPhillips</td><td>Energy</td></tr>
+  <tr><td><strong>XLV</strong></td><td>UnitedHealth, J&amp;J, Pfizer</td><td>Healthcare</td></tr>
+  <tr><td><strong>XLY</strong></td><td>Amazon, Tesla, McDonald's</td><td>Consumer Cyclical</td></tr>
+  <tr><td><strong>XLP</strong></td><td>Procter &amp; Gamble, Costco, Coca-Cola</td><td>Consumer Defensive</td></tr>
+  <tr><td><strong>XLI</strong></td><td>Caterpillar, UPS, Honeywell</td><td>Industrials</td></tr>
+  <tr><td><strong>XLU</strong></td><td>NextEra, Duke Energy, Southern</td><td>Utilities</td></tr>
+  <tr><td><strong>SPY</strong></td><td>All 500 S&amp;P 500 stocks</td><td>US Stock Market</td></tr>
+  <tr><td><strong>GLD</strong></td><td>Physical gold</td><td>Gold</td></tr>
+  <tr><td><strong>TLT</strong></td><td>Long-term US government bonds</td><td>Bonds</td></tr>
+  <tr><td><strong>IBIT</strong></td><td>Bitcoin</td><td>Crypto</td></tr>
+</table>
+
+<p><strong>How to buy:</strong> In any brokerage app (Fidelity, Schwab, Robinhood, etc.), search for the ticker symbol and buy shares. No minimum — you can buy 1 share or even fractional shares.</p>
+
+<!-- ===== READING THE SIGNALS ===== -->
+<h2>🚦 Understanding the Signals</h2>
+
+<h3>The 4 Actions</h3>
+
+<table>
+  <tr><th>Signal</th><th>Plain English</th><th>What You Should Do</th></tr>
   <tr>
     <td><span class="badge badge-buy">BUY</span></td>
-    <td>Favorable setup — trend + flow + momentum aligned</td>
-    <td>Open new positions or add to existing ones</td>
+    <td>Conditions are favorable — money is flowing in and the trend is young</td>
+    <td>Consider buying this ETF</td>
   </tr>
   <tr>
     <td><span class="badge badge-hold">HOLD</span></td>
-    <td>No clear edge in either direction</td>
-    <td>Maintain current positions, don't chase</td>
+    <td>No strong signal either way</td>
+    <td>If you own it, keep it. If you don't, wait for a clearer signal.</td>
   </tr>
   <tr>
     <td><span class="badge badge-trim">TRIM</span></td>
-    <td>Overextended or RSI elevated — risk/reward deteriorating</td>
-    <td>Take partial profits, tighten stops</td>
+    <td>It's gone up a lot already — the easy gains are done</td>
+    <td>If you own it, sell some (maybe half) to lock in profits</td>
   </tr>
   <tr>
     <td><span class="badge badge-sell">SELL</span></td>
-    <td>Trend broken or confirmed downtrend</td>
-    <td>Exit positions, don't try to catch the bounce</td>
+    <td>The trend is broken — this is going down and likely to continue</td>
+    <td>If you own it, sell. If you don't, stay away.</td>
   </tr>
 </table>
 
-<p><strong>Confidence</strong> ranges from 35% to 80%. Higher confidence means more factors are aligned. Focus on signals with <strong>65%+ confidence</strong> — these are the high-conviction setups highlighted at the top of the page.</p>
+<h3>The Confidence Number</h3>
 
-<h3>What Makes a High-Confidence BUY?</h3>
+<p>Think of confidence like a weather forecast: "70% chance of rain" means several indicators agree it'll rain, but it's not guaranteed.</p>
+
 <ul>
-  <li><span class="green">75%</span> — Early uptrend + capital inflow confirmed. Best risk/reward: new trend with money behind it.</li>
-  <li><span class="green">70%</span> — Pullback in an existing uptrend with depressed RSI. Mean reversion entry in a proven trend.</li>
-  <li><span class="green">65%</span> — Established uptrend with sustained inflow. Trend is your friend.</li>
-  <li><span class="yellow">60%</span> — Early uptrend, but no flow confirmation yet. Promising but unconfirmed.</li>
-  <li><span class="yellow">45%</span> — No clear trend but inflow starting. Speculative.</li>
+  <li><span class="green"><strong>65-80%:</strong></span> Multiple factors agree. These are your best opportunities.</li>
+  <li><span class="yellow"><strong>50-64%:</strong></span> Some evidence, but not overwhelming. Smaller position if any.</li>
+  <li><span class="dim"><strong>Below 50%:</strong></span> Weak signal. Don't act on these alone.</li>
 </ul>
 
-<h3>🌍 Asset Class Flows</h3>
-<p>Shows capital rotation across major asset classes: US Equities, Bonds, Gold, Commodities, Crypto, International, and Cash.</p>
-<ul>
-  <li><strong>Flow Score</strong> — positive = money flowing in, negative = money leaving. Blends 1-week (20%), 1-month (50%), and 3-month (30%) performance with volume confirmation.</li>
-  <li><strong>Key pattern:</strong> When equities show OUTFLOW and bonds/gold show INFLOW, that's a <em>risk-off</em> rotation — the market is getting defensive.</li>
-  <li><strong>Opposite:</strong> Equities INFLOW + safe havens OUTFLOW = <em>risk-on</em> — the market is confident.</li>
-</ul>
+<!-- ===== TREND PHASES ===== -->
+<h2>📈 Trend Phases (Where Are We in the Cycle?)</h2>
 
-<h3>🔄 Sector Rotation</h3>
-<p>Ranks all 11 S&P 500 sectors by a composite rotation score that measures whether money is rotating <em>into</em> or <em>out of</em> each sector.</p>
-<ul>
-  <li><strong>Rank Δ</strong> — How much the sector's ranking improved from 3-month to 1-week. Positive = sector is gaining momentum relative to peers.</li>
-  <li><strong>Defensive rotation</strong> (Utilities, Healthcare, Consumer Defensive rising): market expects trouble.</li>
-  <li><strong>Growth rotation</strong> (Technology, Consumer Cyclical, Communication Services rising): market expects expansion.</li>
-</ul>
-
-<h3>📈 Trend Breakdown</h3>
-<p>Per-ETF technical position showing where each one sits relative to its moving averages.</p>
+<p>Every investment goes through a cycle, like seasons. Knowing which "season" you're in tells you whether it's a good time to get in:</p>
 
 <table>
-  <tr><th>Trend Phase</th><th>What It Means</th><th>Implication</th></tr>
+  <tr><th>Phase</th><th>Season Analogy</th><th>What It Means for You</th></tr>
   <tr>
     <td><span class="green">⬆ Early Uptrend</span></td>
-    <td>Price just crossed above 50-day MA</td>
-    <td>Best entry point if confirmed by flow</td>
+    <td>🌱 Spring — things are just starting</td>
+    <td><strong>Best time to buy.</strong> The trend is fresh, lots of upside potential.</td>
   </tr>
   <tr>
     <td><span class="green">⬆ Established</span></td>
-    <td>Above both 50-day and 200-day MAs</td>
-    <td>Trend confirmed — ride it, add on dips</td>
+    <td>☀️ Summer — full bloom</td>
+    <td>Good to buy on dips. Trend is proven and healthy.</td>
   </tr>
   <tr>
     <td><span class="yellow">⚡ Extended</span></td>
-    <td>More than 10% above both MAs</td>
-    <td>Late — mean reversion risk, take profits</td>
+    <td>🥵 Late summer — overheated</td>
+    <td><strong>Too late to buy.</strong> Consider taking profits if you already own it.</td>
   </tr>
   <tr>
-    <td class="blue">↪ Pullback</td>
-    <td>Dipped below 20-day MA but above 50-day</td>
-    <td>Potential entry if support holds</td>
+    <td>↪ Pullback</td>
+    <td>Brief cool spell in summer</td>
+    <td>Could be a buying opportunity if the overall trend is still up.</td>
   </tr>
   <tr>
     <td><span class="red">⬇ Early Decline</span></td>
-    <td>Dropped below 50-day MA</td>
-    <td>Trend breaking — caution on longs</td>
+    <td>🍂 Autumn — things turning</td>
+    <td><strong>Get out.</strong> Don't wait to see if it recovers.</td>
   </tr>
   <tr>
     <td><span class="red">⬇ Established Down</span></td>
-    <td>Below both 50-day and 200-day MAs</td>
-    <td>Confirmed bear — don't catch knives</td>
+    <td>❄️ Winter — confirmed cold</td>
+    <td><strong>Stay away.</strong> Don't try to "buy the dip" here.</td>
   </tr>
   <tr>
     <td><span class="yellow">↩ Bounce</span></td>
-    <td>Short-term bounce in a downtrend</td>
-    <td>Likely short-lived — don't chase</td>
+    <td>Warm day in winter</td>
+    <td>Temporary — don't be fooled. The downtrend isn't over.</td>
   </tr>
 </table>
 
-<h2>Practical Workflow</h2>
+<!-- ===== ASSET CLASS FLOWS ===== -->
+<h2>🌍 Asset Class Flows (The Big Picture)</h2>
 
-<ol>
-  <li><strong>Check the High-Conviction Signals first.</strong> These are the setups where multiple factors converge. If there are BUYs at 65%+, those deserve your attention.</li>
-  <li><strong>Cross-reference with Asset Class Flows.</strong> A sector BUY in a risk-off environment (equities outflow) is less reliable. A sector BUY in a risk-on environment has tailwinds.</li>
-  <li><strong>Check the Trend Phase.</strong> Prefer buying into Early Uptrend or Pullback in Uptrend. Be cautious of Extended — even with a BUY signal, you may want to wait for a pullback.</li>
-  <li><strong>Use sector ETFs for execution.</strong> The simplest approach: buy the sector ETF (XLK, XLF, XLU, etc.) directly. For higher conviction, pick individual stocks within the favored sector.</li>
-  <li><strong>Review SELL and TRIM signals for existing positions.</strong> If you hold something flagged SELL with 70%+ confidence, consider exiting rather than hoping.</li>
-</ol>
+<p>Before picking a sector, check the big picture: is money going into stocks at all, or is it fleeing to safety?</p>
 
-<h2>What This Tool Does NOT Do</h2>
-
-<div class="callout callout-warn">
-  <p><strong>No tool replaces judgment.</strong> This scanner identifies conditions, not certainties. Key limitations:</p>
+<div class="example">
+  <h4>Example: Risk-Off (market scared)</h4>
+  <p>US Equities → <span class="red">OUTFLOW</span></p>
+  <p>Bonds → <span class="green">INFLOW</span></p>
+  <p>Gold → <span class="green">INFLOW</span></p>
+  <p><strong>Translation:</strong> Investors are selling stocks and buying safe assets. Not a great time to buy aggressive sectors. Favor defensive sectors (Utilities, Healthcare) or bonds/gold.</p>
 </div>
 
+<div class="example">
+  <h4>Example: Risk-On (market confident)</h4>
+  <p>US Equities → <span class="green">INFLOW</span></p>
+  <p>Bonds → <span class="red">OUTFLOW</span></p>
+  <p>Gold → <span class="red">OUTFLOW</span></p>
+  <p><strong>Translation:</strong> Investors are moving money into stocks from safe havens. Good environment for growth sectors (Technology, Consumer Cyclical).</p>
+</div>
+
+<!-- ===== SECTOR ROTATION ===== -->
+<h2>🔄 Sector Rotation (Where Within Stocks?)</h2>
+
+<p>Even when stocks overall are doing fine, some sectors outperform while others lag. This rotation tells you where the smart money is going <em>within</em> the stock market.</p>
+
+<p><strong>Key patterns to watch:</strong></p>
 <ul>
-  <li><strong>No earnings or fundamental analysis.</strong> A sector can have great technicals and still drop on earnings surprises.</li>
-  <li><strong>No macro event awareness.</strong> Fed meetings, tariffs, geopolitical events can override any technical signal.</li>
-  <li><strong>Lagging by nature.</strong> Moving averages and performance data look backward. Early signals are the best this can offer — they're still reactive, not predictive.</li>
-  <li><strong>Daily granularity.</strong> Data updates after market close. Intraday moves aren't captured.</li>
+  <li><span class="green"><strong>Growth sectors leading</strong></span> (Technology, Consumer Cyclical, Communication Services) → Market expects the economy to grow. Bullish sign.</li>
+  <li><span class="yellow"><strong>Defensive sectors leading</strong></span> (Utilities, Healthcare, Consumer Defensive) → Market is getting nervous. Money hiding in safe stocks. Could precede a broader decline.</li>
+  <li><strong>The "Rank Δ" column</strong> shows momentum. A positive number means that sector is <em>improving</em> faster than its peers. It's climbing the leaderboard.</li>
 </ul>
 
-<h2>Data Sources & Methodology</h2>
+<!-- ===== PRACTICAL EXAMPLE ===== -->
+<h2>📋 Step-by-Step Example</h2>
 
-<h3>What's Tracked</h3>
-<p><strong>Sectors</strong> — All 11 S&P 500 GICS sectors via SPDR Select Sector ETFs (XLK, XLF, XLE, XLV, XLY, XLP, XLI, XLB, XLC, XLRE, XLU).</p>
-<p><strong>Asset Classes</strong> — 7 classes via 13 ETFs: US Equities (SPY), Bonds (TLT, IEF, SHY), Cash (BIL), Gold (GLD, GDX), Commodities (DBC, USO), Crypto (IBIT, BITO), International (EFA, EEM).</p>
-<p><strong>Stock-level data</strong> — ~500 S&P 500 stocks with 1-week, 1-month, and 3-month performance, market cap, and sector classification.</p>
+<div class="example">
+  <h4>Scenario: You open the dashboard and see this at the top:</h4>
+  <p><span class="badge badge-buy">BUY</span> <strong>XLU</strong> (Utilities) — Confidence: 75%</p>
+  <p><em>"New uptrend forming with capital inflow confirmation"</em></p>
+</div>
 
-<h3>How Signals Are Generated</h3>
-<p>The <strong>rotation score</strong> combines four normalized factors:</p>
+<p>Here's how to think about it:</p>
+<ol>
+  <li><strong>What is XLU?</strong> It's the Utilities sector ETF — power companies, water companies. Boring but steady.</li>
+  <li><strong>Why BUY?</strong> The tool detected that Utilities just started going up (early uptrend) AND money is flowing into it (inflow confirmed). Two signals agreeing = 75% confidence.</li>
+  <li><strong>Check the big picture:</strong> Look at Asset Class Flows. If US Equities shows OUTFLOW and bonds show INFLOW, this is a defensive rotation — Utilities makes sense as a safety play.</li>
+  <li><strong>How to act:</strong> Buy shares of XLU in your brokerage. Decide how much based on confidence — maybe a full position at 75%, half position at 60%.</li>
+  <li><strong>When to sell:</strong> When the signal changes to TRIM or SELL, or when the trend phase shifts to "Extended" or "Early Decline."</li>
+</ol>
+
+<!-- ===== WHAT NOT TO DO ===== -->
+<h2>🚫 Common Mistakes</h2>
+
 <ul>
-  <li>Rank shift (35%) — is the sector climbing or falling in relative performance rankings?</li>
-  <li>Momentum acceleration (25%) — is short-term momentum diverging from the longer trend?</li>
-  <li>Institutional spread (20%) — are large-cap stocks outperforming small-caps (sign of institutional buying)?</li>
-  <li>Breadth divergence (20%) — is the percentage of positive stocks expanding or contracting?</li>
+  <li><strong>Don't buy Extended signals.</strong> If something is already way up, you're late. Wait for a pullback or look elsewhere.</li>
+  <li><strong>Don't ignore SELL signals hoping it'll recover.</strong> A broken trend usually gets worse before it gets better. Cut losses early.</li>
+  <li><strong>Don't chase bounces in downtrends.</strong> A "Counter Trend Bounce" is not a recovery — it's a trap that fools people into buying before the next leg down.</li>
+  <li><strong>Don't put all your money in one signal.</strong> Spread across 2-3 BUY signals rather than betting everything on one sector.</li>
+  <li><strong>Don't check obsessively.</strong> This updates once per day after market close. Checking more often doesn't help.</li>
 </ul>
 
-<p>The <strong>flow score</strong> blends multi-timeframe performance (20% weekly, 50% monthly, 30% quarterly) with a capped volume confidence multiplier to avoid distortion from volatile/new ETFs.</p>
+<!-- ===== LIMITATIONS ===== -->
+<h2>⚠️ What This Tool Cannot Do</h2>
 
-<p>The <strong>action signal</strong> synthesizes trend phase, RSI, capital flow, and moving average alignment into a single recommendation with confidence level.</p>
+<ul>
+  <li><strong>It cannot predict surprises.</strong> Earnings announcements, Fed decisions, wars, and pandemics can override any signal overnight.</li>
+  <li><strong>It looks backward.</strong> It measures what has already happened. "Early uptrend" is the best it can offer — that's still based on recent price moves, not crystal-ball predictions.</li>
+  <li><strong>It doesn't know your situation.</strong> Your risk tolerance, time horizon, and existing portfolio matter. A 25-year-old and a retiree should act differently on the same signal.</li>
+  <li><strong>Signals change.</strong> Today's BUY can be next week's HOLD. Check back regularly but don't panic over day-to-day shifts.</li>
+</ul>
 
-<h3>Update Schedule</h3>
-<p>Data refreshes automatically after market close on weekdays (4:30 PM ET) via GitHub Actions.</p>
+<!-- ===== GLOSSARY ===== -->
+<h2>📖 Glossary (Terms You'll See on the Dashboard)</h2>
 
+<table>
+  <tr><th>Term</th><th>What It Means in Plain English</th></tr>
+  <tr><td><strong>ETF</strong></td><td>A basket of stocks you can buy as one ticker. Like a pre-made portfolio.</td></tr>
+  <tr><td><strong>RSI</strong></td><td>A 0-100 score. Above 70 = it's gone up too much too fast (due for a drop). Below 30 = it's been beaten down (might bounce).</td></tr>
+  <tr><td><strong>SMA 50 / SMA 200</strong></td><td>The average price over the last 50 or 200 days. If price is above this line, the trend is up. Below = trend is down. Think of it as a "average mood" line.</td></tr>
+  <tr><td><strong>Relative Volume</strong></td><td>Is trading activity higher or lower than normal? High volume = lots of conviction behind the move. Low volume = weak, don't trust it.</td></tr>
+  <tr><td><strong>Inflow / Outflow</strong></td><td>Money moving INTO something (people buying) or OUT OF something (people selling).</td></tr>
+  <tr><td><strong>Sector Rotation</strong></td><td>The natural cycle where different parts of the market take turns leading. Like a relay race — different sectors take the baton.</td></tr>
+  <tr><td><strong>Mean Reversion</strong></td><td>Things that go too far from their average tend to snap back. Like a rubber band stretched too far — it's going to snap back eventually.</td></tr>
+  <tr><td><strong>Breadth</strong></td><td>What % of stocks in a sector are going up. High breadth = healthy, broad rally. Low breadth = only a few big stocks carrying the weight (fragile).</td></tr>
+  <tr><td><strong>Flow Score</strong></td><td>A single number summarizing capital movement. Positive = money coming in. Negative = money leaving. Bigger number = stronger signal.</td></tr>
+</table>
+
+<!-- ===== FOOTER ===== -->
 <p style="margin-top: 40px; color: var(--dim); font-size: 0.8em; border-top: 1px solid var(--border); padding-top: 16px;">
-  This tool is for informational purposes only. Not financial advice. Past performance doesn't guarantee future results. Do your own research.
+  This tool is for informational and educational purposes only. It is not financial advice. Past performance does not guarantee future results. Always do your own research and consider consulting a financial advisor. Never invest money you can't afford to lose.
 </p>
 
 </div>
