@@ -14,6 +14,7 @@ import {
   buildETFTrendDetails,
   generateActionSignals,
 } from "./analyzer.js";
+import type { CapitalMode, Strategy } from "./types.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = parseInt(process.env.PORT || "3000", 10);
@@ -38,8 +39,22 @@ async function getData() {
   );
 
   const flowMap = new Map(assetClassFlows.map((f) => [f.assetClass, f]));
-  const sectorRecs = generateActionSignals(sectorTrends, flowMap, signals);
-  const assetClassRecs = generateActionSignals(assetClassTrends, flowMap);
+
+  // Generate signals for all 6 mode combinations
+  const capitalModes: CapitalMode[] = ["deploy", "rotate"];
+  const strategies: Strategy[] = ["momentum", "contrarian", "rotation"];
+  const actionSignals: Record<string, { sector: ReturnType<typeof generateActionSignals>; assetClass: ReturnType<typeof generateActionSignals> }> = {};
+
+  for (const capital of capitalModes) {
+    for (const strategy of strategies) {
+      const mode = { capital, strategy };
+      const key = `${capital}_${strategy}`;
+      actionSignals[key] = {
+        sector: generateActionSignals(sectorTrends, flowMap, signals, mode),
+        assetClass: generateActionSignals(assetClassTrends, flowMap, undefined, mode),
+      };
+    }
+  }
 
   const result = {
     timestamp: new Date().toISOString(),
@@ -50,7 +65,7 @@ async function getData() {
     assetClassFlows,
     sectorTrends,
     assetClassTrends,
-    actionSignals: { sector: sectorRecs, assetClass: assetClassRecs },
+    actionSignals,
   };
 
   cachedData = result;

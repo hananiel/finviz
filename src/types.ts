@@ -128,6 +128,18 @@ export interface ETFTrendDetail {
 /** Action signal for an ETF */
 export type ActionSignal = "BUY" | "SELL" | "HOLD" | "TRIM";
 
+/** Capital deployment context */
+export type CapitalMode = "deploy" | "rotate";
+
+/** Investment strategy philosophy */
+export type Strategy = "momentum" | "contrarian" | "rotation";
+
+/** Combined investing mode */
+export interface InvestingMode {
+  capital: CapitalMode;
+  strategy: Strategy;
+}
+
 /** Buy/Sell/Hold recommendation with rationale */
 export interface ActionRecommendation {
   ticker: string;

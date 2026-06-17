@@ -11,6 +11,9 @@ import type {
   ETFTrendDetail,
   ActionRecommendation,
   ActionSignal,
+  InvestingMode,
+  CapitalMode,
+  Strategy,
 } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -431,39 +434,41 @@ export function buildETFTrendDetails(
 // 7. Action Signals — BUY / SELL / HOLD / TRIM
 // ---------------------------------------------------------------------------
 
+interface SignalContext {
+  etf: ETFTrendDetail;
+  flow?: AssetClassFlow;
+  rotation?: RotationSignal;
+  allAligned: boolean;  // all MAs bullish
+  allNeg: boolean;      // all MAs bearish
+}
+
 /**
- * Generate actionable recommendations by synthesizing:
- *   - Trend phase (where in the cycle)
- *   - RSI (overbought/oversold)
- *   - SMA alignment (all MAs stacked = strong trend)
- *   - Flow direction (capital moving in/out)
+ * Generate actionable recommendations with dual-mode system:
  *
- * Signal logic matrix:
- *   EARLY_UPTREND + flow INFLOW + RSI<70      → BUY (new trend + confirmation)
- *   ESTABLISHED_UPTREND + flow INFLOW          → BUY (confirmed + add on dips)
- *   PULLBACK_IN_UPTREND + RSI<50              → BUY (pullback entry)
- *   EXTENDED + RSI>65                         → TRIM (take profits)
- *   EARLY_DOWNTREND + flow OUTFLOW            → SELL (trend breaking)
- *   ESTABLISHED_DOWNTREND                     → SELL (confirmed bear)
- *   COUNTER_TREND_BOUNCE + flow OUTFLOW       → SELL (fade the bounce)
- *   Everything else                           → HOLD
+ * Capital modes:
+ *   DEPLOY — fresh cash to invest. Cares about absolute entry quality.
+ *           "Should I buy this at all?" Cash is a valid position.
+ *   ROTATE — rebalancing existing portfolio. Cares about relative attractiveness.
+ *           "Should I shift weight from X to Y?" Always fully invested.
+ *
+ * Strategies:
+ *   MOMENTUM  — follow trends + flows. Buy strength, sell weakness.
+ *   CONTRARIAN — fade extremes. Buy oversold/hated, sell overbought/loved.
+ *   ROTATION  — follow rank changes. Buy improving, sell deteriorating.
  */
 export function generateActionSignals(
   trendDetails: ETFTrendDetail[],
   flowMap: Map<string, AssetClassFlow>,
-  rotationSignals?: RotationSignal[]
+  rotationSignals?: RotationSignal[],
+  mode: InvestingMode = { capital: "deploy", strategy: "momentum" }
 ): ActionRecommendation[] {
   const recommendations: ActionRecommendation[] = [];
 
   for (const etf of trendDetails) {
     const factors: string[] = [];
-    let action: ActionSignal = "HOLD";
-    let confidence = 50;
-    let rationale = "";
-
     const { trendPhase, rsi, sma20, sma50, sma200 } = etf;
 
-    // Find corresponding flow (match by ticker in flow tickers, or by label as sector)
+    // Find corresponding flow
     let flow: AssetClassFlow | undefined;
     for (const [, f] of flowMap) {
       if (f.tickers.includes(etf.ticker) || f.assetClass === etf.label) {
@@ -475,139 +480,55 @@ export function generateActionSignals(
     // Find rotation signal for sector ETFs
     const rotation = rotationSignals?.find((r) => r.sector === etf.label);
 
-    // --- Factor: Trend Phase ---
+    // --- Collect factors (shared across all modes) ---
     factors.push(`Trend: ${trendPhase.replace(/_/g, " ").toLowerCase()}`);
 
-    // --- Factor: RSI ---
     if (rsi >= 70) factors.push(`RSI ${rsi.toFixed(0)} (overbought)`);
     else if (rsi >= 60) factors.push(`RSI ${rsi.toFixed(0)} (elevated)`);
     else if (rsi <= 30) factors.push(`RSI ${rsi.toFixed(0)} (oversold)`);
     else if (rsi <= 40) factors.push(`RSI ${rsi.toFixed(0)} (depressed)`);
     else factors.push(`RSI ${rsi.toFixed(0)} (neutral)`);
 
-    // --- Factor: Flow direction ---
     if (flow) {
       factors.push(`Flow: ${flow.signal} (score ${flow.flowScore.toFixed(1)})`);
     }
-
-    // --- Factor: Rotation signal (for sectors) ---
     if (rotation) {
       factors.push(`Rotation: ${rotation.signal} (rank Δ: ${rotation.rankShift > 0 ? "+" : ""}${rotation.rankShift})`);
     }
 
-    // --- Factor: SMA alignment ---
     const allAligned = sma20 > 0 && sma50 > 0 && sma200 > 0;
     const allNeg = sma20 < 0 && sma50 < 0 && sma200 < 0;
     if (allAligned) factors.push("MAs stacked bullish (20>50>200)");
     if (allNeg) factors.push("MAs stacked bearish (price < all MAs)");
 
-    // ===================================================================
-    // Decision matrix
-    // ===================================================================
+    const ctx: SignalContext = { etf, flow, rotation, allAligned, allNeg };
 
-    if (trendPhase === "EARLY_UPTREND") {
-      if (rsi < 70 && (flow?.signal === "INFLOW" || rotation?.signal === "INFLOW")) {
-        action = "BUY";
-        confidence = 75;
-        rationale = "New uptrend forming with capital inflow confirmation";
-      } else if (rsi < 70) {
-        action = "BUY";
-        confidence = 60;
-        rationale = "Early uptrend — above SMA50, waiting for flow confirmation";
-      } else {
-        action = "HOLD";
-        confidence = 45;
-        rationale = "Early uptrend but RSI elevated — wait for pullback entry";
-      }
-    } else if (trendPhase === "PULLBACK_IN_UPTREND") {
-      if (rsi <= 50) {
-        action = "BUY";
-        confidence = 70;
-        rationale = "Pullback in uptrend with depressed RSI — mean reversion entry";
-      } else {
-        action = "BUY";
-        confidence = 55;
-        rationale = "Dipping in uptrend — add if support holds";
-      }
-    } else if (trendPhase === "ESTABLISHED_UPTREND") {
-      if (flow?.signal === "INFLOW" || rotation?.signal === "INFLOW") {
-        action = "BUY";
-        confidence = 65;
-        rationale = "Confirmed uptrend with sustained inflow — buy on dips";
-      } else if (rsi >= 68) {
-        action = "TRIM";
-        confidence = 55;
-        rationale = "Uptrend intact but RSI getting hot — lighten position";
-      } else {
-        action = "HOLD";
-        confidence = 60;
-        rationale = "Confirmed uptrend — maintain position, no urgency to add";
-      }
-    } else if (trendPhase === "EXTENDED") {
-      if (rsi >= 65) {
-        action = "TRIM";
-        confidence = 70;
-        rationale = "Overextended above both MAs with elevated RSI — take profits";
-      } else if (flow?.signal === "OUTFLOW" || rotation?.signal === "OUTFLOW") {
-        action = "SELL";
-        confidence = 65;
-        rationale = "Extended and capital leaving — distribution phase likely";
-      } else {
-        action = "TRIM";
-        confidence = 55;
-        rationale = "Far from MAs — reduce exposure, mean reversion risk rising";
-      }
-    } else if (trendPhase === "EARLY_DOWNTREND") {
-      if (flow?.signal === "OUTFLOW" || rotation?.signal === "OUTFLOW") {
-        action = "SELL";
-        confidence = 75;
-        rationale = "Trend breaking below SMA50 with capital outflow";
-      } else {
-        action = "SELL";
-        confidence = 60;
-        rationale = "Below SMA50 — trend breaking, exit before further damage";
-      }
-    } else if (trendPhase === "ESTABLISHED_DOWNTREND") {
-      action = "SELL";
-      confidence = 80;
-      rationale = "Below both SMA50 and SMA200 — confirmed bear trend, avoid";
-      if (rsi <= 30) {
-        // Oversold in a downtrend — might bounce but don't catch knives
-        factors.push("Oversold but trend is down — bounce likely short-lived");
-      }
-    } else if (trendPhase === "COUNTER_TREND_BOUNCE") {
-      if (flow?.signal === "OUTFLOW") {
-        action = "SELL";
-        confidence = 70;
-        rationale = "Bounce in downtrend while capital leaving — fade this rally";
-      } else {
-        action = "HOLD";
-        confidence = 40;
-        rationale = "Bouncing but trend is down — don't chase, wait for confirmation";
-      }
+    // --- Pick strategy ---
+    let result: { action: ActionSignal; confidence: number; rationale: string; extraFactors?: string[] };
+
+    if (mode.strategy === "contrarian") {
+      result = contrarianStrategy(ctx);
+    } else if (mode.strategy === "rotation") {
+      result = rotationStrategy(ctx);
     } else {
-      // NEUTRAL
-      if (flow?.signal === "INFLOW" && rsi < 60) {
-        action = "BUY";
-        confidence = 45;
-        rationale = "No clear trend but capital flowing in — small position justified";
-      } else if (flow?.signal === "OUTFLOW") {
-        action = "HOLD";
-        confidence = 40;
-        rationale = "Unclear direction with outflow — stay flat, wait for setup";
-      } else {
-        action = "HOLD";
-        confidence = 35;
-        rationale = "No clear signal — wait for trend to develop";
-      }
+      result = momentumStrategy(ctx);
+    }
+
+    // --- Apply capital mode modifier ---
+    if (mode.capital === "rotate") {
+      result = applyRotateModifier(result, ctx);
+    }
+
+    if (result.extraFactors) {
+      factors.push(...result.extraFactors);
     }
 
     recommendations.push({
       ticker: etf.ticker,
       label: etf.label,
-      action,
-      confidence,
-      rationale,
+      action: result.action,
+      confidence: result.confidence,
+      rationale: result.rationale,
       factors,
     });
   }
@@ -623,4 +544,337 @@ export function generateActionSignals(
   });
 
   return recommendations;
+}
+
+// ---------------------------------------------------------------------------
+// Strategy: Momentum — follow trends and flows
+// ---------------------------------------------------------------------------
+
+function momentumStrategy(ctx: SignalContext) {
+  const { etf, flow, rotation } = ctx;
+  const { trendPhase, rsi, sma20 } = etf;
+  let action: ActionSignal = "HOLD";
+  let confidence = 50;
+  let rationale = "";
+  const extraFactors: string[] = [];
+
+  if (trendPhase === "EARLY_UPTREND") {
+    if (rsi < 70 && (flow?.signal === "INFLOW" || rotation?.signal === "INFLOW")) {
+      action = "BUY"; confidence = 75;
+      rationale = "New uptrend forming with capital inflow confirmation";
+    } else if (rsi < 70) {
+      action = "BUY"; confidence = 60;
+      rationale = "Early uptrend — above SMA50, waiting for flow confirmation";
+    } else {
+      action = "HOLD"; confidence = 45;
+      rationale = "Early uptrend but RSI elevated — wait for pullback entry";
+    }
+  } else if (trendPhase === "PULLBACK_IN_UPTREND") {
+    if (rsi <= 50) {
+      action = "BUY"; confidence = 70;
+      rationale = "Pullback in uptrend with depressed RSI — mean reversion entry";
+    } else {
+      action = "BUY"; confidence = 55;
+      rationale = "Dipping in uptrend — add if support holds";
+    }
+  } else if (trendPhase === "ESTABLISHED_UPTREND") {
+    if (flow?.signal === "INFLOW" || rotation?.signal === "INFLOW") {
+      if (sma20 < -1) {
+        action = "BUY"; confidence = 80;
+        rationale = `Dip detected — price ${sma20.toFixed(1)}% below SMA20 in confirmed uptrend with inflow`;
+        extraFactors.push("Price below 20-day MA = short-term dip in strong trend");
+      } else if (sma20 < 1 && rsi < 55) {
+        action = "BUY"; confidence = 70;
+        rationale = "Near SMA20 with cooling RSI in confirmed uptrend — dip forming";
+        extraFactors.push("Price approaching 20-day MA support");
+      } else {
+        action = "HOLD"; confidence = 60;
+        rationale = `Confirmed uptrend with inflow but no dip yet (${sma20.toFixed(1)}% above SMA20) — wait for pullback to add`;
+        extraFactors.push("No dip: price still above 20-day MA");
+      }
+    } else if (rsi >= 68) {
+      action = "TRIM"; confidence = 55;
+      rationale = "Uptrend intact but RSI getting hot — lighten position";
+    } else {
+      action = "HOLD"; confidence = 60;
+      rationale = "Confirmed uptrend — maintain position, no urgency to add";
+    }
+  } else if (trendPhase === "EXTENDED") {
+    if (rsi >= 65) {
+      action = "TRIM"; confidence = 70;
+      rationale = "Overextended above both MAs with elevated RSI — take profits";
+    } else if (flow?.signal === "OUTFLOW" || rotation?.signal === "OUTFLOW") {
+      action = "SELL"; confidence = 65;
+      rationale = "Extended and capital leaving — distribution phase likely";
+    } else {
+      action = "TRIM"; confidence = 55;
+      rationale = "Far from MAs — reduce exposure, mean reversion risk rising";
+    }
+  } else if (trendPhase === "EARLY_DOWNTREND") {
+    if (flow?.signal === "OUTFLOW" || rotation?.signal === "OUTFLOW") {
+      action = "SELL"; confidence = 75;
+      rationale = "Trend breaking below SMA50 with capital outflow";
+    } else {
+      action = "SELL"; confidence = 60;
+      rationale = "Below SMA50 — trend breaking, exit before further damage";
+    }
+  } else if (trendPhase === "ESTABLISHED_DOWNTREND") {
+    action = "SELL"; confidence = 80;
+    rationale = "Below both SMA50 and SMA200 — confirmed bear trend, avoid";
+    if (rsi <= 30) {
+      extraFactors.push("Oversold but trend is down — bounce likely short-lived");
+    }
+  } else if (trendPhase === "COUNTER_TREND_BOUNCE") {
+    if (flow?.signal === "OUTFLOW") {
+      action = "SELL"; confidence = 70;
+      rationale = "Bounce in downtrend while capital leaving — fade this rally";
+    } else {
+      action = "HOLD"; confidence = 40;
+      rationale = "Bouncing but trend is down — don't chase, wait for confirmation";
+    }
+  } else {
+    if (flow?.signal === "INFLOW" && rsi < 60) {
+      action = "BUY"; confidence = 45;
+      rationale = "No clear trend but capital flowing in — small position justified";
+    } else if (flow?.signal === "OUTFLOW") {
+      action = "HOLD"; confidence = 40;
+      rationale = "Unclear direction with outflow — stay flat, wait for setup";
+    } else {
+      action = "HOLD"; confidence = 35;
+      rationale = "No clear signal — wait for trend to develop";
+    }
+  }
+
+  return { action, confidence, rationale, extraFactors };
+}
+
+// ---------------------------------------------------------------------------
+// Strategy: Contrarian — fade extremes, buy fear, sell greed
+// ---------------------------------------------------------------------------
+
+function contrarianStrategy(ctx: SignalContext) {
+  const { etf, flow, rotation, allNeg, allAligned } = ctx;
+  const { trendPhase, rsi, sma20, sma50, sma200 } = etf;
+  let action: ActionSignal = "HOLD";
+  let confidence = 50;
+  let rationale = "";
+  const extraFactors: string[] = [];
+
+  // Contrarian inverts the logic: oversold + outflow = opportunity, overbought + inflow = danger
+
+  if (trendPhase === "ESTABLISHED_DOWNTREND") {
+    if (rsi <= 30) {
+      action = "BUY"; confidence = 75;
+      rationale = `Capitulation signal — RSI ${rsi.toFixed(0)} oversold, ${sma200.toFixed(1)}% below SMA200`;
+      extraFactors.push("Deep discount to long-term average = mean reversion opportunity");
+      if (flow?.signal === "OUTFLOW") {
+        confidence = 80;
+        extraFactors.push("Outflow = panic selling — contrarian buy zone");
+      }
+    } else if (rsi <= 40 && allNeg) {
+      action = "BUY"; confidence = 65;
+      rationale = "Below all MAs with depressed RSI — accumulation zone";
+      extraFactors.push("Price washed out — smart money often accumulates here");
+    } else {
+      action = "HOLD"; confidence = 45;
+      rationale = "Downtrend but not yet oversold enough — wait for capitulation";
+    }
+  } else if (trendPhase === "EARLY_DOWNTREND") {
+    if (rsi <= 35) {
+      action = "BUY"; confidence = 60;
+      rationale = "Early decline with oversold RSI — contrarian entry if support holds";
+    } else {
+      action = "HOLD"; confidence = 40;
+      rationale = "Breaking down but not oversold — too early for contrarian entry";
+    }
+  } else if (trendPhase === "COUNTER_TREND_BOUNCE") {
+    if (rsi <= 45 && sma200 < -5) {
+      action = "BUY"; confidence = 55;
+      rationale = "Bounce starting from deep discount — early reversal candidate";
+    } else {
+      action = "HOLD"; confidence = 40;
+      rationale = "Bouncing but not cheap enough for contrarian conviction";
+    }
+  } else if (trendPhase === "EXTENDED") {
+    if (rsi >= 70) {
+      action = "SELL"; confidence = 80;
+      rationale = `Euphoria zone — RSI ${rsi.toFixed(0)} overbought, ${sma200.toFixed(1)}% above SMA200`;
+      extraFactors.push("Extreme extension above MAs = high reversion risk");
+      if (flow?.signal === "INFLOW") {
+        extraFactors.push("Inflow = FOMO buying — contrarian sell zone");
+      }
+    } else if (rsi >= 60 && allAligned) {
+      action = "TRIM"; confidence = 70;
+      rationale = "Crowded trade — everyone bullish, reduce before mean reversion";
+      extraFactors.push("All MAs aligned + elevated RSI = consensus too strong");
+    } else {
+      action = "TRIM"; confidence = 55;
+      rationale = "Overextended — contrarian says take profits here";
+    }
+  } else if (trendPhase === "ESTABLISHED_UPTREND") {
+    if (rsi >= 70 && flow?.signal === "INFLOW") {
+      action = "TRIM"; confidence = 65;
+      rationale = "Strong consensus + overbought — contrarian trims into strength";
+      extraFactors.push("Inflow with high RSI = late buyers arriving");
+    } else if (sma20 < -1 && rsi < 45) {
+      action = "BUY"; confidence = 60;
+      rationale = "Dip in uptrend with cooling RSI — contrarian adds on fear";
+    } else {
+      action = "HOLD"; confidence = 50;
+      rationale = "Uptrend intact — no contrarian edge, wait for extreme";
+    }
+  } else if (trendPhase === "PULLBACK_IN_UPTREND") {
+    if (rsi <= 40) {
+      action = "BUY"; confidence = 75;
+      rationale = "Fear in an uptrend — contrarian sweet spot for entry";
+      extraFactors.push("Short-term panic in long-term uptrend = high probability reversal");
+    } else {
+      action = "BUY"; confidence = 55;
+      rationale = "Pullback but RSI not washed out yet — partial contrarian entry";
+    }
+  } else if (trendPhase === "EARLY_UPTREND") {
+    if (rsi >= 70) {
+      action = "HOLD"; confidence = 40;
+      rationale = "New uptrend but already overbought — too late for contrarian";
+    } else {
+      action = "HOLD"; confidence = 45;
+      rationale = "Trend forming — contrarian prefers buying deeper discounts";
+    }
+  } else {
+    // NEUTRAL
+    if (rsi <= 35) {
+      action = "BUY"; confidence = 50;
+      rationale = "No trend but oversold — contrarian nibble";
+    } else if (rsi >= 65) {
+      action = "TRIM"; confidence = 50;
+      rationale = "No trend but overbought — contrarian lightens";
+    } else {
+      action = "HOLD"; confidence = 35;
+      rationale = "No extreme — contrarian has no edge here";
+    }
+  }
+
+  return { action, confidence, rationale, extraFactors };
+}
+
+// ---------------------------------------------------------------------------
+// Strategy: Rotation — follow rank changes and turning points
+// ---------------------------------------------------------------------------
+
+function rotationStrategy(ctx: SignalContext) {
+  const { etf, flow, rotation } = ctx;
+  const { trendPhase, rsi } = etf;
+  let action: ActionSignal = "HOLD";
+  let confidence = 50;
+  let rationale = "";
+  const extraFactors: string[] = [];
+
+  // Rotation strategy is driven by rank shift — is this sector gaining or losing relative position?
+  const rankShift = rotation?.rankShift ?? 0;
+  const rotScore = rotation?.rotationScore ?? 0;
+  const rotSignal = rotation?.signal;
+
+  // For asset class ETFs without rotation data, fall back to flow-based relative signal
+  const hasRotation = rotation !== undefined;
+  const improving = hasRotation ? rankShift > 2 : flow?.signal === "INFLOW";
+  const deteriorating = hasRotation ? rankShift < -2 : flow?.signal === "OUTFLOW";
+  const stronglyImproving = hasRotation ? rankShift > 4 : (flow?.flowScore ?? 0) > 6;
+  const stronglyDeteriorating = hasRotation ? rankShift < -4 : (flow?.flowScore ?? 0) < -6;
+
+  if (stronglyImproving) {
+    if (trendPhase === "EARLY_UPTREND" || trendPhase === "PULLBACK_IN_UPTREND") {
+      action = "BUY"; confidence = 80;
+      rationale = `Strong rotation in (rank Δ: +${rankShift}) with trend inflection — high-conviction entry`;
+    } else if (rsi < 65) {
+      action = "BUY"; confidence = 70;
+      rationale = `Rapidly improving relative rank (+${rankShift}) — rotating into leadership`;
+    } else {
+      action = "BUY"; confidence = 55;
+      rationale = `Rank improving (+${rankShift}) but RSI elevated — enter on any dip`;
+    }
+    extraFactors.push(`Rank shift: +${rankShift} (moving toward top)`);
+  } else if (improving) {
+    if (rsi < 60) {
+      action = "BUY"; confidence = 60;
+      rationale = `Relative position improving (rank Δ: +${rankShift}) with room to run`;
+    } else {
+      action = "HOLD"; confidence = 50;
+      rationale = `Rank improving (+${rankShift}) but wait for better entry`;
+    }
+  } else if (stronglyDeteriorating) {
+    if (trendPhase === "EARLY_DOWNTREND" || trendPhase === "ESTABLISHED_DOWNTREND") {
+      action = "SELL"; confidence = 80;
+      rationale = `Rapid rotation out (rank Δ: ${rankShift}) with trend breakdown — exit`;
+    } else {
+      action = "SELL"; confidence = 65;
+      rationale = `Falling from leadership (rank Δ: ${rankShift}) — capital rotating elsewhere`;
+    }
+    extraFactors.push(`Rank shift: ${rankShift} (falling from leadership)`);
+  } else if (deteriorating) {
+    if (trendPhase === "EXTENDED" || rsi >= 65) {
+      action = "TRIM"; confidence = 60;
+      rationale = `Losing relative rank (Δ: ${rankShift}) and overextended — rotate out`;
+    } else {
+      action = "HOLD"; confidence = 45;
+      rationale = `Slight rank deterioration (Δ: ${rankShift}) — monitor for acceleration`;
+    }
+  } else {
+    // Stable rank — no rotation signal
+    if (trendPhase === "ESTABLISHED_UPTREND" && rsi < 60) {
+      action = "HOLD"; confidence = 55;
+      rationale = "Stable relative position in uptrend — maintain weight";
+    } else if (trendPhase === "ESTABLISHED_DOWNTREND") {
+      action = "SELL"; confidence = 55;
+      rationale = "Stable but at bottom of rankings — no catalyst to rotate in";
+    } else {
+      action = "HOLD"; confidence = 40;
+      rationale = "No significant rank change — no rotation signal";
+    }
+  }
+
+  return { action, confidence, rationale, extraFactors };
+}
+
+// ---------------------------------------------------------------------------
+// Capital mode modifier: Rotate (rebalance existing portfolio)
+// ---------------------------------------------------------------------------
+
+/**
+ * Adjusts recommendations for the "rotate" capital mode.
+ * Key differences from "deploy":
+ *   - HOLD means "keep current weight" not "keep cash"
+ *   - BUY means "overweight" (shift funds from underperformers)
+ *   - SELL means "underweight" (shift funds to outperformers)
+ *   - Confidence is tempered — rotation has transaction costs
+ *   - No "keep cash" option — always fully invested
+ */
+function applyRotateModifier(
+  result: { action: ActionSignal; confidence: number; rationale: string; extraFactors?: string[] },
+  ctx: SignalContext
+): { action: ActionSignal; confidence: number; rationale: string; extraFactors?: string[] } {
+  const extraFactors = [...(result.extraFactors ?? [])];
+  let { action, confidence, rationale } = result;
+
+  // In rotate mode, lower confidence to account for switching costs
+  // (selling one position to buy another has friction)
+  if (action === "BUY" || action === "SELL") {
+    confidence = Math.max(confidence - 5, 30);
+  }
+
+  // Reframe the language
+  if (action === "BUY") {
+    rationale = `Overweight — ${rationale}`;
+    extraFactors.push("Rotate mode: shift weight from underperformers into this");
+  } else if (action === "SELL") {
+    rationale = `Underweight — ${rationale}`;
+    extraFactors.push("Rotate mode: shift weight from this to outperformers");
+  } else if (action === "TRIM") {
+    rationale = `Reduce weight — ${rationale}`;
+    extraFactors.push("Rotate mode: trim to fund overweight positions");
+  } else {
+    // HOLD
+    rationale = `Maintain weight — ${rationale}`;
+  }
+
+  return { action, confidence, rationale, extraFactors };
 }
