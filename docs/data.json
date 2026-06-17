@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-06-16T22:17:19.323Z",
+  "timestamp": "2026-06-17T12:47:07.695Z",
   "stockCount": 503,
   "sectorPerformance": [
     {
       "sector": "Healthcare",
       "stockCount": 59,
-      "mcw1W": -1.1501769078114028,
-      "mcw1M": 5.608195907956016,
-      "mcw3M": 5.877679741716511,
+      "mcw1W": -1.150733434664231,
+      "mcw1M": 5.609194870820536,
+      "mcw3M": 5.887283621347817,
       "ew1W": -1.028220338983051,
       "ew1M": 5.935474576271186,
       "ew3M": 3.724898305084746,
@@ -32,9 +32,9 @@
     {
       "sector": "Technology",
       "stockCount": 84,
-      "mcw1W": 2.220827399434265,
-      "mcw1M": 3.8364010939630844,
-      "mcw3M": 37.35044044161702,
+      "mcw1W": 2.221668510521579,
+      "mcw1M": 3.837523354937787,
+      "mcw3M": 37.353554868070134,
       "ew1W": 0.8393809523809523,
       "ew1M": 5.961904761904763,
       "ew3M": 29.30063095238096,
@@ -59,9 +59,9 @@
     {
       "sector": "Consumer Cyclical",
       "stockCount": 54,
-      "mcw1W": 2.0544551384487924,
-      "mcw1M": 0.038225602994078296,
-      "mcw3M": 6.927390605245103,
+      "mcw1W": 2.0544624128715636,
+      "mcw1M": 0.0382125847551486,
+      "mcw3M": 6.92741131670018,
       "ew1W": 2.6752777777777785,
       "ew1M": 9.082833333333337,
       "ew3M": 2.671277777777777,
@@ -86,9 +86,9 @@
     {
       "sector": "Financial",
       "stockCount": 70,
-      "mcw1W": 3.611961051939289,
-      "mcw1M": 6.658305910661055,
-      "mcw3M": 11.506036523568335,
+      "mcw1W": 3.611801784742574,
+      "mcw1M": 6.657999255747217,
+      "mcw3M": 11.505215982157454,
       "ew1W": 3.045500000000001,
       "ew1M": 5.131957142857142,
       "ew3M": 10.648671428571427,
@@ -113,9 +113,9 @@
     {
       "sector": "Consumer Defensive",
       "stockCount": 35,
-      "mcw1W": 1.5779267316647265,
-      "mcw1M": -1.3759359048983613,
-      "mcw3M": 0.3664557317318886,
+      "mcw1W": 1.5779380761287507,
+      "mcw1M": -1.3759484863240257,
+      "mcw3M": 0.36637413178411715,
       "ew1W": 1.2415999999999996,
       "ew1M": 3.914999999999999,
       "ew3M": -0.3114857142857143,
@@ -275,9 +275,9 @@
     {
       "sector": "Communication Services",
       "stockCount": 24,
-      "mcw1W": 2.1329287681947617,
-      "mcw1M": -4.92629381958618,
-      "mcw3M": 13.280721499659835,
+      "mcw1W": 2.132939480009451,
+      "mcw1M": -4.926296255285864,
+      "mcw3M": 13.280664208485085,
       "ew1W": -0.948958333333333,
       "ew1M": -2.9829166666666667,
       "ew3M": -2.2158333333333333,
@@ -381,9 +381,9 @@
     {
       "sector": "Technology",
       "signal": "NEUTRAL",
-      "rotationScore": 3.91,
+      "rotationScore": 3.92,
       "rankShift": -4,
-      "momentumAccel": 1.33,
+      "momentumAccel": 1.34,
       "institutionalSpread": 1.38,
       "breadthDivergence": -16.67,
       "rank1W": 5,
@@ -414,7 +414,7 @@
     {
       "sector": "Healthcare",
       "signal": "OUTFLOW",
-      "rotationScore": -31.25,
+      "rotationScore": -31.26,
       "rankShift": -2,
       "momentumAccel": -2.45,
       "institutionalSpread": -0.12,
@@ -430,7 +430,7 @@
       "etfPerf1W": -3.54,
       "stockAvg1W": -3.7,
       "divergence": 0.16,
-      "relVolume": 44.97,
+      "relVolume": 45.01,
       "volumeSignal": "HIGH"
     },
     {
@@ -439,7 +439,7 @@
       "etfPerf1W": 3.6,
       "stockAvg1W": 3.61,
       "divergence": -0.01,
-      "relVolume": 40.22,
+      "relVolume": 40.09,
       "volumeSignal": "HIGH"
     },
     {
@@ -448,7 +448,7 @@
       "etfPerf1W": 2.46,
       "stockAvg1W": 2.43,
       "divergence": 0.03,
-      "relVolume": 21.92,
+      "relVolume": 21.87,
       "volumeSignal": "HIGH"
     },
     {
@@ -457,7 +457,7 @@
       "etfPerf1W": 3.14,
       "stockAvg1W": 2.22,
       "divergence": 0.92,
-      "relVolume": 13.63,
+      "relVolume": 13.53,
       "volumeSignal": "HIGH"
     },
     {
@@ -466,7 +466,7 @@
       "etfPerf1W": 1.77,
       "stockAvg1W": 1.58,
       "divergence": 0.19,
-      "relVolume": 13.42,
+      "relVolume": 13.37,
       "volumeSignal": "HIGH"
     },
     {
@@ -475,7 +475,7 @@
       "etfPerf1W": 3.84,
       "stockAvg1W": 3.97,
       "divergence": -0.13,
-      "relVolume": 12.46,
+      "relVolume": 12.34,
       "volumeSignal": "HIGH"
     },
     {
@@ -484,7 +484,7 @@
       "etfPerf1W": -1.05,
       "stockAvg1W": -1.15,
       "divergence": 0.1,
-      "relVolume": 11.03,
+      "relVolume": 10.99,
       "volumeSignal": "HIGH"
     },
     {
@@ -493,7 +493,7 @@
       "etfPerf1W": 2.42,
       "stockAvg1W": 2.6,
       "divergence": -0.18,
-      "relVolume": 9.81,
+      "relVolume": 9.78,
       "volumeSignal": "HIGH"
     },
     {
@@ -502,7 +502,7 @@
       "etfPerf1W": 2.24,
       "stockAvg1W": 2.05,
       "divergence": 0.19,
-      "relVolume": 8.56,
+      "relVolume": 8.51,
       "volumeSignal": "HIGH"
     },
     {
@@ -511,7 +511,7 @@
       "etfPerf1W": 0.29,
       "stockAvg1W": 0.15,
       "divergence": 0.14,
-      "relVolume": 6.21,
+      "relVolume": 6.13,
       "volumeSignal": "HIGH"
     },
     {
@@ -520,7 +520,7 @@
       "etfPerf1W": 0.75,
       "stockAvg1W": 2.13,
       "divergence": -1.38,
-      "relVolume": 5.83,
+      "relVolume": 5.84,
       "volumeSignal": "HIGH"
     }
   ],
@@ -535,7 +535,7 @@
       "avgPerf1W": 2.83,
       "avgPerf1M": 4.02,
       "avgPerf3M": 11.43,
-      "avgRelVolume": 25.01,
+      "avgRelVolume": 24.93,
       "flowScore": 37.51,
       "signal": "INFLOW",
       "trendPhase": "ESTABLISHED_UPTREND"
@@ -549,7 +549,7 @@
       "avgPerf1W": 1.8,
       "avgPerf1M": 1.51,
       "avgPerf3M": 11.86,
-      "avgRelVolume": 64.27,
+      "avgRelVolume": 64.03,
       "flowScore": 29.28,
       "signal": "INFLOW",
       "trendPhase": "ESTABLISHED_UPTREND"
@@ -565,7 +565,7 @@
       "avgPerf1W": 0.76,
       "avgPerf1M": 1.39,
       "avgPerf3M": -1.28,
-      "avgRelVolume": 13.75,
+      "avgRelVolume": 13.65,
       "flowScore": 3.23,
       "signal": "INFLOW",
       "trendPhase": "NEUTRAL"
@@ -579,7 +579,7 @@
       "avgPerf1W": 0.07,
       "avgPerf1M": -0.01,
       "avgPerf3M": 0,
-      "avgRelVolume": 11.85,
+      "avgRelVolume": 11.88,
       "flowScore": 0.13,
       "signal": "NEUTRAL",
       "trendPhase": "NEUTRAL"
@@ -594,7 +594,7 @@
       "avgPerf1W": 7.1,
       "avgPerf1M": -2.42,
       "avgPerf3M": -10.28,
-      "avgRelVolume": 16.7,
+      "avgRelVolume": 16.68,
       "flowScore": -15.26,
       "signal": "OUTFLOW",
       "trendPhase": "EARLY_DOWNTREND"
@@ -609,7 +609,7 @@
       "avgPerf1W": 5.74,
       "avgPerf1M": -17.27,
       "avgPerf3M": -12.57,
-      "avgRelVolume": 94.35,
+      "avgRelVolume": 94.71,
       "flowScore": -65.56,
       "signal": "OUTFLOW",
       "trendPhase": "ESTABLISHED_DOWNTREND"
@@ -624,7 +624,7 @@
       "avgPerf1W": -8.04,
       "avgPerf1M": -16.33,
       "avgPerf3M": -2.91,
-      "avgRelVolume": 12.24,
+      "avgRelVolume": 11.77,
       "flowScore": -65.81,
       "signal": "OUTFLOW",
       "trendPhase": "EARLY_DOWNTREND"
