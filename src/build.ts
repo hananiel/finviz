@@ -78,10 +78,31 @@ async function build() {
   const jsDst = path.join(docsDir, "data.js");
   fs.writeFileSync(jsDst, `window.__FINVIZ_DATA = ${JSON.stringify(result)};`);
 
+  // Save daily snapshot for historical navigation
+  const historyDir = path.join(docsDir, "history");
+  fs.mkdirSync(historyDir, { recursive: true });
+
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const snapshotPath = path.join(historyDir, `${today}.json`);
+  fs.writeFileSync(snapshotPath, JSON.stringify(result));
+
+  // Update manifest of available dates
+  const manifestPath = path.join(historyDir, "index.json");
+  let dates: string[] = [];
+  try {
+    dates = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+  } catch {}
+  if (!dates.includes(today)) {
+    dates.push(today);
+    dates.sort();
+  }
+  fs.writeFileSync(manifestPath, JSON.stringify(dates));
+
   console.log(`\nBuild complete:`);
   console.log(`  docs/index.html`);
   console.log(`  docs/data.json (${stocks.length} stocks, ${new Date().toISOString()})`);
   console.log(`  docs/data.js (file:// fallback)`);
+  console.log(`  docs/history/${today}.json (snapshot #${dates.length})`);
 }
 
 build().catch((err) => {

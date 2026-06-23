@@ -66,6 +66,13 @@
   .rrg-legend { display: flex; gap: 16px; justify-content: center; margin-top: 10px; font-size: 0.78em; color: var(--dim); }
   .rrg-legend span { display: inline-flex; align-items: center; gap: 4px; }
   .rrg-legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  /* Date navigation */
+  .date-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .date-nav button { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; font-family: inherit; }
+  .date-nav button:hover { border-color: var(--blue); }
+  .date-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .date-nav .date-label { color: var(--text); font-size: 0.9em; font-weight: 600; min-width: 100px; text-align: center; }
+  .date-nav .date-hint { color: var(--dim); font-size: 0.75em; }
 </style>
 </head>
 <body>
@@ -90,6 +97,12 @@
     <button class="mode-btn" data-mode="timeframe" data-value="3m">3M</button>
     <button class="mode-btn" data-mode="timeframe" data-value="1y">1Y</button>
   </div>
+</div>
+<div class="date-nav" id="date-nav" style="display:none">
+  <button id="date-prev">← Prev</button>
+  <span class="date-label" id="date-label">Today</span>
+  <button id="date-next">Next →</button>
+  <span class="date-hint" id="date-hint"></span>
 </div>
 <div class="mode-desc" id="mode-desc"></div>
 <div id="app"><div class="loading">⏳ Fetching data from finviz...</div></div>
@@ -533,6 +546,8 @@ let currentData = null;
 let currentCapital = 'deploy';
 let currentStrategy = 'momentum';
 let currentTimeframe = '5d';
+let availableDates = [];
+let currentDateIdx = -1; // -1 = today (latest)
 
 const TIMEFRAME_LABELS = { '5d': '5-Day', '1m': '1-Month', '3m': '3-Month', '1y': '1-Year' };
 
@@ -603,6 +618,65 @@ function setupModeBar() {
   });
 }
 
+async function loadDateData(date) {
+  // Try fetch first, fall back to checking if __FINVIZ_DATA matches the date
+  try {
+    const res = await fetch(`history/${date}.json`);
+    if (res.ok) return await res.json();
+  } catch {}
+  // If today's data matches the requested date, use it
+  if (window.__FINVIZ_DATA && window.__FINVIZ_DATA.timestamp.startsWith(date)) {
+    return window.__FINVIZ_DATA;
+  }
+  return null;
+}
+
+function updateDateNav() {
+  const nav = $('#date-nav');
+  const label = $('#date-label');
+  const hint = $('#date-hint');
+  const prevBtn = $('#date-prev');
+  const nextBtn = $('#date-next');
+
+  if (availableDates.length <= 1) {
+    nav.style.display = 'none';
+    return;
+  }
+  nav.style.display = 'flex';
+
+  const isLatest = currentDateIdx === availableDates.length - 1 || currentDateIdx === -1;
+  const idx = currentDateIdx === -1 ? availableDates.length - 1 : currentDateIdx;
+
+  label.textContent = isLatest ? `${availableDates[idx]} (Latest)` : availableDates[idx];
+  hint.textContent = `${idx + 1} of ${availableDates.length} snapshots`;
+  prevBtn.disabled = idx <= 0;
+  nextBtn.disabled = isLatest;
+}
+
+async function navigateDate(direction) {
+  const idx = currentDateIdx === -1 ? availableDates.length - 1 : currentDateIdx;
+  const newIdx = idx + direction;
+  if (newIdx < 0 || newIdx >= availableDates.length) return;
+
+  const date = availableDates[newIdx];
+  const data = await loadDateData(date);
+  if (!data) {
+    $('#app').innerHTML = `<div class="error">No data for ${date}</div>`;
+    return;
+  }
+
+  currentDateIdx = newIdx;
+  currentData = data;
+  $('#meta').innerHTML = `${currentData.stockCount} stocks analyzed &bull; ${currentData.timestamp} &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this &rarr;</a>`;
+  updateDateNav();
+  renderDashboard();
+}
+
+function setupDateNav() {
+  $('#date-prev').addEventListener('click', () => navigateDate(-1));
+  $('#date-next').addEventListener('click', () => navigateDate(1));
+}
+
 async function load() {
   try {
     let data = null;
@@ -622,9 +696,22 @@ async function load() {
     if (!data) throw new Error('Could not load data (try running the server)');
     currentData = data;
 
+    // Load available dates manifest
+    try {
+      const mRes = await fetch('history/index.json');
+      if (mRes.ok) availableDates = await mRes.json();
+    } catch {}
+    // If no manifest but we have data, treat today as the only date
+    if (availableDates.length === 0 && currentData.timestamp) {
+      availableDates = [currentData.timestamp.slice(0, 10)];
+    }
+    currentDateIdx = availableDates.length - 1;
+
     $('#meta').innerHTML = `${currentData.stockCount} stocks analyzed &bull; ${currentData.timestamp} &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this &rarr;</a>`;
 
     setupModeBar();
+    setupDateNav();
+    updateDateNav();
     renderDashboard();
   } catch (err) {
     $('#app').innerHTML = `<div class="error">Error: ${err.message}</div>`;
