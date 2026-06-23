@@ -153,6 +153,17 @@ export interface ActionRecommendation {
 /** Timeframe identifiers for the map API */
 export type Timeframe = "w1" | "w4" | "w13";
 
+/** Real fund flow data from ETF creation/redemption (ETFdb) */
+export interface ETFFundFlow {
+  ticker: string;
+  sector: string;
+  flow5Day: number;     // net dollars in/out over 5 days
+  flow1Month: number;   // net dollars in/out over 1 month
+  flow3Month: number;   // net dollars in/out over 3 months
+  flow6Month: number;   // net dollars in/out over 6 months
+  flow1Year: number;    // net dollars in/out over 1 year
+}
+
 /** Screener stock row (sector mapping + market cap) */
 export interface ScreenerStock {
   ticker: string;

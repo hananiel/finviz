@@ -1,9 +1,10 @@
 import * as cheerio from "cheerio";
-import type { Timeframe, ScreenerStock, StockData, SectorETF, AssetClassETF, TechnicalData } from "./types.js";
+import type { Timeframe, ScreenerStock, StockData, SectorETF, AssetClassETF, TechnicalData, ETFFundFlow } from "./types.js";
 
 const BASE_URL = "https://finviz.com";
 const MAP_API = `${BASE_URL}/api/map_perf.ashx`;
 const SCREENER_URL = `${BASE_URL}/screener.ashx`;
+const ETFDB_URL = "https://etfdb.com/etf";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
@@ -36,6 +37,33 @@ async function fetchWithRetry(url: string, retries = 2): Promise<Response> {
     if (res.ok) return res;
     if (res.status === 429 && i < retries) {
       await sleep(2000 * (i + 1));
+      continue;
+    }
+    throw new Error(`HTTP ${res.status} fetching ${url}`);
+  }
+  throw new Error(`Failed after ${retries} retries: ${url}`);
+}
+
+/** Fetch with full browser-like headers (needed for ETFdb anti-bot) */
+async function fetchBrowser(url: string, retries = 2): Promise<Response> {
+  for (let i = 0; i <= retries; i++) {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+      },
+    });
+    if (res.ok) return res;
+    if ((res.status === 429 || res.status === 403) && i < retries) {
+      await sleep(3000 * (i + 1));
       continue;
     }
     throw new Error(`HTTP ${res.status} fetching ${url}`);
@@ -323,7 +351,88 @@ export async function fetchTechnicalData(tickers: string[]): Promise<Map<string,
 }
 
 // ---------------------------------------------------------------------------
-// 5. Orchestrator — join all data
+// 5. ETFdb Fund Flows — real creation/redemption dollar flows
+// ---------------------------------------------------------------------------
+
+/** Parse a fund flow value like "8.33 B", "-10.1 M", "317.86 M" → raw dollars */
+function parseFlowValue(raw: string): number {
+  const cleaned = raw.trim();
+  if (!cleaned) return 0;
+  const match = cleaned.match(/^(-?[\d.]+)\s*([BMK]?)$/i);
+  if (!match) return 0;
+  const num = parseFloat(match[1]);
+  const suffix = match[2].toUpperCase();
+  const multipliers: Record<string, number> = { B: 1e9, M: 1e6, K: 1e3, "": 1 };
+  return num * (multipliers[suffix] ?? 1);
+}
+
+async function fetchETFFlowPage(ticker: string): Promise<Omit<ETFFundFlow, "sector"> | null> {
+  try {
+    const url = `${ETFDB_URL}/${ticker}/`;
+
+    // ETFdb has aggressive bot protection that blocks Node fetch even with browser headers.
+    // Use child_process curl which works reliably (proven via manual testing).
+    const { execSync } = await import("node:child_process");
+    const html = execSync(
+      `curl -s "${url}" -H "User-Agent: ${USER_AGENT}" -H "Accept: text/html" --max-time 15`,
+      { encoding: "utf-8", maxBuffer: 5 * 1024 * 1024 }
+    );
+
+    if (!html || html.length < 1000) {
+      throw new Error(`Empty or blocked response for ${ticker}`);
+    }
+
+    // Parse net flow spans: <span class='net-fund-flow 5-day'>\n<b>label</b>\nvalue\n</span>
+    // Use [\s\S] for cross-platform newline handling (Windows \r\n vs Unix \n)
+    const flowRegex = /net-fund-flow\s+([\w-]+)'>\s*<b>[^<]*<\/b>\s*([-\d.]+\s*[BMTK]?)/gi;
+    const flows: Record<string, number> = {};
+
+    let m;
+    while ((m = flowRegex.exec(html)) !== null) {
+      const period = m[1].trim();  // "5-day", "1-month", "3-month", etc.
+      const value = m[2].trim();
+      flows[period] = parseFlowValue(value);
+    }
+
+    return {
+      ticker,
+      flow5Day: flows["5-day"] ?? 0,
+      flow1Month: flows["1-month"] ?? 0,
+      flow3Month: flows["3-month"] ?? 0,
+      flow6Month: flows["6-month"] ?? 0,
+      flow1Year: flows["1-year"] ?? 0,
+    };
+  } catch (err) {
+    console.error(`  Warning: failed to fetch fund flow for ${ticker}: ${err}`);
+    return null;
+  }
+}
+
+export async function fetchFundFlows(): Promise<ETFFundFlow[]> {
+  console.log("  Fetching real fund flows from ETFdb...");
+  const tickers = Object.keys(ETF_SECTOR_MAP);
+  const flows: ETFFundFlow[] = [];
+
+  // Fetch in batches of 2 with delays to avoid rate limiting
+  for (let i = 0; i < tickers.length; i += 2) {
+    const batch = tickers.slice(i, i + 2);
+    const results = await Promise.all(batch.map(fetchETFFlowPage));
+    for (const result of results) {
+      if (result) {
+        flows.push({ ...result, sector: ETF_SECTOR_MAP[result.ticker] });
+      }
+    }
+    if (i + 2 < tickers.length) {
+      await sleep(1000);
+    }
+  }
+
+  console.log(`  Fetched fund flows for ${flows.length}/${tickers.length} sector ETFs`);
+  return flows;
+}
+
+// ---------------------------------------------------------------------------
+// 6. Orchestrator — join all data
 // ---------------------------------------------------------------------------
 
 export async function fetchAllData(): Promise<{
@@ -331,6 +440,7 @@ export async function fetchAllData(): Promise<{
   etfs: SectorETF[];
   assetClassETFs: AssetClassETF[];
   technicals: Map<string, TechnicalData>;
+  fundFlows: ETFFundFlow[];
 }> {
   console.log("Fetching data from finviz...");
 
@@ -380,6 +490,10 @@ export async function fetchAllData(): Promise<{
     }
   }
 
-  console.log(`  Joined ${stocks.length} stocks with performance data\n`);
-  return { stocks, etfs, assetClassETFs, technicals };
+  console.log(`  Joined ${stocks.length} stocks with performance data`);
+
+  // Fetch real fund flows from ETFdb (separate from finviz)
+  const fundFlows = await fetchFundFlows();
+
+  return { stocks, etfs, assetClassETFs, technicals, fundFlows };
 }

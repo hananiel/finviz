@@ -42,6 +42,30 @@
   .mode-btn:hover { border-color: var(--blue); color: var(--text); }
   .mode-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
   .mode-desc { color: var(--dim); font-size: 0.78em; font-style: italic; margin-bottom: 12px; }
+  /* Flow diagram */
+  .flow-diagram { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .flow-diagram h2 { margin-top: 0; }
+  .flow-svg { width: 100%; overflow: visible; }
+  .flow-label { font-size: 12px; fill: var(--text); font-family: inherit; }
+  .flow-score { font-size: 10px; fill: var(--dim); font-family: inherit; }
+  .flow-arrow-in { fill: var(--green); opacity: 0.7; }
+  .flow-arrow-out { fill: var(--red); opacity: 0.7; }
+  .flow-arrow-in:hover, .flow-arrow-out:hover { opacity: 1; }
+  .flow-neutral-bar { fill: var(--border); opacity: 0.5; }
+  .flow-col-label { font-size: 11px; fill: var(--dim); text-transform: uppercase; letter-spacing: 1px; font-family: inherit; }
+  /* RRG Quadrant Chart */
+  .rrg-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .rrg-container h2 { margin-top: 0; }
+  .rrg-svg { width: 100%; max-width: 600px; margin: 0 auto; display: block; }
+  .rrg-quadrant-label { font-size: 10px; fill: var(--dim); font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; }
+  .rrg-dot { cursor: pointer; transition: r 0.15s; }
+  .rrg-dot:hover { r: 8; }
+  .rrg-dot-label { font-size: 9px; fill: var(--text); font-family: inherit; pointer-events: none; }
+  .rrg-axis { stroke: var(--border); stroke-width: 1; }
+  .rrg-axis-label { font-size: 9px; fill: var(--dim); font-family: inherit; }
+  .rrg-legend { display: flex; gap: 16px; justify-content: center; margin-top: 10px; font-size: 0.78em; color: var(--dim); }
+  .rrg-legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .rrg-legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 </style>
 </head>
 <body>
@@ -59,10 +83,18 @@
     <button class="mode-btn" data-mode="strategy" data-value="contrarian">🔄 Contrarian</button>
     <button class="mode-btn" data-mode="strategy" data-value="rotation">⚖️ Rotation</button>
   </div>
+  <div class="mode-group">
+    <label>Timeframe:</label>
+    <button class="mode-btn active" data-mode="timeframe" data-value="5d">5D</button>
+    <button class="mode-btn" data-mode="timeframe" data-value="1m">1M</button>
+    <button class="mode-btn" data-mode="timeframe" data-value="3m">3M</button>
+    <button class="mode-btn" data-mode="timeframe" data-value="1y">1Y</button>
+  </div>
 </div>
 <div class="mode-desc" id="mode-desc"></div>
 <div id="app"><div class="loading">⏳ Fetching data from finviz...</div></div>
 
+<script src="data.js"></script>
 <script>
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -194,9 +226,320 @@ const modeDescriptions = {
   rotate_rotation: 'Rebalance — shift weight toward improving relative rank. Paired sector trades.',
 };
 
+function renderFlowDiagram(signals, fundFlows, timeframe) {
+  if (!fundFlows || fundFlows.length === 0) {
+    return renderFlowDiagramFallback(signals);
+  }
+
+  const field = getFlowField(timeframe);
+  const tfLabel = TIMEFRAME_LABELS[timeframe] || '5-Day';
+
+  // Use real dollar flow data for selected timeframe
+  const inflows = fundFlows.filter(f => f[field] > 0).sort((a, b) => b[field] - a[field]);
+  const outflows = fundFlows.filter(f => f[field] < 0).sort((a, b) => a[field] - b[field]);
+  const neutrals = fundFlows.filter(f => f[field] === 0);
+
+  if (outflows.length === 0 && inflows.length === 0) return '';
+
+  // Format dollar amounts
+  function fmtDollars(val) {
+    const abs = Math.abs(val);
+    if (abs >= 1e9) return `$${(abs / 1e9).toFixed(2)}B`;
+    if (abs >= 1e6) return `$${(abs / 1e6).toFixed(0)}M`;
+    if (abs >= 1e3) return `$${(abs / 1e3).toFixed(0)}K`;
+    return `$${abs.toFixed(0)}`;
+  }
+
+  // Dimensions
+  const W = 820, padTop = 30, padBot = 10, rowH = 42;
+  const leftCol = 0, midCol = 330, rightCol = 580;
+  const maxRows = Math.max(outflows.length, inflows.length, neutrals.length, 1);
+  const H = padTop + maxRows * rowH + padBot;
+
+  // Scale arrow thickness by dollar magnitude
+  const allAbs = fundFlows.map(f => Math.abs(f[field]));
+  const maxFlow = Math.max(...allAbs, 1);
+  const thick = (val) => Math.max(4, Math.min(28, (Math.abs(val) / maxFlow) * 28));
+
+  let svg = `<svg class="flow-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+
+  // Column headers
+  svg += `<text class="flow-col-label" x="${leftCol + 10}" y="16">Outflows (${tfLabel})</text>`;
+  svg += `<text class="flow-col-label" x="${midCol + 60}" y="16">Neutral</text>`;
+  svg += `<text class="flow-col-label" x="${rightCol + 20}" y="16">Inflows (${tfLabel})</text>`;
+
+  // Draw outflow sectors (left) with arrows pointing right toward center
+  outflows.forEach((f, i) => {
+    const y = padTop + i * rowH + rowH / 2;
+    const t = thick(f[field]);
+    svg += `<text class="flow-label" x="${leftCol + 10}" y="${y + 4}">${f.sector}</text>`;
+    svg += `<text class="flow-score" x="${leftCol + 10}" y="${y + 16}" style="fill:var(--red)">-${fmtDollars(f[field])}</text>`;
+    // Fat arrow from left to center pool
+    const ax1 = leftCol + 150, ax2 = midCol + 50;
+    const midY = padTop + (H - padTop - padBot) / 2;
+    svg += `<path class="flow-arrow-out" d="
+      M ${ax1} ${y - t/2}
+      C ${(ax1+ax2)/2} ${y - t/2}, ${(ax1+ax2)/2} ${midY - t/4}, ${ax2} ${midY - t/4}
+      L ${ax2} ${midY + t/4}
+      C ${(ax1+ax2)/2} ${midY + t/4}, ${(ax1+ax2)/2} ${y + t/2}, ${ax1} ${y + t/2}
+      Z">
+      <title>${f.ticker} (${f.sector}): -${fmtDollars(f[field])} outflow (${tfLabel})</title>
+    </path>`;
+  });
+
+  // Draw inflow sectors (right) with arrows from center
+  inflows.forEach((f, i) => {
+    const y = padTop + i * rowH + rowH / 2;
+    const t = thick(f[field]);
+    svg += `<text class="flow-label" x="${rightCol + 20}" y="${y + 4}">${f.sector}</text>`;
+    svg += `<text class="flow-score" x="${rightCol + 20}" y="${y + 16}" style="fill:var(--green)">+${fmtDollars(f[field])}</text>`;
+    // Fat arrow from center to right
+    const ax1 = midCol + 160, ax2 = rightCol + 10;
+    const midY = padTop + (H - padTop - padBot) / 2;
+    svg += `<path class="flow-arrow-in" d="
+      M ${ax1} ${midY - t/4}
+      C ${(ax1+ax2)/2} ${midY - t/4}, ${(ax1+ax2)/2} ${y - t/2}, ${ax2} ${y - t/2}
+      L ${ax2} ${y + t/2}
+      C ${(ax1+ax2)/2} ${y + t/2}, ${(ax1+ax2)/2} ${midY + t/4}, ${ax1} ${midY + t/4}
+      Z">
+      <title>${f.ticker} (${f.sector}): +${fmtDollars(f[field])} inflow (${tfLabel})</title>
+    </path>`;
+  });
+
+  // Draw neutral sectors (center)
+  neutrals.forEach((f, i) => {
+    const y = padTop + i * rowH + rowH / 2;
+    svg += `<rect class="flow-neutral-bar" x="${midCol + 50}" y="${y - 8}" width="110" height="16" rx="3"/>`;
+    svg += `<text class="flow-label" x="${midCol + 55}" y="${y + 4}" style="font-size:11px">${f.sector}</text>`;
+  });
+
+  // Center pool
+  const poolY = padTop + (H - padTop - padBot) / 2;
+  svg += `<ellipse cx="${midCol + 105}" cy="${poolY}" rx="35" ry="${Math.min(45, H/3)}" fill="var(--border)" opacity="0.3"/>`;
+  svg += `<text class="flow-col-label" x="${midCol + 82}" y="${poolY + 3}" style="font-size:9px;opacity:0.6">MARKET</text>`;
+
+  svg += '</svg>';
+
+  // Summary: total net flow
+  const totalNet = fundFlows.reduce((sum, f) => sum + f[field], 0);
+  const netLabel = totalNet >= 0
+    ? `<span class="pos">+${fmtDollars(totalNet)} net into sectors</span>`
+    : `<span class="neg">-${fmtDollars(totalNet)} net out of sectors</span>`;
+
+  return `<div class="flow-diagram">
+    <h2>💰 Real Fund Flows — ETF Creation/Redemption (${tfLabel})</h2>
+    <div style="margin-bottom:12px;font-size:0.85em;color:var(--dim)">Source: ETFdb (SEC filing data) &nbsp;|&nbsp; Net: ${netLabel}</div>
+    ${svg}
+  </div>`;
+}
+
+// Fallback if no fund flow data available (uses rotation score)
+function renderFlowDiagramFallback(signals) {
+  const outflows = signals.filter(s => s.signal === 'OUTFLOW').sort((a, b) => a.rotationScore - b.rotationScore);
+  const inflows = signals.filter(s => s.signal === 'INFLOW').sort((a, b) => b.rotationScore - a.rotationScore);
+  const neutrals = signals.filter(s => s.signal === 'NEUTRAL').sort((a, b) => b.rotationScore - a.rotationScore);
+
+  if (outflows.length === 0 && inflows.length === 0) return '';
+
+  // Dimensions
+  const W = 800, padTop = 30, padBot = 10, rowH = 38;
+  const leftCol = 0, midCol = 320, rightCol = 560;
+  const barW = 180, arrowStart = barW + 8, arrowEnd = midCol + 40;
+  const arrowStartR = rightCol - 8, arrowEndR = midCol + 200;
+  const maxRows = Math.max(outflows.length, inflows.length, neutrals.length, 1);
+  const H = padTop + maxRows * rowH + padBot;
+
+  // Scale arrow thickness: min 4px, max 24px
+  const allScores = signals.map(s => Math.abs(s.rotationScore));
+  const maxScore = Math.max(...allScores, 1);
+  const thick = (score) => Math.max(4, Math.min(24, (Math.abs(score) / maxScore) * 24));
+
+  let svg = `<svg class="flow-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+
+  // Column headers
+  svg += `<text class="flow-col-label" x="${leftCol + 10}" y="16">Outflows</text>`;
+  svg += `<text class="flow-col-label" x="${midCol + 80}" y="16">Neutral</text>`;
+  svg += `<text class="flow-col-label" x="${rightCol + 30}" y="16">Inflows</text>`;
+
+  // Draw outflow sectors (left) with arrows pointing right toward center
+  outflows.forEach((s, i) => {
+    const y = padTop + i * rowH + rowH / 2;
+    const t = thick(s.rotationScore);
+    // Sector label
+    svg += `<text class="flow-label" x="${leftCol + 10}" y="${y + 4}">${s.sector}</text>`;
+    svg += `<text class="flow-score" x="${leftCol + 10}" y="${y + 16}">${s.rotationScore.toFixed(1)}</text>`;
+    // Fat arrow: tapered path from left bar to center
+    const ax1 = leftCol + 140, ax2 = midCol + 50;
+    const midY = padTop + (H - padTop - padBot) / 2;
+    svg += `<path class="flow-arrow-out" d="
+      M ${ax1} ${y - t/2}
+      C ${(ax1+ax2)/2} ${y - t/2}, ${(ax1+ax2)/2} ${midY - t/4}, ${ax2} ${midY - t/4}
+      L ${ax2} ${midY + t/4}
+      C ${(ax1+ax2)/2} ${midY + t/4}, ${(ax1+ax2)/2} ${y + t/2}, ${ax1} ${y + t/2}
+      Z">
+      <title>${s.sector}: ${s.rotationScore.toFixed(1)} (OUTFLOW)</title>
+    </path>`;
+  });
+
+  // Draw inflow sectors (right) with arrows pointing left from center
+  inflows.forEach((s, i) => {
+    const y = padTop + i * rowH + rowH / 2;
+    const t = thick(s.rotationScore);
+    // Sector label
+    svg += `<text class="flow-label" x="${rightCol + 30}" y="${y + 4}">${s.sector}</text>`;
+    svg += `<text class="flow-score" x="${rightCol + 30}" y="${y + 16}">+${s.rotationScore.toFixed(1)}</text>`;
+    // Fat arrow: tapered path from center to right
+    const ax1 = midCol + 160, ax2 = rightCol + 20;
+    const midY = padTop + (H - padTop - padBot) / 2;
+    svg += `<path class="flow-arrow-in" d="
+      M ${ax1} ${midY - t/4}
+      C ${(ax1+ax2)/2} ${midY - t/4}, ${(ax1+ax2)/2} ${y - t/2}, ${ax2} ${y - t/2}
+      L ${ax2} ${y + t/2}
+      C ${(ax1+ax2)/2} ${y + t/2}, ${(ax1+ax2)/2} ${midY + t/4}, ${ax1} ${midY + t/4}
+      Z">
+      <title>${s.sector}: +${s.rotationScore.toFixed(1)} (INFLOW)</title>
+    </path>`;
+  });
+
+  // Draw neutral sectors (center column)
+  neutrals.forEach((s, i) => {
+    const y = padTop + i * rowH + rowH / 2;
+    svg += `<rect class="flow-neutral-bar" x="${midCol + 60}" y="${y - 8}" width="90" height="16" rx="3"/>`;
+    svg += `<text class="flow-label" x="${midCol + 65}" y="${y + 4}" style="font-size:11px">${s.sector}</text>`;
+  });
+
+  // Center funnel/pool indicator
+  const poolY = padTop + (H - padTop - padBot) / 2;
+  svg += `<ellipse cx="${midCol + 105}" cy="${poolY}" rx="30" ry="${Math.min(40, H/3)}" fill="var(--border)" opacity="0.3"/>`;
+  svg += `<text class="flow-col-label" x="${midCol + 85}" y="${poolY + 3}" style="font-size:9px;opacity:0.6">POOL</text>`;
+
+  svg += '</svg>';
+
+  return `<div class="flow-diagram"><h2>💰 Capital Flow — Sector Rotation</h2>${svg}</div>`;
+}
+
+function renderFundFlowsTable(fundFlows, timeframe) {
+  const field = getFlowField(timeframe);
+  function fmtFlow(val, isActive) {
+    const abs = Math.abs(val);
+    let str;
+    if (abs >= 1e9) str = `$${(abs / 1e9).toFixed(2)}B`;
+    else if (abs >= 1e6) str = `$${(abs / 1e6).toFixed(0)}M`;
+    else str = `$${(abs / 1e3).toFixed(0)}K`;
+    const sign = val >= 0 ? '+' : '-';
+    const cls = val > 0 ? 'pos' : val < 0 ? 'neg' : 'dim';
+    const bold = isActive ? 'font-weight:700;' : '';
+    return `<span class="${cls}" style="${bold}">${sign}${str}</span>`;
+  }
+
+  const sorted = [...fundFlows].sort((a, b) => b[field] - a[field]);
+  const rows = sorted.map(f => [
+    `<b>${f.ticker}</b>`,
+    f.sector,
+    fmtFlow(f.flow5Day, timeframe === '5d'),
+    fmtFlow(f.flow1Month, timeframe === '1m'),
+    fmtFlow(f.flow3Month, timeframe === '3m'),
+    fmtFlow(f.flow1Year, timeframe === '1y'),
+  ]);
+
+  return `<h2>💵 Sector ETF Fund Flows (Real Dollars)</h2>` +
+    table(['ETF', 'Sector', '5-Day', '1-Month', '3-Month', '1-Year'], rows);
+}
+
+function renderRRG(signals) {
+  if (!signals || signals.length === 0) return '';
+
+  // X axis = rotationScore (relative strength), Y axis = rankShift (momentum)
+  const W = 500, H = 500, pad = 50;
+  const innerW = W - 2 * pad, innerH = H - 2 * pad;
+
+  // Find data range for scaling
+  const scores = signals.map(s => s.rotationScore);
+  const shifts = signals.map(s => s.rankShift);
+  const maxAbsScore = Math.max(Math.abs(Math.min(...scores)), Math.abs(Math.max(...scores)), 10);
+  const maxAbsShift = Math.max(Math.abs(Math.min(...shifts)), Math.abs(Math.max(...shifts)), 3);
+
+  // Map to SVG coordinates (centered at midpoint)
+  const cx = pad + innerW / 2;
+  const cy = pad + innerH / 2;
+  const scaleX = (innerW / 2) / maxAbsScore;
+  const scaleY = (innerH / 2) / maxAbsShift;
+
+  function toX(score) { return cx + score * scaleX; }
+  function toY(shift) { return cy - shift * scaleY; } // invert Y: positive = up
+
+  // Quadrant colors (subtle backgrounds)
+  const quadrants = [
+    { x: cx, y: pad, w: innerW/2, h: innerH/2, fill: '#3fb95010', label: 'LEADING', lx: cx + innerW/4, ly: pad + 16 },
+    { x: pad, y: pad, w: innerW/2, h: innerH/2, fill: '#58a6ff10', label: 'IMPROVING', lx: pad + innerW/4, ly: pad + 16 },
+    { x: pad, y: cy, w: innerW/2, h: innerH/2, fill: '#f8514910', label: 'LAGGING', lx: pad + innerW/4, ly: cy + 16 },
+    { x: cx, y: cy, w: innerW/2, h: innerH/2, fill: '#d2992210', label: 'WEAKENING', lx: cx + innerW/4, ly: cy + 16 },
+  ];
+
+  let svg = `<svg class="rrg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+
+  // Quadrant backgrounds
+  for (const q of quadrants) {
+    svg += `<rect x="${q.x}" y="${q.y}" width="${q.w}" height="${q.h}" fill="${q.fill}"/>`;
+    svg += `<text class="rrg-quadrant-label" x="${q.lx}" y="${q.ly}" text-anchor="middle">${q.label}</text>`;
+  }
+
+  // Axes
+  svg += `<line class="rrg-axis" x1="${pad}" y1="${cy}" x2="${W - pad}" y2="${cy}"/>`;
+  svg += `<line class="rrg-axis" x1="${cx}" y1="${pad}" x2="${cx}" y2="${H - pad}"/>`;
+
+  // Axis labels
+  svg += `<text class="rrg-axis-label" x="${W - pad}" y="${cy - 6}" text-anchor="end">Strong →</text>`;
+  svg += `<text class="rrg-axis-label" x="${pad}" y="${cy - 6}">← Weak</text>`;
+  svg += `<text class="rrg-axis-label" x="${cx + 6}" y="${pad + 4}">↑ Gaining</text>`;
+  svg += `<text class="rrg-axis-label" x="${cx + 6}" y="${H - pad - 4}">↓ Losing</text>`;
+
+  // Plot each sector
+  for (const s of signals) {
+    const x = toX(s.rotationScore);
+    const y = toY(s.rankShift);
+
+    // Color by quadrant position
+    let color;
+    if (s.rotationScore > 0 && s.rankShift > 0) color = 'var(--green)';       // Leading
+    else if (s.rotationScore <= 0 && s.rankShift > 0) color = 'var(--blue)';   // Improving
+    else if (s.rotationScore <= 0 && s.rankShift <= 0) color = 'var(--red)';   // Lagging
+    else color = 'var(--yellow)';                                               // Weakening
+
+    svg += `<circle class="rrg-dot" cx="${x}" cy="${y}" r="5" fill="${color}">`;
+    svg += `<title>${s.sector}\nScore: ${s.rotationScore.toFixed(1)}\nRank Δ: ${s.rankShift > 0 ? '+' : ''}${s.rankShift}</title>`;
+    svg += `</circle>`;
+    svg += `<text class="rrg-dot-label" x="${x + 7}" y="${y + 3}">${s.sector.replace('Consumer ', 'Cons. ')}</text>`;
+  }
+
+  svg += '</svg>';
+
+  const legend = `<div class="rrg-legend">
+    <span><span class="rrg-legend-dot" style="background:var(--green)"></span> Leading</span>
+    <span><span class="rrg-legend-dot" style="background:var(--yellow)"></span> Weakening</span>
+    <span><span class="rrg-legend-dot" style="background:var(--red)"></span> Lagging</span>
+    <span><span class="rrg-legend-dot" style="background:var(--blue)"></span> Improving</span>
+  </div>`;
+
+  return `<div class="rrg-container">
+    <h2>🔄 Relative Rotation Graph</h2>
+    <div style="font-size:0.78em;color:var(--dim);margin-bottom:8px">X = Relative Strength (Score) &nbsp;|&nbsp; Y = Momentum (Rank Δ)</div>
+    ${svg}
+    ${legend}
+  </div>`;
+}
+
 let currentData = null;
 let currentCapital = 'deploy';
 let currentStrategy = 'momentum';
+let currentTimeframe = '5d';
+
+const TIMEFRAME_LABELS = { '5d': '5-Day', '1m': '1-Month', '3m': '3-Month', '1y': '1-Year' };
+
+function getFlowField(tf) {
+  const map = { '5d': 'flow5Day', '1m': 'flow1Month', '3m': 'flow3Month', '1y': 'flow1Year' };
+  return map[tf] || 'flow5Day';
+}
 
 function getModeKey() { return `${currentCapital}_${currentStrategy}`; }
 
@@ -216,6 +559,10 @@ function renderDashboard() {
   const allRecs = [...(signals.sector || []), ...(signals.assetClass || [])];
 
   let html = '';
+  html += renderFlowDiagram(data.rotationSignals, data.fundFlows, currentTimeframe);
+  if (data.fundFlows && data.fundFlows.length > 0) {
+    html += renderFundFlowsTable(data.fundFlows, currentTimeframe);
+  }
   html += renderHighConviction(allRecs);
   html += '<div class="grid-2">';
   html += '<div>' + renderActionSignals(signals.sector || [], '🎯 Sector Actions') + '</div>';
@@ -223,6 +570,7 @@ function renderDashboard() {
   html += '</div>';
   html += renderFlows(data.assetClassFlows);
   html += renderRotation(data.rotationSignals);
+  html += renderRRG(data.rotationSignals);
   html += '<div class="grid-2">';
   html += '<div>' + renderTrends(data.sectorTrends, '📈 Sector Trends') + '</div>';
   html += '<div>' + renderTrends(data.assetClassTrends, '📈 ETF Trends') + '</div>';
@@ -248,6 +596,7 @@ function setupModeBar() {
     btn.classList.add('active');
 
     if (mode === 'capital') currentCapital = value;
+    else if (mode === 'timeframe') currentTimeframe = value;
     else currentStrategy = value;
 
     renderDashboard();
@@ -256,17 +605,22 @@ function setupModeBar() {
 
 async function load() {
   try {
-    let res;
+    let data = null;
     try {
-      res = await fetch('/api/data');
-    } catch {
-      res = null;
+      const res = await fetch('/api/data');
+      if (res.ok) data = await res.json();
+    } catch {}
+    if (!data) {
+      try {
+        const res2 = await fetch('data.json');
+        if (res2.ok) data = await res2.json();
+      } catch {}
     }
-    if (!res || !res.ok) {
-      res = await fetch('data.json');
+    if (!data && window.__FINVIZ_DATA) {
+      data = window.__FINVIZ_DATA;
     }
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    currentData = await res.json();
+    if (!data) throw new Error('Could not load data (try running the server)');
+    currentData = data;
 
     $('#meta').innerHTML = `${currentData.stockCount} stocks analyzed &bull; ${currentData.timestamp} &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this &rarr;</a>`;
 

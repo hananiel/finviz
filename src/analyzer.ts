@@ -116,26 +116,40 @@ export function calculateRotationSignals(
     // Rank shift: positive = sector is improving in short term vs long term
     const rankShift = r3M - r1W;
 
-    // Momentum acceleration: compare weekly rate to monthly rate
-    // Old formula annualized (×52 and ×4) which amplified 1-day noise enormously.
-    // New: compare rates on same timescale (per-week basis)
-    const weeklyRate = sp.mcw1W;              // already % per week
-    const monthlyRate = sp.mcw1M / 4.33;     // normalize 1M to per-week
-    const momentumAccel = weeklyRate - monthlyRate;
+    // Momentum acceleration — SMOOTHED to prevent daily whipsaw.
+    // Problem: raw mcw1W is a rolling 5-day figure that shifts materially
+    // as one day drops off. Using it directly can flip signals on a single day.
+    //
+    // Fix: Blend short-term (1W) and medium-term (1M) into a smoothed rate,
+    // then compare against long-term (3M) rate. This requires 2+ timeframes
+    // to agree before momentum registers as accelerating.
+    const weeklyRate = sp.mcw1W;              // % per week (noisy)
+    const monthlyRate = sp.mcw1M / 4.33;     // 1M normalized to per-week
+    const quarterlyRate = sp.mcw3M / 13;     // 3M normalized to per-week
+
+    // Smoothed short-term: blend 1W (40%) with 1M-rate (60%) to dampen single-week noise
+    const smoothedShortRate = weeklyRate * 0.4 + monthlyRate * 0.6;
+    // Compare smoothed short vs long-term baseline
+    const momentumAccel = smoothedShortRate - quarterlyRate;
 
     // Institutional spread: MCW - EW for 1W
     // Positive = large-cap stocks outperforming (institutional buying)
-    const institutionalSpread = sp.mcw1W - sp.ew1W;
+    // Also smooth with 1M data to reduce daily noise
+    const instSpread1W = sp.mcw1W - sp.ew1W;
+    const instSpread1M = sp.mcw1M - sp.ew1M;
+    const institutionalSpread = instSpread1W * 0.4 + instSpread1M * 0.6;
 
     // Breadth divergence: short-term breadth vs long-term breadth
-    const breadthDivergence = sp.breadth1W - sp.breadth3M;
+    // Blend 1W and 1M breadth for smoother signal
+    const smoothedBreadthShort = sp.breadth1W * 0.4 + sp.breadth1M * 0.6;
+    const breadthDivergence = smoothedBreadthShort - sp.breadth3M;
 
     // Composite rotation score (weighted combination)
     // Weights: rank shift (35%), momentum accel (25%), institutional spread (20%), breadth (20%)
     // Normalize each component to roughly similar scales
     const normRankShift = rankShift / n; // range [-1, 1]
     const normMomentum = Math.tanh(momentumAccel / 2); // squash; scale is now per-week diffs (~±3)
-    const normInstitutional = Math.tanh(institutionalSpread / 5);
+    const normInstitutional = Math.tanh(institutionalSpread / 3);
     const normBreadth = breadthDivergence / 100; // already in pct
 
     const rotationScore =
@@ -144,10 +158,11 @@ export function calculateRotationSignals(
       normInstitutional * 20 +
       normBreadth * 20;
 
-    // Classify signal
+    // Classify signal — use hysteresis-aware thresholds.
+    // Wider band (±10) prevents rapid NEUTRAL→INFLOW→NEUTRAL oscillation.
     let signal: "INFLOW" | "OUTFLOW" | "NEUTRAL";
-    if (rotationScore > 8) signal = "INFLOW";
-    else if (rotationScore < -8) signal = "OUTFLOW";
+    if (rotationScore > 10) signal = "INFLOW";
+    else if (rotationScore < -10) signal = "OUTFLOW";
     else signal = "NEUTRAL";
 
     return {

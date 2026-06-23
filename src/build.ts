@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function build() {
   console.log("Building static data...");
 
-  const { stocks, etfs, assetClassETFs, technicals } = await fetchAllData();
+  const { stocks, etfs, assetClassETFs, technicals, fundFlows } = await fetchAllData();
 
   if (stocks.length === 0) {
     console.error("No stock data fetched.");
@@ -60,6 +60,7 @@ async function build() {
     rotationSignals: signals,
     etfValidation: etfValidations,
     assetClassFlows,
+    fundFlows,
     sectorTrends,
     assetClassTrends,
     actionSignals,
@@ -73,9 +74,14 @@ async function build() {
   const jsonDst = path.join(docsDir, "data.json");
   fs.writeFileSync(jsonDst, JSON.stringify(result, null, 2));
 
+  // Write data.js for file:// protocol support (no fetch needed)
+  const jsDst = path.join(docsDir, "data.js");
+  fs.writeFileSync(jsDst, `window.__FINVIZ_DATA = ${JSON.stringify(result)};`);
+
   console.log(`\nBuild complete:`);
   console.log(`  docs/index.html`);
   console.log(`  docs/data.json (${stocks.length} stocks, ${new Date().toISOString()})`);
+  console.log(`  docs/data.js (file:// fallback)`);
 }
 
 build().catch((err) => {
