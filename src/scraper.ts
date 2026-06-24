@@ -370,16 +370,29 @@ async function fetchETFFlowPage(ticker: string): Promise<Omit<ETFFundFlow, "sect
   try {
     const url = `${ETFDB_URL}/${ticker}/`;
 
-    // ETFdb has aggressive bot protection that blocks Node fetch even with browser headers.
-    // Use child_process curl which works reliably (proven via manual testing).
+    // ETFdb has aggressive bot protection. Use curl with full browser headers.
+    // Cloud IPs (GitHub Actions) may still be blocked — fallback is all-zero flows
+    // which the UI detects and falls back to score-based diagram.
     const { execSync } = await import("node:child_process");
     const html = execSync(
-      `curl -s "${url}" -H "User-Agent: ${USER_AGENT}" -H "Accept: text/html" --max-time 15`,
+      `curl -s -L "${url}" ` +
+      `-H "User-Agent: ${USER_AGENT}" ` +
+      `-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" ` +
+      `-H "Accept-Language: en-US,en;q=0.5" ` +
+      `-H "Sec-Fetch-Dest: document" ` +
+      `-H "Sec-Fetch-Mode: navigate" ` +
+      `-H "Sec-Fetch-Site: none" ` +
+      `--max-time 20`,
       { encoding: "utf-8", maxBuffer: 5 * 1024 * 1024 }
     );
 
     if (!html || html.length < 1000) {
-      throw new Error(`Empty or blocked response for ${ticker}`);
+      throw new Error(`Empty or blocked response for ${ticker} (${html?.length ?? 0} bytes)`);
+    }
+
+    // Detect Cloudflare/bot block pages
+    if (html.includes('cf-browser-verification') || html.includes('Just a moment')) {
+      throw new Error(`Cloudflare blocked for ${ticker} (${html.length} bytes)`);
     }
 
     // Parse net flow spans: <span class='net-fund-flow 5-day'>\n<b>label</b>\nvalue\n</span>
@@ -392,6 +405,16 @@ async function fetchETFFlowPage(ticker: string): Promise<Omit<ETFFundFlow, "sect
       const period = m[1].trim();  // "5-day", "1-month", "3-month", etc.
       const value = m[2].trim();
       flows[period] = parseFlowValue(value);
+    }
+
+    const matchCount = Object.keys(flows).length;
+    if (matchCount === 0) {
+      console.warn(`  ⚠ ${ticker}: got ${html.length} bytes but 0 flow matches (page structure may have changed)`);
+      // Log a snippet of the page to help debug
+      const snippet = html.substring(0, 500).replace(/\s+/g, ' ');
+      console.warn(`    First 500 chars: ${snippet}`);
+    } else {
+      console.log(`    ${ticker}: ${matchCount} flow periods parsed (${html.length} bytes)`);
     }
 
     return {
@@ -427,7 +450,11 @@ export async function fetchFundFlows(): Promise<ETFFundFlow[]> {
     }
   }
 
-  console.log(`  Fetched fund flows for ${flows.length}/${tickers.length} sector ETFs`);
+  const withData = flows.filter(f => f.flow5Day !== 0 || f.flow1Month !== 0 || f.flow3Month !== 0);
+  console.log(`  Fetched fund flows for ${flows.length}/${tickers.length} sector ETFs (${withData.length} have non-zero data)`);
+  if (withData.length === 0 && flows.length > 0) {
+    console.warn(`  ⚠ ALL fund flows are zero — ETFdb likely blocked this IP (CI/cloud runner)`);
+  }
   return flows;
 }
 

@@ -240,7 +240,10 @@ const modeDescriptions = {
 };
 
 function renderFlowDiagram(signals, fundFlows, timeframe) {
-  if (!fundFlows || fundFlows.length === 0) {
+  const field = getFlowField(timeframe);
+  // Check if fund flows have real data (all zeros = scrape failed on CI)
+  const hasRealFlows = fundFlows && fundFlows.length > 0 && fundFlows.some(f => f[field] !== 0);
+  if (!hasRealFlows) {
     return renderFlowDiagramFallback(signals);
   }
 
