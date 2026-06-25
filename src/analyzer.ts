@@ -14,6 +14,8 @@ import type {
   InvestingMode,
   CapitalMode,
   Strategy,
+  SectorDiagnostic,
+  ETFFundFlow,
 } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -892,4 +894,193 @@ function applyRotateModifier(
   }
 
   return { action, confidence, rationale, extraFactors };
+}
+
+// ---------------------------------------------------------------------------
+// Sector Diagnostics — transparent phase detection with evidence
+// ---------------------------------------------------------------------------
+
+const ETF_SECTOR_MAP_DIAG: Record<string, string> = {
+  XLK: "Technology",
+  XLF: "Financial",
+  XLE: "Energy",
+  XLV: "Healthcare",
+  XLY: "Consumer Cyclical",
+  XLP: "Consumer Defensive",
+  XLI: "Industrials",
+  XLB: "Basic Materials",
+  XLC: "Communication Services",
+  XLRE: "Real Estate",
+  XLU: "Utilities",
+};
+
+const SECTOR_TO_TICKER_DIAG: Record<string, string> = Object.fromEntries(
+  Object.entries(ETF_SECTOR_MAP_DIAG).map(([t, s]) => [s, t])
+);
+
+export function computeSectorDiagnostics(
+  sectorPerfs: SectorPerformance[],
+  signals: RotationSignal[],
+  fundFlows: ETFFundFlow[]
+): SectorDiagnostic[] {
+  const n = sectorPerfs.length;
+  const flowMap = new Map(fundFlows.map(f => [f.sector, f]));
+
+  return sectorPerfs.map(sp => {
+    const sig = signals.find(s => s.sector === sp.sector);
+    const flow = flowMap.get(sp.sector);
+    const ticker = SECTOR_TO_TICKER_DIAG[sp.sector] || '';
+
+    // --- Momentum regime ---
+    const perf1W = sp.mcw1W;
+    const perf1WAnnualized = perf1W * 52;
+    const perf3MAnnualized = sp.mcw3M * 4;
+    let momentumRegime: SectorDiagnostic["momentumRegime"];
+    const accelThreshold = 10; // annualized % diff to call it accelerating
+    if (perf1WAnnualized - perf3MAnnualized > accelThreshold) momentumRegime = "ACCELERATING";
+    else if (perf3MAnnualized - perf1WAnnualized > accelThreshold) momentumRegime = "DECELERATING";
+    else momentumRegime = "STEADY";
+
+    // --- Breadth direction ---
+    const breadth1W = sp.breadth1W;
+    const breadth3M = sp.breadth3M;
+    const breadthDiff = breadth1W - breadth3M;
+    let breadthDirection: SectorDiagnostic["breadthDirection"];
+    if (breadthDiff > 5) breadthDirection = "BROADENING";
+    else if (breadthDiff < -5) breadthDirection = "NARROWING";
+    else breadthDirection = "STABLE";
+
+    // --- Size leadership ---
+    const mcw1W = sp.mcw1W;
+    const ew1W = sp.ew1W;
+    const sizeSpread = mcw1W - ew1W;
+    let sizeLeadership: SectorDiagnostic["sizeLeadership"];
+    if (sizeSpread > 0.5) sizeLeadership = "LARGE_CAP_LED";
+    else if (sizeSpread < -0.5) sizeLeadership = "SMALL_CAP_LED";
+    else sizeLeadership = "BROAD_BASED";
+
+    // --- Flow-price alignment ---
+    const sharesPctChange = flow?.sharesPct5Day ?? 0;
+    const priceChange = perf1W;
+    let flowPriceSignal: SectorDiagnostic["flowPriceSignal"];
+    if (sharesPctChange > 0.1 && priceChange < -0.5) flowPriceSignal = "ACCUMULATION";
+    else if (sharesPctChange < -0.1 && priceChange > 0.5) flowPriceSignal = "DISTRIBUTION";
+    else if (sharesPctChange > 0.1 && priceChange > 0.5) flowPriceSignal = "CONFIRMED_BULL";
+    else if (sharesPctChange < -0.1 && priceChange < -0.5) flowPriceSignal = "CONFIRMED_BEAR";
+    else flowPriceSignal = "NEUTRAL";
+
+    // --- Rank velocity ---
+    const rank1W = sig?.rank1W ?? n;
+    const rank3M = sig?.rank3M ?? n;
+    const rankVelocity = rank3M - rank1W; // positive = improving
+    let rankSignal: SectorDiagnostic["rankSignal"];
+    if (rankVelocity >= 4) rankSignal = "RAPID_ASCENT";
+    else if (rankVelocity >= 2) rankSignal = "RISING";
+    else if (rankVelocity <= -4) rankSignal = "RAPID_DESCENT";
+    else if (rankVelocity <= -2) rankSignal = "FALLING";
+    else rankSignal = "STABLE";
+
+    // --- Build evidence strings with raw numbers ---
+    const evidence: string[] = [];
+
+    if (momentumRegime === "ACCELERATING") {
+      evidence.push(`Momentum accelerating: 1W ann. ${perf1WAnnualized > 0 ? '+' : ''}${perf1WAnnualized.toFixed(0)}% vs 3M ann. ${perf3MAnnualized > 0 ? '+' : ''}${perf3MAnnualized.toFixed(0)}%`);
+    } else if (momentumRegime === "DECELERATING") {
+      evidence.push(`Momentum decelerating: 1W ann. ${perf1WAnnualized > 0 ? '+' : ''}${perf1WAnnualized.toFixed(0)}% vs 3M ann. ${perf3MAnnualized > 0 ? '+' : ''}${perf3MAnnualized.toFixed(0)}%`);
+    }
+
+    if (breadthDirection === "BROADENING") {
+      evidence.push(`Breadth broadening: ${breadth1W.toFixed(0)}% positive this week vs ${breadth3M.toFixed(0)}% over 3M`);
+    } else if (breadthDirection === "NARROWING") {
+      evidence.push(`Breadth narrowing: ${breadth1W.toFixed(0)}% positive this week vs ${breadth3M.toFixed(0)}% over 3M`);
+    }
+
+    if (sizeLeadership === "LARGE_CAP_LED") {
+      evidence.push(`Large-cap led: MCW ${mcw1W > 0 ? '+' : ''}${mcw1W.toFixed(2)}% vs EW ${ew1W > 0 ? '+' : ''}${ew1W.toFixed(2)}%`);
+    } else if (sizeLeadership === "SMALL_CAP_LED") {
+      evidence.push(`Small-cap led: EW ${ew1W > 0 ? '+' : ''}${ew1W.toFixed(2)}% vs MCW ${mcw1W > 0 ? '+' : ''}${mcw1W.toFixed(2)}%`);
+    }
+
+    if (flowPriceSignal === "ACCUMULATION") {
+      evidence.push(`Accumulation: shares +${(sharesPctChange * 100).toFixed(2)}% but price ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%`);
+    } else if (flowPriceSignal === "DISTRIBUTION") {
+      evidence.push(`Distribution: shares ${(sharesPctChange * 100).toFixed(2)}% but price +${priceChange.toFixed(2)}%`);
+    } else if (flowPriceSignal === "CONFIRMED_BULL") {
+      evidence.push(`Confirmed bull: shares +${(sharesPctChange * 100).toFixed(2)}% and price +${priceChange.toFixed(2)}%`);
+    } else if (flowPriceSignal === "CONFIRMED_BEAR") {
+      evidence.push(`Confirmed bear: shares ${(sharesPctChange * 100).toFixed(2)}% and price ${priceChange.toFixed(2)}%`);
+    }
+
+    if (rankSignal === "RAPID_ASCENT") {
+      evidence.push(`Rapid ascent: ranked #${rank1W} now, was #${rank3M} over 3M`);
+    } else if (rankSignal === "RAPID_DESCENT") {
+      evidence.push(`Rapid descent: ranked #${rank1W} now, was #${rank3M} over 3M`);
+    } else if (rankSignal === "RISING") {
+      evidence.push(`Rising: ranked #${rank1W} now vs #${rank3M} over 3M`);
+    } else if (rankSignal === "FALLING") {
+      evidence.push(`Falling: ranked #${rank1W} now vs #${rank3M} over 3M`);
+    }
+
+    // --- Phase from evidence pattern ---
+    let phase: SectorDiagnostic["phase"] = "NEUTRAL";
+
+    if (breadthDirection === "BROADENING" && sharesPctChange > 0 && priceChange < 1) {
+      phase = "EARLY_ACCUMULATION";
+    } else if (momentumRegime === "ACCELERATING" && flowPriceSignal === "CONFIRMED_BULL") {
+      phase = "CONFIRMED_UPTREND";
+    } else if (momentumRegime === "ACCELERATING" && breadthDirection === "BROADENING") {
+      phase = "CONFIRMED_UPTREND";
+    } else if (perf1W > 0 && breadthDirection === "NARROWING" && sharesPctChange > 0) {
+      phase = "LATE_STAGE";
+    } else if (flowPriceSignal === "DISTRIBUTION") {
+      phase = "DISTRIBUTION";
+    } else if (momentumRegime === "DECELERATING" && breadthDirection === "NARROWING") {
+      phase = "EARLY_DECLINE";
+    } else if (momentumRegime === "DECELERATING" && flowPriceSignal === "CONFIRMED_BEAR") {
+      phase = "CONFIRMED_DOWNTREND";
+    } else if (momentumRegime === "DECELERATING" && sharesPctChange < -0.1) {
+      phase = "CONFIRMED_DOWNTREND";
+    }
+
+    if (phase === "NEUTRAL") {
+      if (momentumRegime === "ACCELERATING") phase = "CONFIRMED_UPTREND";
+      else if (momentumRegime === "DECELERATING") phase = "EARLY_DECLINE";
+    }
+
+    return {
+      sector: sp.sector,
+      ticker,
+      perf1W,
+      perf1WAnnualized,
+      perf3MAnnualized,
+      momentumRegime,
+      breadth1W,
+      breadth3M,
+      breadthDirection,
+      mcw1W,
+      ew1W,
+      sizeSpread,
+      sizeLeadership,
+      sharesPctChange,
+      priceChange,
+      flowPriceSignal,
+      rank1W,
+      rank3M,
+      rankVelocity,
+      rankSignal,
+      phase,
+      evidence,
+    };
+  }).sort((a, b) => {
+    const phaseOrder: Record<string, number> = {
+      EARLY_ACCUMULATION: 0,
+      CONFIRMED_UPTREND: 1,
+      LATE_STAGE: 2,
+      NEUTRAL: 3,
+      DISTRIBUTION: 4,
+      EARLY_DECLINE: 5,
+      CONFIRMED_DOWNTREND: 6,
+    };
+    return (phaseOrder[a.phase] ?? 3) - (phaseOrder[b.phase] ?? 3);
+  });
 }

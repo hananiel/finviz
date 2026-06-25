@@ -153,15 +153,40 @@ export interface ActionRecommendation {
 /** Timeframe identifiers for the map API */
 export type Timeframe = "w1" | "w4" | "w13";
 
-/** Real fund flow data from ETF creation/redemption (ETFdb) */
+/** Real fund flow data from ETF creation/redemption */
 export interface ETFFundFlow {
   ticker: string;
   sector: string;
-  flow5Day: number;     // net dollars in/out over 5 days
+  totalAssets: number;  // current AUM in dollars (for treemap sizing)
+  sharesOutstanding: number; // current shares (derived: totalAssets / price)
+  sharesPct5Day: number;    // % change in shares over 5 days
+  sharesPct1Month: number;  // % change in shares over 1 month
+  sharesPct3Month: number;  // % change in shares over 3 months
+  sharesPct1Year: number;   // % change in shares over 1 year
+  flow5Day: number;     // net dollars in/out over 5 days (from daily AUM snapshots)
   flow1Month: number;   // net dollars in/out over 1 month
-  flow3Month: number;   // net dollars in/out over 3 months
-  flow6Month: number;   // net dollars in/out over 6 months
-  flow1Year: number;    // net dollars in/out over 1 year
+  flow3Month: number;   // net dollars in/out over 3 months (from SEC N-PORT or snapshots)
+  flow6Month: number;   // net dollars in/out over 6 months (from SEC N-PORT)
+  flow1Year: number;    // net dollars in/out over 1 year (from SEC N-PORT)
+}
+
+/** Daily AUM snapshot for a sector ETF (stored in history for flow computation) */
+export interface ETFAUMSnapshot {
+  ticker: string;
+  sector: string;
+  totalAssets: number;  // from Yahoo Finance summaryDetail.totalAssets
+  price: number;        // closing price
+  date: string;         // ISO date YYYY-MM-DD
+}
+
+/** Quarterly N-PORT data from SEC EDGAR */
+export interface NPortQuarterlyData {
+  seriesId: string;
+  ticker: string;
+  sector: string;
+  netAssets: number;    // from <netAssets> in N-PORT XML
+  periodEnd: string;    // reporting period end date (YYYY-MM-DD)
+  filingDate: string;   // when filed with SEC
 }
 
 /** Screener stock row (sector mapping + market cap) */
@@ -171,4 +196,42 @@ export interface ScreenerStock {
   sector: string;
   industry: string;
   marketCap: number;
+}
+
+/** Sector rotation diagnostic — shows raw evidence for phase detection */
+export interface SectorDiagnostic {
+  sector: string;
+  ticker: string; // sector ETF ticker
+
+  // Momentum regime
+  perf1W: number;          // actual 1-week % return
+  perf1WAnnualized: number; // annualized (×52)
+  perf3MAnnualized: number; // annualized (×4)
+  momentumRegime: "ACCELERATING" | "DECELERATING" | "STEADY";
+
+  // Breadth health
+  breadth1W: number;       // % of stocks positive this week
+  breadth3M: number;       // % of stocks positive over 3 months
+  breadthDirection: "BROADENING" | "NARROWING" | "STABLE";
+
+  // Size leadership (institutional fingerprint)
+  mcw1W: number;           // market-cap-weighted 1W return
+  ew1W: number;            // equal-weight 1W return
+  sizeSpread: number;      // mcw - ew (positive = large-cap led)
+  sizeLeadership: "LARGE_CAP_LED" | "BROAD_BASED" | "SMALL_CAP_LED";
+
+  // Flow-price alignment
+  sharesPctChange: number; // shares outstanding % change (active timeframe)
+  priceChange: number;     // price change % (matching timeframe)
+  flowPriceSignal: "ACCUMULATION" | "DISTRIBUTION" | "CONFIRMED_BULL" | "CONFIRMED_BEAR" | "NEUTRAL";
+
+  // Rank velocity
+  rank1W: number;
+  rank3M: number;
+  rankVelocity: number;    // rank3M - rank1W (positive = rising)
+  rankSignal: "RAPID_ASCENT" | "RISING" | "STABLE" | "FALLING" | "RAPID_DESCENT";
+
+  // Synthesis (human-readable, not a black box)
+  phase: "EARLY_ACCUMULATION" | "CONFIRMED_UPTREND" | "LATE_STAGE" | "DISTRIBUTION" | "EARLY_DECLINE" | "CONFIRMED_DOWNTREND" | "NEUTRAL";
+  evidence: string[]; // list of plain-English reasons for the phase
 }

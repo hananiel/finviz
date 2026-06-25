@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  pages: read
 
 jobs:
   build:
@@ -25,6 +26,8 @@ jobs:
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
+      - run: npm run verify
+
       - name: Commit and push data
         run: |
           git config user.name "github-actions[bot]"
@@ -32,3 +35,80 @@ jobs:
           git add docs/
           git diff --staged --quiet || git commit -m "Update market data $(date -u +%Y-%m-%d)"
           git push
+
+      - name: Wait for GitHub Pages deployment
+        run: |
+          SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          echo "Waiting for Pages deployment at $SITE_URL"
+          # Wait up to 3 minutes for deployment to propagate
+          for i in $(seq 1 18); do
+            sleep 10
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL")
+            if [ "$STATUS" = "200" ]; then
+              echo "Site responding (attempt $i)"
+              break
+            fi
+            echo "Attempt $i: HTTP $STATUS, waiting..."
+          done
+
+      - name: Verify live site
+        run: |
+          SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          echo "Checking $SITE_URL"
+          
+          # Fetch the page
+          BODY=$(curl -sL --fail "$SITE_URL")
+          if [ $? -ne 0 ]; then
+            echo "❌ FAILED: Could not fetch site"
+            exit 1
+          fi
+          
+          # Check for critical markers
+          CHECKS_FAILED=0
+          
+          if echo "$BODY" | grep -q "renderDashboard"; then
+            echo "✓ renderDashboard function present"
+          else
+            echo "❌ renderDashboard function MISSING"
+            CHECKS_FAILED=1
+          fi
+          
+          if echo "$BODY" | grep -q "__FINVIZ_DATA"; then
+            echo "✓ __FINVIZ_DATA reference present"
+          else
+            echo "❌ __FINVIZ_DATA reference MISSING"
+            CHECKS_FAILED=1
+          fi
+          
+          if echo "$BODY" | grep -q "squarify"; then
+            echo "✓ squarify (treemap) function present"
+          else
+            echo "❌ squarify function MISSING"
+            CHECKS_FAILED=1
+          fi
+          
+          if echo "$BODY" | grep -q "flow-treemap"; then
+            echo "✓ flow-treemap CSS present"
+          else
+            echo "❌ flow-treemap CSS MISSING"
+            CHECKS_FAILED=1
+          fi
+          
+          # Check data.js is fetchable
+          DATA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${SITE_URL}data.js")
+          if [ "$DATA_STATUS" = "200" ]; then
+            echo "✓ data.js accessible (HTTP 200)"
+          else
+            echo "❌ data.js NOT accessible (HTTP $DATA_STATUS)"
+            CHECKS_FAILED=1
+          fi
+          
+          if [ $CHECKS_FAILED -ne 0 ]; then
+            echo ""
+            echo "❌ LIVE SITE VERIFICATION FAILED"
+            echo "The site was pushed but is broken. Check the deployment."
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅ Live site verified successfully"

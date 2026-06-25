@@ -1,10 +1,9 @@
 import * as cheerio from "cheerio";
-import type { Timeframe, ScreenerStock, StockData, SectorETF, AssetClassETF, TechnicalData, ETFFundFlow } from "./types.js";
+import type { Timeframe, ScreenerStock, StockData, SectorETF, AssetClassETF, TechnicalData, ETFFundFlow, ETFAUMSnapshot, NPortQuarterlyData } from "./types.js";
 
 const BASE_URL = "https://finviz.com";
 const MAP_API = `${BASE_URL}/api/map_perf.ashx`;
 const SCREENER_URL = `${BASE_URL}/screener.ashx`;
-const ETFDB_URL = "https://etfdb.com/etf";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
@@ -37,33 +36,6 @@ async function fetchWithRetry(url: string, retries = 2): Promise<Response> {
     if (res.ok) return res;
     if (res.status === 429 && i < retries) {
       await sleep(2000 * (i + 1));
-      continue;
-    }
-    throw new Error(`HTTP ${res.status} fetching ${url}`);
-  }
-  throw new Error(`Failed after ${retries} retries: ${url}`);
-}
-
-/** Fetch with full browser-like headers (needed for ETFdb anti-bot) */
-async function fetchBrowser(url: string, retries = 2): Promise<Response> {
-  for (let i = 0; i <= retries; i++) {
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent": USER_AGENT,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-      },
-    });
-    if (res.ok) return res;
-    if ((res.status === 429 || res.status === 403) && i < retries) {
-      await sleep(3000 * (i + 1));
       continue;
     }
     throw new Error(`HTTP ${res.status} fetching ${url}`);
@@ -351,115 +323,250 @@ export async function fetchTechnicalData(tickers: string[]): Promise<Map<string,
 }
 
 // ---------------------------------------------------------------------------
-// 5. ETFdb Fund Flows — real creation/redemption dollar flows
+// 5. Yahoo Finance — current AUM (totalAssets) for daily snapshots
 // ---------------------------------------------------------------------------
 
-/** Parse a fund flow value like "8.33 B", "-10.1 M", "317.86 M" → raw dollars */
-function parseFlowValue(raw: string): number {
-  const cleaned = raw.trim();
-  if (!cleaned) return 0;
-  const match = cleaned.match(/^(-?[\d.]+)\s*([BMK]?)$/i);
-  if (!match) return 0;
-  const num = parseFloat(match[1]);
-  const suffix = match[2].toUpperCase();
-  const multipliers: Record<string, number> = { B: 1e9, M: 1e6, K: 1e3, "": 1 };
-  return num * (multipliers[suffix] ?? 1);
-}
+/** Get a Yahoo Finance crumb + cookies for authenticated API access */
+async function getYahooCrumb(): Promise<{ crumb: string; cookie: string }> {
+  // Step 1: Hit fc.yahoo.com to get session cookies
+  const cookieRes = await fetch("https://fc.yahoo.com", {
+    headers: { "User-Agent": USER_AGENT },
+    redirect: "manual",
+  });
+  const setCookies = cookieRes.headers.getSetCookie?.() || [];
+  const cookie = setCookies.map(c => c.split(";")[0]).join("; ");
 
-async function fetchETFFlowPage(ticker: string): Promise<Omit<ETFFundFlow, "sector"> | null> {
-  try {
-    const url = `${ETFDB_URL}/${ticker}/`;
-
-    // ETFdb has aggressive bot protection. Use curl with full browser headers.
-    // Cloud IPs (GitHub Actions) may still be blocked — fallback is all-zero flows
-    // which the UI detects and falls back to score-based diagram.
-    const { execSync } = await import("node:child_process");
-    const html = execSync(
-      `curl -s -L "${url}" ` +
-      `-H "User-Agent: ${USER_AGENT}" ` +
-      `-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" ` +
-      `-H "Accept-Language: en-US,en;q=0.5" ` +
-      `-H "Sec-Fetch-Dest: document" ` +
-      `-H "Sec-Fetch-Mode: navigate" ` +
-      `-H "Sec-Fetch-Site: none" ` +
-      `--max-time 20`,
-      { encoding: "utf-8", maxBuffer: 5 * 1024 * 1024 }
-    );
-
-    if (!html || html.length < 1000) {
-      throw new Error(`Empty or blocked response for ${ticker} (${html?.length ?? 0} bytes)`);
-    }
-
-    // Detect Cloudflare/bot block pages
-    if (html.includes('cf-browser-verification') || html.includes('Just a moment')) {
-      throw new Error(`Cloudflare blocked for ${ticker} (${html.length} bytes)`);
-    }
-
-    // Parse net flow spans: <span class='net-fund-flow 5-day'>\n<b>label</b>\nvalue\n</span>
-    // Use [\s\S] for cross-platform newline handling (Windows \r\n vs Unix \n)
-    const flowRegex = /net-fund-flow\s+([\w-]+)'>\s*<b>[^<]*<\/b>\s*([-\d.]+\s*[BMTK]?)/gi;
-    const flows: Record<string, number> = {};
-
-    let m;
-    while ((m = flowRegex.exec(html)) !== null) {
-      const period = m[1].trim();  // "5-day", "1-month", "3-month", etc.
-      const value = m[2].trim();
-      flows[period] = parseFlowValue(value);
-    }
-
-    const matchCount = Object.keys(flows).length;
-    if (matchCount === 0) {
-      console.warn(`  ⚠ ${ticker}: got ${html.length} bytes but 0 flow matches (page structure may have changed)`);
-      // Log a snippet of the page to help debug
-      const snippet = html.substring(0, 500).replace(/\s+/g, ' ');
-      console.warn(`    First 500 chars: ${snippet}`);
-    } else {
-      console.log(`    ${ticker}: ${matchCount} flow periods parsed (${html.length} bytes)`);
-    }
-
-    return {
-      ticker,
-      flow5Day: flows["5-day"] ?? 0,
-      flow1Month: flows["1-month"] ?? 0,
-      flow3Month: flows["3-month"] ?? 0,
-      flow6Month: flows["6-month"] ?? 0,
-      flow1Year: flows["1-year"] ?? 0,
-    };
-  } catch (err) {
-    console.error(`  Warning: failed to fetch fund flow for ${ticker}: ${err}`);
-    return null;
+  // Step 2: Get crumb using cookies
+  const crumbRes = await fetch("https://query2.finance.yahoo.com/v1/test/getcrumb", {
+    headers: { "User-Agent": USER_AGENT, Cookie: cookie },
+  });
+  const crumb = await crumbRes.text();
+  if (!crumb || crumb.includes("Unauthorized")) {
+    throw new Error("Failed to get Yahoo crumb");
   }
+  return { crumb, cookie };
 }
 
-export async function fetchFundFlows(): Promise<ETFFundFlow[]> {
-  console.log("  Fetching real fund flows from ETFdb...");
+/** Fetch current totalAssets and price for sector ETFs from Yahoo Finance */
+export async function fetchYahooAUM(): Promise<ETFAUMSnapshot[]> {
+  console.log("  Fetching AUM from Yahoo Finance...");
   const tickers = Object.keys(ETF_SECTOR_MAP);
-  const flows: ETFFundFlow[] = [];
+  const snapshots: ETFAUMSnapshot[] = [];
+  const today = new Date().toISOString().slice(0, 10);
 
-  // Fetch in batches of 2 with delays to avoid rate limiting
-  for (let i = 0; i < tickers.length; i += 2) {
-    const batch = tickers.slice(i, i + 2);
-    const results = await Promise.all(batch.map(fetchETFFlowPage));
-    for (const result of results) {
-      if (result) {
-        flows.push({ ...result, sector: ETF_SECTOR_MAP[result.ticker] });
+  try {
+    const { crumb, cookie } = await getYahooCrumb();
+
+    for (const ticker of tickers) {
+      try {
+        const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=summaryDetail,price&crumb=${encodeURIComponent(crumb)}`;
+        const res = await fetch(url, {
+          headers: { "User-Agent": USER_AGENT, Cookie: cookie },
+        });
+        const json = await res.json() as any;
+        const detail = json?.quoteSummary?.result?.[0]?.summaryDetail;
+        const priceData = json?.quoteSummary?.result?.[0]?.price;
+        const totalAssets = detail?.totalAssets?.raw ?? 0;
+        const price = priceData?.regularMarketPrice?.raw ?? detail?.regularMarketPreviousClose?.raw ?? 0;
+
+        if (totalAssets > 0) {
+          snapshots.push({
+            ticker,
+            sector: ETF_SECTOR_MAP[ticker],
+            totalAssets,
+            price,
+            date: today,
+          });
+          console.log(`    ${ticker}: $${(totalAssets / 1e9).toFixed(2)}B AUM @ $${price.toFixed(2)}`);
+        } else {
+          console.warn(`    ⚠ ${ticker}: no totalAssets in Yahoo response`);
+        }
+        await sleep(200); // rate limit
+      } catch (err) {
+        console.warn(`    ⚠ ${ticker}: Yahoo fetch failed: ${err}`);
       }
     }
-    if (i + 2 < tickers.length) {
-      await sleep(1000);
-    }
+  } catch (err) {
+    console.warn(`  ⚠ Yahoo crumb auth failed: ${err}`);
   }
 
-  const withData = flows.filter(f => f.flow5Day !== 0 || f.flow1Month !== 0 || f.flow3Month !== 0);
-  console.log(`  Fetched fund flows for ${flows.length}/${tickers.length} sector ETFs (${withData.length} have non-zero data)`);
-  if (withData.length === 0 && flows.length > 0) {
-    console.warn(`  ⚠ ALL fund flows are zero — ETFdb likely blocked this IP (CI/cloud runner)`);
+  console.log(`  Fetched AUM for ${snapshots.length}/${tickers.length} sector ETFs`);
+  return snapshots;
+}
+
+/** Historical daily close prices for sector ETFs (past ~35 trading days) */
+export interface ChartPriceHistory {
+  ticker: string;
+  /** date → close price map (ISO date strings) */
+  prices: Map<string, number>;
+}
+
+/** Fetch ~35 days of daily closing prices from Yahoo Finance chart API */
+export async function fetchYahooChart(): Promise<ChartPriceHistory[]> {
+  console.log("  Fetching historical prices from Yahoo Finance...");
+  const tickers = Object.keys(ETF_SECTOR_MAP);
+  const results: ChartPriceHistory[] = [];
+
+  try {
+    const { crumb, cookie } = await getYahooCrumb();
+
+    for (const ticker of tickers) {
+      try {
+        const url = `https://query2.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d&crumb=${encodeURIComponent(crumb)}`;
+        const res = await fetch(url, {
+          headers: { "User-Agent": USER_AGENT, Cookie: cookie },
+        });
+        const json = await res.json() as any;
+        const result = json?.chart?.result?.[0];
+        const timestamps: number[] = result?.timestamp || [];
+        const closes: number[] = result?.indicators?.quote?.[0]?.close || [];
+
+        const prices = new Map<string, number>();
+        for (let i = 0; i < timestamps.length; i++) {
+          if (closes[i] != null) {
+            const date = new Date(timestamps[i] * 1000).toISOString().slice(0, 10);
+            prices.set(date, closes[i]);
+          }
+        }
+
+        if (prices.size > 0) {
+          results.push({ ticker, prices });
+          console.log(`    ${ticker}: ${prices.size} daily prices`);
+        }
+        await sleep(200);
+      } catch (err) {
+        console.warn(`    ⚠ ${ticker}: chart fetch failed: ${err}`);
+      }
+    }
+  } catch (err) {
+    console.warn(`  ⚠ Yahoo chart crumb auth failed: ${err}`);
   }
-  return flows;
+
+  console.log(`  Fetched chart history for ${results.length}/${tickers.length} ETFs`);
+  return results;
 }
 
 // ---------------------------------------------------------------------------
-// 6. Orchestrator — join all data
+// 6. SEC EDGAR N-PORT — quarterly net assets for long-term flow computation
+// ---------------------------------------------------------------------------
+
+const SEC_USER_AGENT = "finviz-scanner hsarella@tql.com";
+const SPDR_CIK = "0001064641"; // SELECT SECTOR SPDR TRUST
+
+// seriesId → ticker mapping (from SEC EDGAR filings)
+const SERIES_TO_TICKER: Record<string, string> = {
+  S000006415: "XLK",  // Technology
+  S000006411: "XLF",  // Financial
+  S000006410: "XLE",  // Energy
+  S000006412: "XLV",  // Health Care
+  S000006408: "XLY",  // Consumer Discretionary
+  S000006409: "XLP",  // Consumer Staples
+  S000006413: "XLI",  // Industrial
+  S000006414: "XLB",  // Materials
+  S000062095: "XLC",  // Communication Services
+  S000051152: "XLRE", // Real Estate
+  S000006416: "XLU",  // Utilities
+};
+
+// Sector name mapping for SEC names → our names
+const SEC_SECTOR_MAP: Record<string, string> = {
+  XLK: "Technology", XLF: "Financial", XLE: "Energy",
+  XLV: "Healthcare", XLY: "Consumer Cyclical", XLP: "Consumer Defensive",
+  XLI: "Industrials", XLB: "Basic Materials", XLC: "Communication Services",
+  XLRE: "Real Estate", XLU: "Utilities",
+};
+
+/** Fetch quarterly N-PORT data from SEC EDGAR for all sector ETFs */
+export async function fetchNPortData(): Promise<NPortQuarterlyData[]> {
+  console.log("  Fetching quarterly data from SEC EDGAR...");
+  const results: NPortQuarterlyData[] = [];
+
+  try {
+    // Get filing list for Select Sector SPDR Trust
+    const subRes = await fetch(`https://data.sec.gov/submissions/CIK${SPDR_CIK}.json`, {
+      headers: { "User-Agent": SEC_USER_AGENT },
+    });
+    const subData = await subRes.json() as any;
+    const recent = subData.filings.recent;
+
+    // Find the last 4 NPORT-P filing dates (quarterly)
+    const nportDates = [...new Set(
+      recent.form
+        .map((form: string, i: number) => ({ form, date: recent.filingDate[i], accession: recent.accessionNumber[i] }))
+        .filter((x: any) => x.form === "NPORT-P")
+        .map((x: any) => x.date)
+    )].slice(0, 4) as string[];
+
+    console.log(`    Filing dates: ${nportDates.join(", ")}`);
+
+    // For each filing date, get all accessions
+    const allNports = recent.form
+      .map((form: string, i: number) => ({
+        form,
+        date: recent.filingDate[i],
+        accession: recent.accessionNumber[i],
+      }))
+      .filter((x: any) => x.form === "NPORT-P" && nportDates.includes(x.date));
+
+    // Fetch each filing XML to get seriesId + netAssets
+    for (const filing of allNports) {
+      try {
+        const accPath = filing.accession.replace(/-/g, "");
+        const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${parseInt(SPDR_CIK)}/` +
+          `${accPath}/primary_doc.xml`;
+        const xmlRes = await fetch(xmlUrl, {
+          headers: { "User-Agent": SEC_USER_AGENT },
+        });
+        const xml = await xmlRes.text();
+
+        // Extract seriesId
+        const sidMatch = xml.match(/<seriesId>([^<]+)/);
+        const seriesId = sidMatch?.[1] ?? "";
+        const ticker = SERIES_TO_TICKER[seriesId];
+        if (!ticker) continue; // Skip "Premium Income" variants etc.
+
+        // Extract netAssets and period
+        const naMatch = xml.match(/<netAssets>([^<]+)/);
+        const pdMatch = xml.match(/<repPdDate>([^<]+)/);
+        const netAssets = parseFloat(naMatch?.[1] ?? "0");
+        const periodEnd = pdMatch?.[1] ?? "";
+
+        if (netAssets > 0) {
+          results.push({
+            seriesId,
+            ticker,
+            sector: SEC_SECTOR_MAP[ticker] ?? ticker,
+            netAssets,
+            periodEnd,
+            filingDate: filing.date,
+          });
+        }
+
+        await sleep(150); // SEC rate limit: 10 req/sec
+      } catch (err) {
+        // Skip individual filing errors
+      }
+    }
+  } catch (err) {
+    console.warn(`  ⚠ SEC EDGAR fetch failed: ${err}`);
+  }
+
+  // Deduplicate: keep one entry per ticker per periodEnd
+  const seen = new Set<string>();
+  const deduped = results.filter(r => {
+    const key = `${r.ticker}-${r.periodEnd}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  const uniquePeriods = [...new Set(deduped.map(r => r.periodEnd))];
+  console.log(`  Fetched ${deduped.length} N-PORT records across ${uniquePeriods.length} quarters`);
+  return deduped;
+}
+
+// ---------------------------------------------------------------------------
+// 7. Orchestrator — join all data
 // ---------------------------------------------------------------------------
 
 export async function fetchAllData(): Promise<{
@@ -467,7 +574,9 @@ export async function fetchAllData(): Promise<{
   etfs: SectorETF[];
   assetClassETFs: AssetClassETF[];
   technicals: Map<string, TechnicalData>;
-  fundFlows: ETFFundFlow[];
+  aumSnapshots: ETFAUMSnapshot[];
+  nportData: NPortQuarterlyData[];
+  chartHistory: ChartPriceHistory[];
 }> {
   console.log("Fetching data from finviz...");
 
@@ -519,8 +628,12 @@ export async function fetchAllData(): Promise<{
 
   console.log(`  Joined ${stocks.length} stocks with performance data`);
 
-  // Fetch real fund flows from ETFdb (separate from finviz)
-  const fundFlows = await fetchFundFlows();
+  // Fetch AUM snapshots from Yahoo Finance + quarterly data from SEC EDGAR + chart history
+  const [aumSnapshots, nportData, chartHistory] = await Promise.all([
+    fetchYahooAUM(),
+    fetchNPortData(),
+    fetchYahooChart(),
+  ]);
 
-  return { stocks, etfs, assetClassETFs, technicals, fundFlows };
+  return { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory };
 }

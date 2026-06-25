@@ -7,7 +7,9 @@
     "start": "tsx src/index.ts",
     "start:json": "tsx src/index.ts --json",
     "web": "tsx src/server.ts",
-    "build": "tsx src/build.ts"
+    "build": "tsx src/build.ts",
+    "verify": "tsx src/verify.ts",
+    "build:check": "tsx src/build.ts && tsx src/verify.ts"
   },
   "dependencies": {
     "chalk": "^5.3.0",

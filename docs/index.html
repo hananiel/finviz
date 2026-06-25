@@ -45,14 +45,37 @@
   /* Flow diagram */
   .flow-diagram { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
   .flow-diagram h2 { margin-top: 0; }
-  .flow-svg { width: 100%; overflow: visible; }
-  .flow-label { font-size: 12px; fill: var(--text); font-family: inherit; }
-  .flow-score { font-size: 10px; fill: var(--dim); font-family: inherit; }
-  .flow-arrow-in { fill: var(--green); opacity: 0.7; }
-  .flow-arrow-out { fill: var(--red); opacity: 0.7; }
-  .flow-arrow-in:hover, .flow-arrow-out:hover { opacity: 1; }
-  .flow-neutral-bar { fill: var(--border); opacity: 0.5; }
-  .flow-col-label { font-size: 11px; fill: var(--dim); text-transform: uppercase; letter-spacing: 1px; font-family: inherit; }
+  .flow-treemap { display: flex; flex-wrap: wrap; gap: 2px; width: 100%; min-height: 260px; }
+  .flow-treemap-cell { position: relative; border-radius: 4px; padding: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: default; transition: opacity 0.15s; min-width: 60px; overflow: hidden; }
+  .flow-treemap-cell:hover { opacity: 0.85; outline: 2px solid var(--accent, #58a6ff); outline-offset: -2px; }
+  .flow-treemap-cell .tm-ticker { font-weight: 700; font-size: 15px; line-height: 1.2; }
+  .flow-treemap-cell .tm-sector { font-size: 10px; opacity: 0.8; line-height: 1.2; margin-top: 2px; }
+  .flow-treemap-cell .tm-flow { font-size: 13px; font-weight: 600; margin-top: 4px; }
+  .flow-treemap-cell .tm-aum { font-size: 10px; opacity: 0.6; margin-top: 2px; }
+  .flow-treemap-legend { display: flex; gap: 16px; align-items: center; margin-top: 10px; font-size: 11px; color: var(--dim); }
+  .flow-treemap-legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .flow-treemap-legend .swatch { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
+  /* Sector Diagnostics */
+  .diag-panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .diag-panel h2 { margin-top: 0; }
+  .diag-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+  .diag-card { border: 1px solid var(--border); border-radius: 6px; padding: 12px; position: relative; }
+  .diag-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .diag-card-header h3 { margin: 0; font-size: 14px; }
+  .diag-phase { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .diag-phase.early-acc { background: rgba(63,185,80,0.15); color: #3fb950; }
+  .diag-phase.confirmed-up { background: rgba(63,185,80,0.3); color: #3fb950; }
+  .diag-phase.late-stage { background: rgba(210,153,34,0.2); color: #d29922; }
+  .diag-phase.neutral { background: rgba(139,148,158,0.15); color: var(--dim); }
+  .diag-phase.distribution { background: rgba(248,81,73,0.15); color: #f85149; }
+  .diag-phase.early-decline { background: rgba(248,81,73,0.2); color: #f85149; }
+  .diag-phase.confirmed-down { background: rgba(248,81,73,0.3); color: #f85149; }
+  .diag-evidence { list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 1.6; }
+  .diag-evidence li { padding: 2px 0; color: var(--text); }
+  .diag-evidence li::before { content: "• "; color: var(--dim); }
+  .diag-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 11px; }
+  .diag-metrics .metric-label { color: var(--dim); }
+  .diag-metrics .metric-val { font-weight: 600; }
   /* RRG Quadrant Chart */
   .rrg-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
   .rrg-container h2 { margin-top: 0; }
@@ -240,226 +263,315 @@ const modeDescriptions = {
 };
 
 function renderFlowDiagram(signals, fundFlows, timeframe) {
-  const field = getFlowField(timeframe);
-  // Check if fund flows have real data (all zeros = scrape failed on CI)
-  const hasRealFlows = fundFlows && fundFlows.length > 0 && fundFlows.some(f => f[field] !== 0);
+  const hasRealFlows = fundFlows && fundFlows.length > 0 &&
+    fundFlows.some(f => f.flow5Day !== 0 || f.flow1Month !== 0 || f.flow3Month !== 0 || f.flow1Year !== 0);
+
   if (!hasRealFlows) {
-    return renderFlowDiagramFallback(signals);
+    return renderRotationHeatmap(signals, timeframe);
   }
 
+  return renderFlowTreemap(fundFlows, timeframe);
+}
+
+/**
+ * Squarified treemap layout (Bruls, Huizing, van Wijk algorithm).
+ * Takes items with .value (area), returns items with x, y, w, h in [0, totalW] × [0, totalH].
+ */
+function squarify(items, totalW, totalH) {
+  const totalVal = items.reduce((s, d) => s + d.value, 0);
+  if (totalVal === 0 || items.length === 0) return [];
+
+  // Normalize values to area pixels
+  const area = totalW * totalH;
+  const scaled = items.map(d => ({ ...d, area: (d.value / totalVal) * area }));
+  // Sort descending for better aspect ratios
+  scaled.sort((a, b) => b.area - a.area);
+
+  const laid = [];
+  let x = 0, y = 0, w = totalW, h = totalH;
+
+  function worst(row, side) {
+    const rowArea = row.reduce((s, r) => s + r.area, 0);
+    const s2 = side * side;
+    let mx = 0;
+    for (const r of row) {
+      const ratio = (s2 * r.area) / (rowArea * rowArea);
+      const inv = (rowArea * rowArea) / (s2 * r.area);
+      mx = Math.max(mx, ratio, inv);
+    }
+    return mx;
+  }
+
+  let i = 0;
+  while (i < scaled.length) {
+    const vertical = w >= h; // lay along shorter side
+    const side = vertical ? h : w;
+    const row = [scaled[i]];
+    let bestWorst = worst(row, side);
+    i++;
+
+    while (i < scaled.length) {
+      const candidate = [...row, scaled[i]];
+      const cw = worst(candidate, side);
+      if (cw <= bestWorst) {
+        row.push(scaled[i]);
+        bestWorst = cw;
+        i++;
+      } else break;
+    }
+
+    // Lay out row
+    const rowArea = row.reduce((s, r) => s + r.area, 0);
+    const thickness = side > 0 ? rowArea / side : 0;
+
+    let offset = 0;
+    for (const r of row) {
+      const len = r.area / (thickness || 1);
+      if (vertical) {
+        laid.push({ ...r, x: x, y: y + offset, w: thickness, h: len });
+      } else {
+        laid.push({ ...r, x: x + offset, y: y, w: len, h: thickness });
+      }
+      offset += len;
+    }
+
+    if (vertical) { x += thickness; w -= thickness; }
+    else { y += thickness; h -= thickness; }
+  }
+
+  return laid;
+}
+
+function renderFlowTreemap(fundFlows, timeframe) {
   const field = getFlowField(timeframe);
+  const sharesField = { '5d': 'sharesPct5Day', '1m': 'sharesPct1Month', '3m': 'sharesPct3Month', '1y': 'sharesPct1Year' }[timeframe] || 'sharesPct5Day';
   const tfLabel = TIMEFRAME_LABELS[timeframe] || '5-Day';
-
-  // Use real dollar flow data for selected timeframe
-  const inflows = fundFlows.filter(f => f[field] > 0).sort((a, b) => b[field] - a[field]);
-  const outflows = fundFlows.filter(f => f[field] < 0).sort((a, b) => a[field] - b[field]);
-  const neutrals = fundFlows.filter(f => f[field] === 0);
-
-  if (outflows.length === 0 && inflows.length === 0) return '';
 
   // Format dollar amounts
   function fmtDollars(val) {
+    if (val === 0) return '—';
     const abs = Math.abs(val);
-    if (abs >= 1e9) return `$${(abs / 1e9).toFixed(2)}B`;
-    if (abs >= 1e6) return `$${(abs / 1e6).toFixed(0)}M`;
-    if (abs >= 1e3) return `$${(abs / 1e3).toFixed(0)}K`;
-    return `$${abs.toFixed(0)}`;
+    const sign = val > 0 ? '+' : '-';
+    if (abs >= 1e9) return `${sign}$${(abs / 1e9).toFixed(1)}B`;
+    if (abs >= 1e6) return `${sign}$${(abs / 1e6).toFixed(0)}M`;
+    if (abs >= 1e3) return `${sign}$${(abs / 1e3).toFixed(0)}K`;
+    return `${sign}$${abs.toFixed(0)}`;
   }
 
-  // Dimensions
-  const W = 820, padTop = 30, padBot = 10, rowH = 42;
-  const leftCol = 0, midCol = 330, rightCol = 580;
-  const maxRows = Math.max(outflows.length, inflows.length, neutrals.length, 1);
-  const H = padTop + maxRows * rowH + padBot;
+  function fmtAUM(val) {
+    if (val >= 1e9) return `$${(val / 1e9).toFixed(1)}B`;
+    if (val >= 1e6) return `$${(val / 1e6).toFixed(0)}M`;
+    return `$${(val / 1e3).toFixed(0)}K`;
+  }
 
-  // Scale arrow thickness by dollar magnitude
-  const allAbs = fundFlows.map(f => Math.abs(f[field]));
-  const maxFlow = Math.max(...allAbs, 1);
-  const thick = (val) => Math.max(4, Math.min(28, (Math.abs(val) / maxFlow) * 28));
+  function fmtShares(val) {
+    if (val >= 1e9) return `${(val / 1e9).toFixed(2)}B`;
+    if (val >= 1e6) return `${(val / 1e6).toFixed(0)}M`;
+    return `${(val / 1e3).toFixed(0)}K`;
+  }
 
-  let svg = `<svg class="flow-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  function fmtPct(val) {
+    if (val === 0) return '—';
+    const sign = val > 0 ? '+' : '';
+    return `${sign}${(val * 100).toFixed(2)}%`;
+  }
 
-  // Column headers
-  svg += `<text class="flow-col-label" x="${leftCol + 10}" y="16">Outflows (${tfLabel})</text>`;
-  svg += `<text class="flow-col-label" x="${midCol + 60}" y="16">Neutral</text>`;
-  svg += `<text class="flow-col-label" x="${rightCol + 20}" y="16">Inflows (${tfLabel})</text>`;
+  // Color: green for inflow, red for outflow, intensity by magnitude relative to AUM
+  const flowVals = fundFlows.map(f => Math.abs(f[field]));
+  const maxFlow = Math.max(...flowVals, 1);
 
-  // Draw outflow sectors (left) with arrows pointing right toward center
-  outflows.forEach((f, i) => {
-    const y = padTop + i * rowH + rowH / 2;
-    const t = thick(f[field]);
-    svg += `<text class="flow-label" x="${leftCol + 10}" y="${y + 4}">${f.sector}</text>`;
-    svg += `<text class="flow-score" x="${leftCol + 10}" y="${y + 16}" style="fill:var(--red)">-${fmtDollars(f[field])}</text>`;
-    // Fat arrow from left to center pool
-    const ax1 = leftCol + 150, ax2 = midCol + 50;
-    const midY = padTop + (H - padTop - padBot) / 2;
-    svg += `<path class="flow-arrow-out" d="
-      M ${ax1} ${y - t/2}
-      C ${(ax1+ax2)/2} ${y - t/2}, ${(ax1+ax2)/2} ${midY - t/4}, ${ax2} ${midY - t/4}
-      L ${ax2} ${midY + t/4}
-      C ${(ax1+ax2)/2} ${midY + t/4}, ${(ax1+ax2)/2} ${y + t/2}, ${ax1} ${y + t/2}
-      Z">
-      <title>${f.ticker} (${f.sector}): -${fmtDollars(f[field])} outflow (${tfLabel})</title>
-    </path>`;
-  });
+  function flowColor(val) {
+    if (val === 0) return 'var(--border)';
+    const intensity = Math.min(Math.abs(val) / maxFlow, 1);
+    const alpha = 0.2 + intensity * 0.6;
+    if (val > 0) return `rgba(63, 185, 80, ${alpha.toFixed(2)})`;
+    return `rgba(248, 81, 73, ${alpha.toFixed(2)})`;
+  }
 
-  // Draw inflow sectors (right) with arrows from center
-  inflows.forEach((f, i) => {
-    const y = padTop + i * rowH + rowH / 2;
-    const t = thick(f[field]);
-    svg += `<text class="flow-label" x="${rightCol + 20}" y="${y + 4}">${f.sector}</text>`;
-    svg += `<text class="flow-score" x="${rightCol + 20}" y="${y + 16}" style="fill:var(--green)">+${fmtDollars(f[field])}</text>`;
-    // Fat arrow from center to right
-    const ax1 = midCol + 160, ax2 = rightCol + 10;
-    const midY = padTop + (H - padTop - padBot) / 2;
-    svg += `<path class="flow-arrow-in" d="
-      M ${ax1} ${midY - t/4}
-      C ${(ax1+ax2)/2} ${midY - t/4}, ${(ax1+ax2)/2} ${y - t/2}, ${ax2} ${y - t/2}
-      L ${ax2} ${y + t/2}
-      C ${(ax1+ax2)/2} ${y + t/2}, ${(ax1+ax2)/2} ${midY + t/4}, ${ax1} ${midY + t/4}
-      Z">
-      <title>${f.ticker} (${f.sector}): +${fmtDollars(f[field])} inflow (${tfLabel})</title>
-    </path>`;
-  });
+  function textColor(val) {
+    if (val === 0) return 'var(--dim)';
+    return val > 0 ? '#3fb950' : '#f85149';
+  }
 
-  // Draw neutral sectors (center)
-  neutrals.forEach((f, i) => {
-    const y = padTop + i * rowH + rowH / 2;
-    svg += `<rect class="flow-neutral-bar" x="${midCol + 50}" y="${y - 8}" width="110" height="16" rx="3"/>`;
-    svg += `<text class="flow-label" x="${midCol + 55}" y="${y + 4}" style="font-size:11px">${f.sector}</text>`;
-  });
+  // Build treemap items sized by AUM
+  const items = fundFlows
+    .filter(f => f.totalAssets > 0)
+    .map(f => ({ ...f, value: f.totalAssets }));
 
-  // Center pool
-  const poolY = padTop + (H - padTop - padBot) / 2;
-  svg += `<ellipse cx="${midCol + 105}" cy="${poolY}" rx="35" ry="${Math.min(45, H/3)}" fill="var(--border)" opacity="0.3"/>`;
-  svg += `<text class="flow-col-label" x="${midCol + 82}" y="${poolY + 3}" style="font-size:9px;opacity:0.6">MARKET</text>`;
+  if (items.length === 0) return '';
 
-  svg += '</svg>';
+  // Layout
+  const TW = 900, TH = 340;
+  const cells = squarify(items, TW, TH);
 
-  // Summary: total net flow
+  // Build HTML using absolute-positioned divs inside a relative container
+  let html = `<div class="flow-treemap" style="position:relative;width:100%;max-width:${TW}px;height:${TH}px;gap:0">`;
+  for (const c of cells) {
+    const flowVal = c[field];
+    const bg = flowColor(flowVal);
+    const tc = textColor(flowVal);
+    const pctX = (c.x / TW * 100).toFixed(3);
+    const pctY = (c.y / TH * 100).toFixed(3);
+    const pctW = (c.w / TW * 100).toFixed(3);
+    const pctH = (c.h / TH * 100).toFixed(3);
+    const showSector = c.w > 70 && c.h > 70;
+    const showFlow = c.w > 55 && c.h > 50;
+    const showAUM = c.w > 70 && c.h > 80;
+
+    html += `<div class="flow-treemap-cell" style="position:absolute;left:${pctX}%;top:${pctY}%;width:${pctW}%;height:${pctH}%;background:${bg}" title="${c.ticker} (${c.sector})\nAUM: ${fmtAUM(c.totalAssets)}\nShares: ${fmtShares(c.sharesOutstanding)} (${fmtPct(c[sharesField])})\n${tfLabel} Flow: ${fmtDollars(flowVal)}">`;
+    html += `<span class="tm-ticker">${c.ticker}</span>`;
+    if (showSector) html += `<span class="tm-sector">${c.sector}</span>`;
+    if (showFlow) html += `<span class="tm-flow" style="color:${tc}">${fmtDollars(flowVal)}</span>`;
+    if (showAUM) html += `<span class="tm-aum">${fmtPct(c[sharesField])} shares</span>`;
+    html += `</div>`;
+  }
+  html += '</div>';
+
+  // Summary
   const totalNet = fundFlows.reduce((sum, f) => sum + f[field], 0);
-  const netLabel = totalNet >= 0
-    ? `<span class="pos">+${fmtDollars(totalNet)} net into sectors</span>`
-    : `<span class="neg">-${fmtDollars(totalNet)} net out of sectors</span>`;
+  const netLabel = totalNet === 0 ? '<span class="dim">No data yet</span>'
+    : totalNet >= 0
+      ? `<span class="pos">+${fmtDollars(totalNet).replace('+','')} net inflow</span>`
+      : `<span class="neg">${fmtDollars(totalNet)} net outflow</span>`;
+
+  // Legend
+  const legend = `<div class="flow-treemap-legend">
+    <span><span class="swatch" style="background:rgba(63,185,80,0.5)"></span> Inflow</span>
+    <span><span class="swatch" style="background:rgba(248,81,73,0.5)"></span> Outflow</span>
+    <span><span class="swatch" style="background:var(--border)"></span> No data</span>
+    <span style="margin-left:auto">Size = AUM &nbsp;|&nbsp; Color = ${tfLabel} flow</span>
+  </div>`;
+
+  // Shares outstanding table
+  const sorted = [...fundFlows].sort((a, b) => b[sharesField] - a[sharesField]);
+  let sharesTable = `<details style="margin-top:16px"><summary style="cursor:pointer;font-size:13px;color:var(--dim)">📊 Shares Outstanding Changes (${tfLabel})</summary>`;
+  sharesTable += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px">';
+  sharesTable += '<thead><tr><th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--border)">ETF</th><th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--border)">Sector</th><th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Shares</th><th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Δ Shares</th><th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Flow</th></tr></thead><tbody>';
+  for (const f of sorted) {
+    const pct = f[sharesField];
+    const pctStr = fmtPct(pct);
+    const cls = pct > 0 ? 'pos' : pct < 0 ? 'neg' : 'dim';
+    sharesTable += `<tr>`;
+    sharesTable += `<td style="padding:3px 8px;border-bottom:1px solid var(--border)"><b>${f.ticker}</b></td>`;
+    sharesTable += `<td style="padding:3px 8px;border-bottom:1px solid var(--border)">${f.sector}</td>`;
+    sharesTable += `<td style="padding:3px 8px;text-align:right;border-bottom:1px solid var(--border)">${fmtShares(f.sharesOutstanding)}</td>`;
+    sharesTable += `<td style="padding:3px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${cls}">${pctStr}</td>`;
+    sharesTable += `<td style="padding:3px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${cls}">${fmtDollars(f[field])}</td>`;
+    sharesTable += `</tr>`;
+  }
+  sharesTable += '</tbody></table></details>';
 
   return `<div class="flow-diagram">
-    <h2>💰 Real Fund Flows — ETF Creation/Redemption (${tfLabel})</h2>
-    <div style="margin-bottom:12px;font-size:0.85em;color:var(--dim)">Source: ETFdb (SEC filing data) &nbsp;|&nbsp; Net: ${netLabel}</div>
-    ${svg}
+    <h2>💰 Sector Fund Flows (${tfLabel})</h2>
+    <div style="margin-bottom:12px;font-size:0.85em;color:var(--dim)">
+      5D/1M: Estimated (N-PORT + daily prices) &nbsp;|&nbsp; 3M/1Y: SEC N-PORT filings &nbsp;|&nbsp; ${netLabel}
+    </div>
+    ${html}
+    ${legend}
+    ${sharesTable}
   </div>`;
 }
 
-// Fallback if no fund flow data available (uses rotation score)
-function renderFlowDiagramFallback(signals) {
-  const outflows = signals.filter(s => s.signal === 'OUTFLOW').sort((a, b) => a.rotationScore - b.rotationScore);
-  const inflows = signals.filter(s => s.signal === 'INFLOW').sort((a, b) => b.rotationScore - a.rotationScore);
-  const neutrals = signals.filter(s => s.signal === 'NEUTRAL').sort((a, b) => b.rotationScore - a.rotationScore);
+// Fallback: rotation score heatmap when no real flow data
+function renderRotationHeatmap(signals, timeframe) {
+  if (!signals || signals.length === 0) return '';
 
-  if (outflows.length === 0 && inflows.length === 0) return '';
+  const sorted = [...signals].sort((a, b) => b.rotationScore - a.rotationScore);
+  const maxAbs = Math.max(...signals.map(s => Math.abs(s.rotationScore)), 1);
 
-  // Dimensions
-  const W = 800, padTop = 30, padBot = 10, rowH = 38;
-  const leftCol = 0, midCol = 320, rightCol = 560;
-  const barW = 180, arrowStart = barW + 8, arrowEnd = midCol + 40;
-  const arrowStartR = rightCol - 8, arrowEndR = midCol + 200;
-  const maxRows = Math.max(outflows.length, inflows.length, neutrals.length, 1);
-  const H = padTop + maxRows * rowH + padBot;
-
-  // Scale arrow thickness: min 4px, max 24px
-  const allScores = signals.map(s => Math.abs(s.rotationScore));
-  const maxScore = Math.max(...allScores, 1);
-  const thick = (score) => Math.max(4, Math.min(24, (Math.abs(score) / maxScore) * 24));
-
-  let svg = `<svg class="flow-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
-
-  // Column headers
-  svg += `<text class="flow-col-label" x="${leftCol + 10}" y="16">Outflows</text>`;
-  svg += `<text class="flow-col-label" x="${midCol + 80}" y="16">Neutral</text>`;
-  svg += `<text class="flow-col-label" x="${rightCol + 30}" y="16">Inflows</text>`;
-
-  // Draw outflow sectors (left) with arrows pointing right toward center
-  outflows.forEach((s, i) => {
-    const y = padTop + i * rowH + rowH / 2;
-    const t = thick(s.rotationScore);
-    // Sector label
-    svg += `<text class="flow-label" x="${leftCol + 10}" y="${y + 4}">${s.sector}</text>`;
-    svg += `<text class="flow-score" x="${leftCol + 10}" y="${y + 16}">${s.rotationScore.toFixed(1)}</text>`;
-    // Fat arrow: tapered path from left bar to center
-    const ax1 = leftCol + 140, ax2 = midCol + 50;
-    const midY = padTop + (H - padTop - padBot) / 2;
-    svg += `<path class="flow-arrow-out" d="
-      M ${ax1} ${y - t/2}
-      C ${(ax1+ax2)/2} ${y - t/2}, ${(ax1+ax2)/2} ${midY - t/4}, ${ax2} ${midY - t/4}
-      L ${ax2} ${midY + t/4}
-      C ${(ax1+ax2)/2} ${midY + t/4}, ${(ax1+ax2)/2} ${y + t/2}, ${ax1} ${y + t/2}
-      Z">
-      <title>${s.sector}: ${s.rotationScore.toFixed(1)} (OUTFLOW)</title>
-    </path>`;
-  });
-
-  // Draw inflow sectors (right) with arrows pointing left from center
-  inflows.forEach((s, i) => {
-    const y = padTop + i * rowH + rowH / 2;
-    const t = thick(s.rotationScore);
-    // Sector label
-    svg += `<text class="flow-label" x="${rightCol + 30}" y="${y + 4}">${s.sector}</text>`;
-    svg += `<text class="flow-score" x="${rightCol + 30}" y="${y + 16}">+${s.rotationScore.toFixed(1)}</text>`;
-    // Fat arrow: tapered path from center to right
-    const ax1 = midCol + 160, ax2 = rightCol + 20;
-    const midY = padTop + (H - padTop - padBot) / 2;
-    svg += `<path class="flow-arrow-in" d="
-      M ${ax1} ${midY - t/4}
-      C ${(ax1+ax2)/2} ${midY - t/4}, ${(ax1+ax2)/2} ${y - t/2}, ${ax2} ${y - t/2}
-      L ${ax2} ${y + t/2}
-      C ${(ax1+ax2)/2} ${y + t/2}, ${(ax1+ax2)/2} ${midY + t/4}, ${ax1} ${midY + t/4}
-      Z">
-      <title>${s.sector}: +${s.rotationScore.toFixed(1)} (INFLOW)</title>
-    </path>`;
-  });
-
-  // Draw neutral sectors (center column)
-  neutrals.forEach((s, i) => {
-    const y = padTop + i * rowH + rowH / 2;
-    svg += `<rect class="flow-neutral-bar" x="${midCol + 60}" y="${y - 8}" width="90" height="16" rx="3"/>`;
-    svg += `<text class="flow-label" x="${midCol + 65}" y="${y + 4}" style="font-size:11px">${s.sector}</text>`;
-  });
-
-  // Center funnel/pool indicator
-  const poolY = padTop + (H - padTop - padBot) / 2;
-  svg += `<ellipse cx="${midCol + 105}" cy="${poolY}" rx="30" ry="${Math.min(40, H/3)}" fill="var(--border)" opacity="0.3"/>`;
-  svg += `<text class="flow-col-label" x="${midCol + 85}" y="${poolY + 3}" style="font-size:9px;opacity:0.6">POOL</text>`;
-
-  svg += '</svg>';
-
-  return `<div class="flow-diagram"><h2>💰 Capital Flow — Sector Rotation</h2>${svg}</div>`;
-}
-
-function renderFundFlowsTable(fundFlows, timeframe) {
-  const field = getFlowField(timeframe);
-  function fmtFlow(val, isActive) {
-    const abs = Math.abs(val);
-    let str;
-    if (abs >= 1e9) str = `$${(abs / 1e9).toFixed(2)}B`;
-    else if (abs >= 1e6) str = `$${(abs / 1e6).toFixed(0)}M`;
-    else str = `$${(abs / 1e3).toFixed(0)}K`;
-    const sign = val >= 0 ? '+' : '-';
-    const cls = val > 0 ? 'pos' : val < 0 ? 'neg' : 'dim';
-    const bold = isActive ? 'font-weight:700;' : '';
-    return `<span class="${cls}" style="${bold}">${sign}${str}</span>`;
+  function scoreColor(val) {
+    const intensity = Math.min(Math.abs(val) / maxAbs, 1);
+    const alpha = 0.15 + intensity * 0.6;
+    if (val > 0) return `rgba(63, 185, 80, ${alpha.toFixed(2)})`;
+    if (val < 0) return `rgba(248, 81, 73, ${alpha.toFixed(2)})`;
+    return 'transparent';
   }
 
-  const sorted = [...fundFlows].sort((a, b) => b[field] - a[field]);
-  const rows = sorted.map(f => [
-    `<b>${f.ticker}</b>`,
-    f.sector,
-    fmtFlow(f.flow5Day, timeframe === '5d'),
-    fmtFlow(f.flow1Month, timeframe === '1m'),
-    fmtFlow(f.flow3Month, timeframe === '3m'),
-    fmtFlow(f.flow1Year, timeframe === '1y'),
-  ]);
+  // Use rotation scores as "value" for treemap sizing (absolute values)
+  const items = sorted.map(s => ({ ...s, value: Math.abs(s.rotationScore) + 1 }));
+  const TW = 900, TH = 280;
+  const cells = squarify(items, TW, TH);
 
-  return `<h2>💵 Sector ETF Fund Flows (Real Dollars)</h2>` +
-    table(['ETF', 'Sector', '5-Day', '1-Month', '3-Month', '1-Year'], rows);
+  let html = `<div class="flow-treemap" style="position:relative;width:100%;max-width:${TW}px;height:${TH}px;gap:0">`;
+  for (const c of cells) {
+    const bg = scoreColor(c.rotationScore);
+    const tc = c.signal === 'INFLOW' ? '#3fb950' : c.signal === 'OUTFLOW' ? '#f85149' : 'var(--dim)';
+    const pctX = (c.x / TW * 100).toFixed(3);
+    const pctY = (c.y / TH * 100).toFixed(3);
+    const pctW = (c.w / TW * 100).toFixed(3);
+    const pctH = (c.h / TH * 100).toFixed(3);
+
+    html += `<div class="flow-treemap-cell" style="position:absolute;left:${pctX}%;top:${pctY}%;width:${pctW}%;height:${pctH}%;background:${bg}" title="${c.sector}\nScore: ${c.rotationScore.toFixed(1)}\nSignal: ${c.signal}\nRank Δ: ${c.rankShift > 0 ? '+' : ''}${c.rankShift}">`;
+    html += `<span class="tm-ticker" style="color:${tc}">${c.sector}</span>`;
+    html += `<span class="tm-flow" style="color:${tc}">${c.rotationScore.toFixed(1)}</span>`;
+    html += `<span class="tm-sector">${c.signal}</span>`;
+    html += `</div>`;
+  }
+  html += '</div>';
+
+  return `<div class="flow-diagram">
+    <h2>💰 Sector Rotation Scores</h2>
+    <div style="margin-bottom:12px;font-size:0.85em;color:var(--dim)">Based on price momentum, breadth, and relative rank (real fund flow data not yet available)</div>
+    ${html}
+  </div>`;
+}
+
+function renderDiagnostics(diagnostics) {
+  if (!diagnostics || diagnostics.length === 0) return '';
+
+  const phaseLabels = {
+    EARLY_ACCUMULATION: 'Early Accumulation',
+    CONFIRMED_UPTREND: 'Confirmed Uptrend',
+    LATE_STAGE: 'Late Stage',
+    NEUTRAL: 'Neutral',
+    DISTRIBUTION: 'Distribution',
+    EARLY_DECLINE: 'Early Decline',
+    CONFIRMED_DOWNTREND: 'Confirmed Downtrend',
+  };
+
+  const phaseClass = {
+    EARLY_ACCUMULATION: 'early-acc',
+    CONFIRMED_UPTREND: 'confirmed-up',
+    LATE_STAGE: 'late-stage',
+    NEUTRAL: 'neutral',
+    DISTRIBUTION: 'distribution',
+    EARLY_DECLINE: 'early-decline',
+    CONFIRMED_DOWNTREND: 'confirmed-down',
+  };
+
+  let cards = '';
+  for (const d of diagnostics) {
+    const pLabel = phaseLabels[d.phase] || d.phase;
+    const pClass = phaseClass[d.phase] || 'neutral';
+
+    const evidenceHtml = d.evidence.length > 0
+      ? `<ul class="diag-evidence">${d.evidence.map(e => `<li>${e}</li>`).join('')}</ul>`
+      : '<div style="font-size:12px;color:var(--dim)">No strong signals detected</div>';
+
+    cards += `<div class="diag-card">
+      <div class="diag-card-header">
+        <h3>${d.ticker} — ${d.sector}</h3>
+        <span class="diag-phase ${pClass}">${pLabel}</span>
+      </div>
+      ${evidenceHtml}
+      <div class="diag-metrics">
+        <div><span class="metric-label">1W</span> <span class="metric-val">${d.perf1W > 0 ? '+' : ''}${d.perf1W.toFixed(2)}%</span></div>
+        <div><span class="metric-label">Breadth</span> <span class="metric-val">${d.breadth1W.toFixed(0)}%</span></div>
+        <div><span class="metric-label">Rank</span> <span class="metric-val">#${d.rank1W}</span></div>
+        <div><span class="metric-label">MCW-EW</span> <span class="metric-val">${d.sizeSpread > 0 ? '+' : ''}${d.sizeSpread.toFixed(2)}%</span></div>
+        <div><span class="metric-label">Shares Δ</span> <span class="metric-val">${d.sharesPctChange !== 0 ? (d.sharesPctChange > 0 ? '+' : '') + (d.sharesPctChange * 100).toFixed(2) + '%' : '—'}</span></div>
+        <div><span class="metric-label">Velocity</span> <span class="metric-val">${d.rankVelocity > 0 ? '+' : ''}${d.rankVelocity}</span></div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="diag-panel">
+    <h2>🔬 Sector Phase Diagnostics</h2>
+    <div style="margin-bottom:12px;font-size:0.82em;color:var(--dim)">
+      Phase determined by convergence of momentum, breadth, size leadership, flow-price alignment, and rank velocity. Evidence shows raw data behind each classification.
+    </div>
+    <div class="diag-grid">${cards}</div>
+  </div>`;
 }
 
 function renderRRG(signals) {
@@ -578,9 +690,7 @@ function renderDashboard() {
 
   let html = '';
   html += renderFlowDiagram(data.rotationSignals, data.fundFlows, currentTimeframe);
-  if (data.fundFlows && data.fundFlows.length > 0) {
-    html += renderFundFlowsTable(data.fundFlows, currentTimeframe);
-  }
+  html += renderDiagnostics(data.diagnostics);
   html += renderHighConviction(allRecs);
   html += '<div class="grid-2">';
   html += '<div>' + renderActionSignals(signals.sector || [], '🎯 Sector Actions') + '</div>';
