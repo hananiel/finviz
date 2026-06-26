@@ -775,11 +775,33 @@ export async function fetchOptionsData(): Promise<OptionsData[]> {
 
     for (const ticker of tickers) {
       try {
-        const url = `https://query2.finance.yahoo.com/v7/finance/options/${ticker}?crumb=${encodeURIComponent(crumb)}`;
-        const res = await fetch(url, {
+        // First get available expirations
+        const infoUrl = `https://query2.finance.yahoo.com/v7/finance/options/${ticker}?crumb=${encodeURIComponent(crumb)}`;
+        const infoRes = await fetch(infoUrl, {
           headers: { "User-Agent": USER_AGENT, Cookie: cookie },
         });
-        const json = await res.json() as any;
+        const infoJson = await infoRes.json() as any;
+        const expirations: number[] = infoJson?.optionChain?.result?.[0]?.expirationDates || [];
+
+        // Pick expiration closest to 30 days out (for representative IV)
+        const now = Math.floor(Date.now() / 1000);
+        const target30d = now + 30 * 86400;
+        let bestExp = expirations[0];
+        let bestDiff = Infinity;
+        for (const exp of expirations) {
+          if (exp <= now) continue; // skip expired
+          const diff = Math.abs(exp - target30d);
+          if (diff < bestDiff) { bestDiff = diff; bestExp = exp; }
+        }
+
+        // Fetch the 30-day chain
+        const url = bestExp
+          ? `https://query2.finance.yahoo.com/v7/finance/options/${ticker}?crumb=${encodeURIComponent(crumb)}&date=${bestExp}`
+          : infoUrl;
+        const res = bestExp ? await fetch(url, {
+          headers: { "User-Agent": USER_AGENT, Cookie: cookie },
+        }) : infoRes;
+        const json = bestExp ? await res.json() as any : infoJson;
         const optionChain = json?.optionChain?.result?.[0];
         if (!optionChain) continue;
 
@@ -795,20 +817,16 @@ export async function fetchOptionsData(): Promise<OptionsData[]> {
         let ivSum = 0, ivCount = 0;
 
         for (const p of puts) {
-          putVolume += p.volume?.raw ?? 0;
-          putOI += p.openInterest?.raw ?? 0;
-          if (p.impliedVolatility?.raw) {
-            ivSum += p.impliedVolatility.raw;
-            ivCount++;
-          }
+          putVolume += p.volume ?? p.volume?.raw ?? 0;
+          putOI += p.openInterest ?? p.openInterest?.raw ?? 0;
+          const pIV = p.impliedVolatility ?? p.impliedVolatility?.raw;
+          if (pIV) { ivSum += pIV; ivCount++; }
         }
         for (const c of calls) {
-          callVolume += c.volume?.raw ?? 0;
-          callOI += c.openInterest?.raw ?? 0;
-          if (c.impliedVolatility?.raw) {
-            ivSum += c.impliedVolatility.raw;
-            ivCount++;
-          }
+          callVolume += c.volume ?? c.volume?.raw ?? 0;
+          callOI += c.openInterest ?? c.openInterest?.raw ?? 0;
+          const cIV = c.impliedVolatility ?? c.impliedVolatility?.raw;
+          if (cIV) { ivSum += cIV; ivCount++; }
         }
 
         // ATM IV: average of puts and calls near the money
@@ -816,11 +834,11 @@ export async function fetchOptionsData(): Promise<OptionsData[]> {
         let atmIV = ivCount > 0 ? ivSum / ivCount : 0;
         if (currentPrice > 0) {
           // Find options closest to ATM for better IV estimate
-          const atmPuts = puts.filter((p: any) => Math.abs((p.strike?.raw ?? 0) - currentPrice) / currentPrice < 0.03);
-          const atmCalls = calls.filter((c: any) => Math.abs((c.strike?.raw ?? 0) - currentPrice) / currentPrice < 0.03);
+          const atmPuts = puts.filter((p: any) => Math.abs((p.strike ?? p.strike?.raw ?? 0) - currentPrice) / currentPrice < 0.03);
+          const atmCalls = calls.filter((c: any) => Math.abs((c.strike ?? c.strike?.raw ?? 0) - currentPrice) / currentPrice < 0.03);
           const atmOptions = [...atmPuts, ...atmCalls];
           if (atmOptions.length > 0) {
-            const atmIvSum = atmOptions.reduce((s: number, o: any) => s + (o.impliedVolatility?.raw ?? 0), 0);
+            const atmIvSum = atmOptions.reduce((s: number, o: any) => s + (o.impliedVolatility ?? o.impliedVolatility?.raw ?? 0), 0);
             atmIV = atmIvSum / atmOptions.length;
           }
         }
