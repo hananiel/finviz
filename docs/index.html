@@ -101,6 +101,12 @@
   .delta.pos { color: var(--green); }
   .delta.neg { color: var(--red); }
   .phase-change { font-size: 0.7em; color: var(--yellow); margin-top: 2px; font-style: italic; }
+  /* Institutional intent badges */
+  .intent-badge { font-size: 0.78em; font-weight: 600; padding: 3px 10px; border-radius: 4px; margin: 6px 0; display: inline-block; }
+  .intent-bullish { background: #238636; color: #fff; }
+  .intent-accumulation { background: #1f6feb; color: #fff; }
+  .intent-bearish { background: #da3633; color: #fff; }
+  .intent-hedged { background: #9e6a03; color: #fff; }
 </style>
 </head>
 <body>
@@ -588,12 +594,32 @@ function renderDiagnostics(diagnostics) {
       ? `<ul class="diag-evidence">${d.evidence.map(e => `<li>${e}</li>`).join('')}</ul>`
       : '<div style="font-size:12px;color:var(--dim)">No strong signals detected</div>';
 
+    // Institutional intent badge
+    const intentLabels = {
+      AGGRESSIVE_BREAKOUT: '🚀 Aggressive Breakout',
+      DARK_ACCUMULATION: '🕵️ Dark Accumulation',
+      TRUE_DISTRIBUTION: '🚨 True Distribution',
+      HEDGED_MOMENTUM: '🛡️ Hedged Momentum',
+      NONE: ''
+    };
+    const intentClass = {
+      AGGRESSIVE_BREAKOUT: 'intent-bullish',
+      DARK_ACCUMULATION: 'intent-accumulation',
+      TRUE_DISTRIBUTION: 'intent-bearish',
+      HEDGED_MOMENTUM: 'intent-hedged',
+      NONE: ''
+    };
+    const intentBadge = d.institutionalIntent && d.institutionalIntent !== 'NONE'
+      ? `<div class="intent-badge ${intentClass[d.institutionalIntent]}" title="${d.intentEvidence || ''}">${intentLabels[d.institutionalIntent]}</div>`
+      : '';
+
     cards += `<div class="diag-card">
       <div class="diag-card-header">
         <h3>${d.ticker} — ${d.sector}</h3>
         <span class="diag-phase ${pClass}">${pLabel}</span>
         ${phaseChange}
       </div>
+      ${intentBadge}
       ${evidenceHtml}
       <div class="diag-metrics">
         <div><span class="metric-label">1W</span> <span class="metric-val">${d.perf1W > 0 ? '+' : ''}${d.perf1W.toFixed(2)}%${delta(d.perf1W, prev?.perf1W, fmtPct2, false)}</span></div>

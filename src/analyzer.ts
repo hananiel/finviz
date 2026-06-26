@@ -1074,8 +1074,53 @@ export function computeSectorDiagnostics(
       evidence.push(`Call-heavy options flow: P/C ratio ${putCallRatio.toFixed(2)} (bullish positioning), IV ${(impliedVolatility * 100).toFixed(0)}%`);
     }
 
+    // --- Institutional Intent (DPSV + Momentum + Options Overlay) ---
+    // Decodes WHY market makers are acting by cross-referencing dark pool
+    // short volume with options positioning and momentum regime.
+    let institutionalIntent: SectorDiagnostic["institutionalIntent"] = "NONE";
+    let intentEvidence = "";
+
+    // IV thresholds: >30% = aggressive/panicked buying; <20% = sellers in control
+    const highIV = impliedVolatility >= 0.30;
+    const lowIV = impliedVolatility > 0 && impliedVolatility < 0.20;
+    const hasOptionsData = putCallRatio > 0 || impliedVolatility > 0;
+    const highDPSV = dpLevel >= 0.55;
+    const lowDPSV = dpLevel > 0 && dpLevel < 0.40;
+    const highPutVol = putCallRatio >= 1.0;
+    const highCallVol = putCallRatio > 0 && putCallRatio < 0.6;
+
+    if (hasOptionsData && highDPSV && momentumRegime === "ACCELERATING" && highCallVol && highIV) {
+      // Aggressive Breakout: High DPSV + Accel Momentum + High Call Vol + Spiking IV
+      // MMs shorting to hedge calls they sold → forced buying drives breakout
+      institutionalIntent = "AGGRESSIVE_BREAKOUT";
+      intentEvidence = `Gamma squeeze: DP short ${(dpLevel * 100).toFixed(0)}% (MM hedging short calls) + call-heavy P/C ${putCallRatio.toFixed(2)} + IV ${(impliedVolatility * 100).toFixed(0)}% (aggressive call buying)`;
+    } else if (hasOptionsData && highDPSV && momentumRegime === "ACCELERATING" && highPutVol && highIV) {
+      // Hedged Momentum: buying shares AND protective puts (belt-and-suspenders)
+      institutionalIntent = "HEDGED_MOMENTUM";
+      intentEvidence = `Hedged breakout: DP short ${(dpLevel * 100).toFixed(0)}% + accel momentum + protective puts P/C ${putCallRatio.toFixed(2)} + IV ${(impliedVolatility * 100).toFixed(0)}%`;
+    } else if (hasOptionsData && highDPSV && momentumRegime !== "ACCELERATING" && highPutVol && lowIV) {
+      // Dark Accumulation: High DPSV + Flat/Decel Momentum + High Put Vol + Falling IV
+      // Institutions writing puts to acquire stock; MMs short to hedge purchased puts
+      institutionalIntent = "DARK_ACCUMULATION";
+      intentEvidence = `Institutional put writing: DP short ${(dpLevel * 100).toFixed(0)}% (MM hedging bought puts) + P/C ${putCallRatio.toFixed(2)} + IV ${(impliedVolatility * 100).toFixed(0)}% (premium sellers in control)`;
+    } else if (hasOptionsData && lowDPSV && momentumRegime === "DECELERATING" && highPutVol && highIV) {
+      // True Distribution: Low DPSV + Decel Momentum + High Put Vol + Spiking IV
+      // Institutions dumping in lit market + panic-buying protective puts
+      institutionalIntent = "TRUE_DISTRIBUTION";
+      intentEvidence = `Institutional exit: low DP short ${(dpLevel * 100).toFixed(0)}% (selling lit) + puts P/C ${putCallRatio.toFixed(2)} + IV ${(impliedVolatility * 100).toFixed(0)}% (panic hedging)`;
+    } else if (hasOptionsData && highDPSV && momentumRegime === "DECELERATING" && highPutVol && highIV) {
+      // High DPSV + Decel + High puts + High IV = true distribution
+      institutionalIntent = "TRUE_DISTRIBUTION";
+      intentEvidence = `Institutional exit: DP short ${(dpLevel * 100).toFixed(0)}% + decel momentum + panic puts P/C ${putCallRatio.toFixed(2)} + IV ${(impliedVolatility * 100).toFixed(0)}%`;
+    }
+
+    if (institutionalIntent !== "NONE") {
+      evidence.push(`🔍 Intent: ${intentEvidence}`);
+    }
+
     // --- Phase from evidence pattern ---
     // Dark pool trends + options now influence phase detection.
+    // Institutional intent overrides ambiguous signals when detected.
     // Trend matters more than level: sustained increasing shorting = institutional conviction.
     let phase: SectorDiagnostic["phase"] = "NEUTRAL";
 
@@ -1132,6 +1177,16 @@ export function computeSectorDiagnostics(
       else if (momentumRegime === "DECELERATING") phase = "EARLY_DECLINE";
     }
 
+    // Institutional intent can upgrade/override phase when signals are strong
+    if (institutionalIntent === "AGGRESSIVE_BREAKOUT" && phase !== "CONFIRMED_DOWNTREND") {
+      phase = "CONFIRMED_UPTREND";
+    } else if (institutionalIntent === "DARK_ACCUMULATION" && (phase === "NEUTRAL" || phase === "EARLY_DECLINE")) {
+      phase = "EARLY_ACCUMULATION";
+    } else if (institutionalIntent === "TRUE_DISTRIBUTION" && phase !== "CONFIRMED_DOWNTREND") {
+      if (phase === "NEUTRAL" || phase === "LATE_STAGE") phase = "DISTRIBUTION";
+      else if (phase === "EARLY_DECLINE") phase = "CONFIRMED_DOWNTREND";
+    }
+
     return {
       sector: sp.sector,
       ticker,
@@ -1162,6 +1217,8 @@ export function computeSectorDiagnostics(
       putCallOIRatio,
       impliedVolatility,
       optionsSignal,
+      institutionalIntent,
+      intentEvidence,
       phase,
       evidence,
     };

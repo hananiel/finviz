@@ -244,6 +244,10 @@ export interface SectorDiagnostic {
   impliedVolatility: number;     // ATM IV (annualized decimal, e.g. 0.25 = 25%)
   optionsSignal: "HEAVY_PUT_BUYING" | "ELEVATED_PUTS" | "NEUTRAL_OPT" | "CALL_HEAVY" | "EXTREME_FEAR";
 
+  // Institutional intent — decoded from DPSV + momentum + options overlay
+  institutionalIntent: "AGGRESSIVE_BREAKOUT" | "DARK_ACCUMULATION" | "TRUE_DISTRIBUTION" | "HEDGED_MOMENTUM" | "NONE";
+  intentEvidence: string; // one-line explanation of the decoded intent
+
   // Synthesis (human-readable, not a black box)
   phase: "EARLY_ACCUMULATION" | "CONFIRMED_UPTREND" | "LATE_STAGE" | "DISTRIBUTION" | "EARLY_DECLINE" | "CONFIRMED_DOWNTREND" | "NEUTRAL";
   evidence: string[]; // list of plain-English reasons for the phase
