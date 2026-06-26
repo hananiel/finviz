@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import type { Timeframe, ScreenerStock, StockData, SectorETF, AssetClassETF, TechnicalData, ETFFundFlow, ETFAUMSnapshot, NPortQuarterlyData } from "./types.js";
+import type { Timeframe, ScreenerStock, StockData, SectorETF, AssetClassETF, TechnicalData, ETFFundFlow, ETFAUMSnapshot, NPortQuarterlyData, DarkPoolData, DarkPoolAggregate, OptionsData } from "./types.js";
 
 const BASE_URL = "https://finviz.com";
 const MAP_API = `${BASE_URL}/api/map_perf.ashx`;
@@ -566,7 +566,297 @@ export async function fetchNPortData(): Promise<NPortQuarterlyData[]> {
 }
 
 // ---------------------------------------------------------------------------
-// 7. Orchestrator — join all data
+// 7. Dark Pool Data — FINRA short volume
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetches short volume from a pipe-delimited text file.
+ * Works for FINRA CNMSshvol, NYSE, and NYSE Arca files (same format).
+ * Format: Date|Symbol|ShortVolume|ShortExemptVolume|TotalVolume|Market
+ */
+async function fetchShortVolumeFile(
+  url: string,
+  source: DarkPoolData["source"],
+  tickers: Set<string>,
+  isoDate: string
+): Promise<DarkPoolData[]> {
+  const results: DarkPoolData[] = [];
+  try {
+    const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+    if (!res.ok) return results;
+
+    const text = await res.text();
+    const lines = text.split("\n");
+
+    for (const line of lines) {
+      const parts = line.split("|");
+      if (parts.length < 5) continue;
+      const symbol = parts[1];
+      if (!tickers.has(symbol)) continue;
+
+      const shortVolume = parseInt(parts[2]) || 0;
+      const shortExempt = parseInt(parts[3]) || 0;
+      const totalVolume = parseInt(parts[4]) || 0;
+      if (totalVolume === 0) continue;
+
+      const totalShort = shortVolume + shortExempt;
+      results.push({
+        ticker: symbol,
+        sector: ETF_SECTOR_MAP[symbol],
+        source,
+        shortVolume: totalShort,
+        totalVolume,
+        shortRatio: totalShort / totalVolume,
+        date: isoDate,
+      });
+    }
+  } catch {}
+  return results;
+}
+
+/**
+ * Fetches short volume from Nasdaq BX.
+ * Format differs: Symbol|Short Volume|Total Volume|Date
+ */
+async function fetchNasdaqShortVolume(
+  dateStr: string,
+  tickers: Set<string>,
+  isoDate: string
+): Promise<DarkPoolData[]> {
+  const results: DarkPoolData[] = [];
+  try {
+    // Nasdaq publishes to nasdaqtrader.com in slightly different format
+    const url = `https://cdn.finra.org/equity/regsho/daily/FNQCshvol${dateStr}.txt`;
+    const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+    if (!res.ok) return results;
+
+    const text = await res.text();
+    const lines = text.split("\n");
+
+    for (const line of lines) {
+      const parts = line.split("|");
+      if (parts.length < 5) continue;
+      const symbol = parts[1];
+      if (!tickers.has(symbol)) continue;
+
+      const shortVolume = parseInt(parts[2]) || 0;
+      const shortExempt = parseInt(parts[3]) || 0;
+      const totalVolume = parseInt(parts[4]) || 0;
+      if (totalVolume === 0) continue;
+
+      const totalShort = shortVolume + shortExempt;
+      results.push({
+        ticker: symbol,
+        sector: ETF_SECTOR_MAP[symbol],
+        source: "NASDAQ",
+        shortVolume: totalShort,
+        totalVolume,
+        shortRatio: totalShort / totalVolume,
+        date: isoDate,
+      });
+    }
+  } catch {}
+  return results;
+}
+
+/** Fetch dark pool data from all 3 sources, cross-validate, and produce aggregates */
+export async function fetchDarkPoolData(): Promise<{ raw: DarkPoolData[]; aggregates: DarkPoolAggregate[] }> {
+  console.log("  Fetching dark pool data from 3 sources (FINRA + NYSE Arca + Nasdaq)...");
+  const tickers = new Set(Object.keys(ETF_SECTOR_MAP));
+  const allRaw: DarkPoolData[] = [];
+
+  // Find most recent trading day with data
+  const dates: string[] = [];
+  const now = new Date();
+  for (let i = 0; i < 7 && dates.length < 3; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const day = d.getDay();
+    if (day === 0 || day === 6) continue;
+    dates.push(d.toISOString().slice(0, 10).replace(/-/g, ""));
+  }
+
+  let usedDate = "";
+  for (const dateStr of dates) {
+    const isoDate = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
+
+    // Fetch all 3 sources in parallel
+    const [finraData, arcaData, nasdaqData] = await Promise.all([
+      fetchShortVolumeFile(
+        `https://cdn.finra.org/equity/regsho/daily/CNMSshvol${dateStr}.txt`,
+        "FINRA", tickers, isoDate
+      ),
+      fetchShortVolumeFile(
+        `https://ftp.nyse.com/ShortData/ARCAshvol/current/ARCAshvol${dateStr}.txt`,
+        "NYSE_ARCA", tickers, isoDate
+      ),
+      fetchNasdaqShortVolume(dateStr, tickers, isoDate),
+    ]);
+
+    if (finraData.length > 0 || arcaData.length > 0) {
+      allRaw.push(...finraData, ...arcaData, ...nasdaqData);
+      usedDate = isoDate;
+      console.log(`    Date ${isoDate}: FINRA=${finraData.length}, Arca=${arcaData.length}, Nasdaq=${nasdaqData.length} ETFs`);
+      break;
+    }
+  }
+
+  if (allRaw.length === 0) {
+    console.warn("  ⚠ No dark pool data found from any source");
+    return { raw: [], aggregates: [] };
+  }
+
+  // Cross-validate: combine sources per ticker into volume-weighted aggregate
+  const aggregates: DarkPoolAggregate[] = [];
+  for (const ticker of tickers) {
+    const tickerData = allRaw.filter(d => d.ticker === ticker);
+    if (tickerData.length === 0) continue;
+
+    const finra = tickerData.find(d => d.source === "FINRA");
+    const arca = tickerData.find(d => d.source === "NYSE_ARCA");
+    const nasdaq = tickerData.find(d => d.source === "NASDAQ");
+
+    const finraRatio = finra?.shortRatio ?? 0;
+    const arcaRatio = arca?.shortRatio ?? 0;
+    const nasdaqRatio = nasdaq?.shortRatio ?? 0;
+
+    // Volume-weighted combined ratio
+    const totalShort = tickerData.reduce((s, d) => s + d.shortVolume, 0);
+    const totalVol = tickerData.reduce((s, d) => s + d.totalVolume, 0);
+    const combinedShortRatio = totalVol > 0 ? totalShort / totalVol : 0;
+
+    // Validation: check divergence between available sources
+    const availableRatios = [finraRatio, arcaRatio, nasdaqRatio].filter(r => r > 0);
+    let maxDivergence = 0;
+    for (let i = 0; i < availableRatios.length; i++) {
+      for (let j = i + 1; j < availableRatios.length; j++) {
+        const diff = Math.abs(availableRatios[i] - availableRatios[j]);
+        if (diff > maxDivergence) maxDivergence = diff;
+      }
+    }
+    const sourcesAgree = maxDivergence < 0.10; // sources within 10% of each other
+
+    aggregates.push({
+      ticker,
+      sector: ETF_SECTOR_MAP[ticker],
+      date: usedDate,
+      finraRatio,
+      arcaRatio,
+      nasdaqRatio,
+      combinedShortRatio,
+      combinedShortVolume: totalShort,
+      combinedTotalVolume: totalVol,
+      sourcesAgree,
+      maxDivergence,
+    });
+
+    if (!sourcesAgree) {
+      console.warn(`    ⚠ ${ticker}: sources diverge by ${(maxDivergence * 100).toFixed(1)}% — FINRA=${(finraRatio * 100).toFixed(0)}% Arca=${(arcaRatio * 100).toFixed(0)}% Nasdaq=${(nasdaqRatio * 100).toFixed(0)}%`);
+    }
+  }
+
+  console.log(`  Aggregated ${aggregates.length} ETFs, ${aggregates.filter(a => a.sourcesAgree).length} sources agree, ${aggregates.filter(a => !a.sourcesAgree).length} diverge`);
+  return { raw: allRaw, aggregates };
+}
+
+// ---------------------------------------------------------------------------
+// 8. Options Data — Yahoo Finance options chains
+// ---------------------------------------------------------------------------
+
+/** Fetch options data (P/C ratio, OI, IV) for sector ETFs from Yahoo Finance */
+export async function fetchOptionsData(): Promise<OptionsData[]> {
+  console.log("  Fetching options data from Yahoo Finance...");
+  const tickers = Object.keys(ETF_SECTOR_MAP);
+  const results: OptionsData[] = [];
+  const today = new Date().toISOString().slice(0, 10);
+
+  try {
+    const { crumb, cookie } = await getYahooCrumb();
+
+    for (const ticker of tickers) {
+      try {
+        const url = `https://query2.finance.yahoo.com/v7/finance/options/${ticker}?crumb=${encodeURIComponent(crumb)}`;
+        const res = await fetch(url, {
+          headers: { "User-Agent": USER_AGENT, Cookie: cookie },
+        });
+        const json = await res.json() as any;
+        const optionChain = json?.optionChain?.result?.[0];
+        if (!optionChain) continue;
+
+        const options = optionChain.options?.[0];
+        if (!options) continue;
+
+        const puts: any[] = options.puts || [];
+        const calls: any[] = options.calls || [];
+
+        // Aggregate volume and OI
+        let putVolume = 0, callVolume = 0;
+        let putOI = 0, callOI = 0;
+        let ivSum = 0, ivCount = 0;
+
+        for (const p of puts) {
+          putVolume += p.volume?.raw ?? 0;
+          putOI += p.openInterest?.raw ?? 0;
+          if (p.impliedVolatility?.raw) {
+            ivSum += p.impliedVolatility.raw;
+            ivCount++;
+          }
+        }
+        for (const c of calls) {
+          callVolume += c.volume?.raw ?? 0;
+          callOI += c.openInterest?.raw ?? 0;
+          if (c.impliedVolatility?.raw) {
+            ivSum += c.impliedVolatility.raw;
+            ivCount++;
+          }
+        }
+
+        // ATM IV: average of puts and calls near the money
+        const currentPrice = optionChain.quote?.regularMarketPrice ?? 0;
+        let atmIV = ivCount > 0 ? ivSum / ivCount : 0;
+        if (currentPrice > 0) {
+          // Find options closest to ATM for better IV estimate
+          const atmPuts = puts.filter((p: any) => Math.abs((p.strike?.raw ?? 0) - currentPrice) / currentPrice < 0.03);
+          const atmCalls = calls.filter((c: any) => Math.abs((c.strike?.raw ?? 0) - currentPrice) / currentPrice < 0.03);
+          const atmOptions = [...atmPuts, ...atmCalls];
+          if (atmOptions.length > 0) {
+            const atmIvSum = atmOptions.reduce((s: number, o: any) => s + (o.impliedVolatility?.raw ?? 0), 0);
+            atmIV = atmIvSum / atmOptions.length;
+          }
+        }
+
+        const putCallRatio = callVolume > 0 ? putVolume / callVolume : 0;
+        const putCallOIRatio = callOI > 0 ? putOI / callOI : 0;
+
+        results.push({
+          ticker,
+          sector: ETF_SECTOR_MAP[ticker],
+          putVolume,
+          callVolume,
+          putCallRatio,
+          putOpenInterest: putOI,
+          callOpenInterest: callOI,
+          putCallOIRatio,
+          impliedVolatility: atmIV,
+          date: today,
+        });
+
+        console.log(`    ${ticker}: P/C=${putCallRatio.toFixed(2)} OI_P/C=${putCallOIRatio.toFixed(2)} IV=${(atmIV * 100).toFixed(1)}%`);
+        await sleep(200);
+      } catch (err) {
+        console.warn(`    ⚠ ${ticker}: options fetch failed: ${err}`);
+      }
+    }
+  } catch (err) {
+    console.warn(`  ⚠ Yahoo options crumb auth failed: ${err}`);
+  }
+
+  console.log(`  Fetched options data for ${results.length}/${tickers.length} sector ETFs`);
+  return results;
+}
+
+// ---------------------------------------------------------------------------
+// 9. Orchestrator — join all data
 // ---------------------------------------------------------------------------
 
 export async function fetchAllData(): Promise<{
@@ -577,6 +867,9 @@ export async function fetchAllData(): Promise<{
   aumSnapshots: ETFAUMSnapshot[];
   nportData: NPortQuarterlyData[];
   chartHistory: ChartPriceHistory[];
+  darkPoolData: DarkPoolData[];
+  darkPoolAggregates: DarkPoolAggregate[];
+  optionsData: OptionsData[];
 }> {
   console.log("Fetching data from finviz...");
 
@@ -635,5 +928,12 @@ export async function fetchAllData(): Promise<{
     fetchYahooChart(),
   ]);
 
-  return { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory };
+  // Fetch dark pool + options data (can run in parallel)
+  const [darkPoolResult, optionsData] = await Promise.all([
+    fetchDarkPoolData(),
+    fetchOptionsData(),
+  ]);
+  const { raw: darkPoolData, aggregates: darkPoolAggregates } = darkPoolResult;
+
+  return { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory, darkPoolData, darkPoolAggregates, optionsData };
 }

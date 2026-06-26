@@ -14,7 +14,7 @@ import {
   generateActionSignals,
   computeSectorDiagnostics,
 } from "./analyzer.js";
-import type { CapitalMode, Strategy, ETFFundFlow, ETFAUMSnapshot, NPortQuarterlyData } from "./types.js";
+import type { CapitalMode, Strategy, ETFFundFlow, ETFAUMSnapshot, NPortQuarterlyData, DarkPoolData, DarkPoolAggregate, DarkPoolTrend, OptionsData } from "./types.js";
 import type { ChartPriceHistory } from "./scraper.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -47,6 +47,108 @@ function loadHistoricalAUM(historyDir: string): Map<string, ETFAUMSnapshot[]> {
   }
 
   return result;
+}
+
+/** Load historical dark pool data from daily snapshots → Map<ticker, DarkPoolData[]> sorted by date */
+function loadHistoricalDarkPool(historyDir: string): Map<string, DarkPoolData[]> {
+  const result = new Map<string, DarkPoolData[]>();
+
+  try {
+    const manifestPath = path.join(historyDir, "index.json");
+    const dates: string[] = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+
+    // Only load last 25 days (enough for 20 trading days)
+    const recentDates = dates.slice(-25);
+    for (const date of recentDates) {
+      try {
+        const snap = JSON.parse(fs.readFileSync(path.join(historyDir, `${date}.json`), "utf-8"));
+        if (snap.darkPoolData) {
+          for (const dp of snap.darkPoolData as DarkPoolData[]) {
+            if (!result.has(dp.ticker)) result.set(dp.ticker, []);
+            result.get(dp.ticker)!.push(dp);
+          }
+        }
+      } catch {}
+    }
+  } catch {}
+
+  // Sort by date and deduplicate
+  for (const [ticker, entries] of result) {
+    const seen = new Set<string>();
+    const deduped = entries.filter(e => {
+      if (seen.has(e.date)) return false;
+      seen.add(e.date);
+      return true;
+    });
+    deduped.sort((a, b) => a.date.localeCompare(b.date));
+    result.set(ticker, deduped);
+  }
+
+  return result;
+}
+
+/** Compute dark pool trends from today's data + historical snapshots */
+function computeDarkPoolTrends(
+  todayAggregates: DarkPoolAggregate[],
+  historical: Map<string, DarkPoolData[]>
+): DarkPoolTrend[] {
+  const trends: DarkPoolTrend[] = [];
+
+  for (const agg of todayAggregates) {
+    const history = historical.get(agg.ticker) || [];
+    // Append today if not already present
+    const allDays = [...history];
+    const todayEntry: DarkPoolData = {
+      ticker: agg.ticker,
+      sector: agg.sector,
+      source: "FINRA",
+      shortVolume: agg.combinedShortVolume,
+      totalVolume: agg.combinedTotalVolume,
+      shortRatio: agg.combinedShortRatio,
+      date: agg.date,
+    };
+    if (!allDays.find(d => d.date === agg.date)) {
+      allDays.push(todayEntry);
+    }
+    allDays.sort((a, b) => a.date.localeCompare(b.date));
+
+    const n = allDays.length;
+    const shortRatio1d = agg.combinedShortRatio;
+
+    // 5-day average (last 5 data points)
+    const last5 = allDays.slice(-5);
+    const shortRatio5d = last5.length > 0
+      ? last5.reduce((s, d) => s + d.shortRatio, 0) / last5.length
+      : shortRatio1d;
+
+    // 20-day average (last 20 data points)
+    const last20 = allDays.slice(-20);
+    const shortRatio20d = last20.length > 0
+      ? last20.reduce((s, d) => s + d.shortRatio, 0) / last20.length
+      : shortRatio1d;
+
+    // Trend: is recent (5d) higher or lower than baseline (20d)?
+    const diff = shortRatio5d - shortRatio20d;
+    let trend: DarkPoolTrend["trend"];
+    if (diff > 0.03) trend = "INCREASING";
+    else if (diff < -0.03) trend = "DECREASING";
+    else trend = "STABLE";
+
+    trends.push({
+      ticker: agg.ticker,
+      sector: agg.sector,
+      shortRatio1d,
+      shortRatio5d,
+      shortRatio20d,
+      trend,
+      trendStrength: diff,
+      daysOfData: n,
+      sourcesAgree: agg.sourcesAgree,
+      maxDivergence: agg.maxDivergence,
+    });
+  }
+
+  return trends;
 }
 
 /**
@@ -340,7 +442,7 @@ function computeSharesPctFromNPort(
 async function build() {
   console.log("Building static data...");
 
-  const { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory } = await fetchAllData();
+  const { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory, darkPoolData, darkPoolAggregates, optionsData } = await fetchAllData();
 
   if (stocks.length === 0) {
     console.error("No stock data fetched.");
@@ -352,13 +454,18 @@ async function build() {
   const historyDir = path.join(docsDir, "history");
   const historicalAUM = loadHistoricalAUM(historyDir);
 
+  // Load historical dark pool data and compute trends (5d/20d averages)
+  const historicalDP = loadHistoricalDarkPool(historyDir);
+  const darkPoolTrends = computeDarkPoolTrends(darkPoolAggregates, historicalDP);
+  console.log(`  Computed dark pool trends for ${darkPoolTrends.length} ETFs (${darkPoolTrends[0]?.daysOfData ?? 0} days of history)`);
+
   // Compute fund flows from AUM snapshots (short-term) + N-PORT (long-term)
   // Falls back to N-PORT + chart price interpolation when daily snapshots unavailable
   const fundFlows = computeFundFlows(aumSnapshots, historicalAUM, nportData, etfs, chartHistory);
 
   const sectorPerfs = aggregateBySector(stocks);
   const signals = calculateRotationSignals(sectorPerfs);
-  const diagnostics = computeSectorDiagnostics(sectorPerfs, signals, fundFlows);
+  const diagnostics = computeSectorDiagnostics(sectorPerfs, signals, fundFlows, darkPoolTrends, optionsData);
   const etfValidations = validateWithETFs(sectorPerfs, etfs);
   const assetClassFlows = calculateAssetClassFlows(assetClassETFs, technicals);
   const { sectorTrends, assetClassTrends } = buildETFTrendDetails(
@@ -394,6 +501,10 @@ async function build() {
     fundFlows,
     aumSnapshots,
     nportData,
+    darkPoolData,
+    darkPoolAggregates,
+    darkPoolTrends,
+    optionsData,
     sectorTrends,
     assetClassTrends,
     actionSignals,
@@ -428,6 +539,9 @@ async function build() {
     dates.sort();
   }
   fs.writeFileSync(manifestPath, JSON.stringify(dates));
+
+  // Embed available dates in result so file:// protocol works without fetch
+  (result as any).availableDates = dates;
 
   console.log(`\nBuild complete:`);
   console.log(`  docs/index.html`);

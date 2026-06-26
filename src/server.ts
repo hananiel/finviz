@@ -28,7 +28,7 @@ async function getData() {
     return cachedData;
   }
 
-  const { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory } = await fetchAllData();
+  const { stocks, etfs, assetClassETFs, technicals, aumSnapshots, nportData, chartHistory, darkPoolData, optionsData } = await fetchAllData();
 
   const sectorPerfs = aggregateBySector(stocks);
   const signals = calculateRotationSignals(sectorPerfs);

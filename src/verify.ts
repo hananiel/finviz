@@ -43,7 +43,7 @@ try {
 const requiredFields = [
   "timestamp", "stockCount", "sectorPerformance", "rotationSignals",
   "diagnostics", "fundFlows", "aumSnapshots", "actionSignals",
-  "sectorTrends", "assetClassTrends",
+  "sectorTrends", "assetClassTrends", "darkPoolData", "optionsData",
 ];
 for (const field of requiredFields) {
   check(`data.${field} present`, field in data);
@@ -58,6 +58,10 @@ check("fund flows have totalAssets", data.fundFlows?.every((f: any) => f.totalAs
 check("fund flows have sharesOutstanding", data.fundFlows?.every((f: any) => f.sharesOutstanding > 0), "some have 0");
 check("diagnostics have evidence", data.diagnostics?.every((d: any) => Array.isArray(d.evidence)), "missing evidence array");
 check("diagnostics have phase", data.diagnostics?.every((d: any) => d.phase), "missing phase");
+check("diagnostics have darkPoolSignal", data.diagnostics?.every((d: any) => d.darkPoolSignal), "missing darkPoolSignal");
+check("diagnostics have optionsSignal", data.diagnostics?.every((d: any) => d.optionsSignal), "missing optionsSignal");
+check("darkPoolData is array", Array.isArray(data.darkPoolData));
+check("optionsData is array", Array.isArray(data.optionsData));
 
 // 5. Validate HTML script renders without errors
 const htmlPath = path.join(docsDir, "index.html");

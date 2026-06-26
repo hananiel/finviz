@@ -16,6 +16,8 @@ import type {
   Strategy,
   SectorDiagnostic,
   ETFFundFlow,
+  DarkPoolTrend,
+  OptionsData,
 } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -921,15 +923,21 @@ const SECTOR_TO_TICKER_DIAG: Record<string, string> = Object.fromEntries(
 export function computeSectorDiagnostics(
   sectorPerfs: SectorPerformance[],
   signals: RotationSignal[],
-  fundFlows: ETFFundFlow[]
+  fundFlows: ETFFundFlow[],
+  darkPoolTrends: DarkPoolTrend[],
+  optionsData: OptionsData[]
 ): SectorDiagnostic[] {
   const n = sectorPerfs.length;
   const flowMap = new Map(fundFlows.map(f => [f.sector, f]));
+  const dpMap = new Map(darkPoolTrends.map(d => [d.ticker, d]));
+  const optMap = new Map(optionsData.map(o => [o.ticker, o]));
 
   return sectorPerfs.map(sp => {
     const sig = signals.find(s => s.sector === sp.sector);
     const flow = flowMap.get(sp.sector);
     const ticker = SECTOR_TO_TICKER_DIAG[sp.sector] || '';
+    const dp = dpMap.get(ticker);
+    const opt = optMap.get(ticker);
 
     // --- Momentum regime ---
     const perf1W = sp.mcw1W;
@@ -980,6 +988,30 @@ export function computeSectorDiagnostics(
     else if (rankVelocity <= -2) rankSignal = "FALLING";
     else rankSignal = "STABLE";
 
+    // --- Dark pool signal (with trend) ---
+    const darkPoolShortRatio = dp?.shortRatio1d ?? 0;
+    const darkPoolShortRatio5d = dp?.shortRatio5d ?? 0;
+    const darkPoolShortRatio20d = dp?.shortRatio20d ?? 0;
+    const darkPoolTrend = dp?.trend ?? "STABLE" as SectorDiagnostic["darkPoolTrend"];
+    // Signal based on 5d average (smoothed, not noisy single-day)
+    const dpLevel = darkPoolShortRatio5d || darkPoolShortRatio; // fallback to 1d if no history
+    let darkPoolSignal: SectorDiagnostic["darkPoolSignal"];
+    if (dpLevel >= 0.6) darkPoolSignal = "HEAVY_SHORTING";
+    else if (dpLevel >= 0.5) darkPoolSignal = "ELEVATED_SHORTING";
+    else if (dpLevel > 0 && dpLevel < 0.35) darkPoolSignal = "LOW_SHORTING";
+    else darkPoolSignal = "NEUTRAL_DP";
+
+    // --- Options signal ---
+    const putCallRatio = opt?.putCallRatio ?? 0;
+    const putCallOIRatio = opt?.putCallOIRatio ?? 0;
+    const impliedVolatility = opt?.impliedVolatility ?? 0;
+    let optionsSignal: SectorDiagnostic["optionsSignal"];
+    if (putCallRatio >= 2.0 || putCallOIRatio >= 2.0) optionsSignal = "EXTREME_FEAR";
+    else if (putCallRatio >= 1.3) optionsSignal = "HEAVY_PUT_BUYING";
+    else if (putCallRatio >= 1.0) optionsSignal = "ELEVATED_PUTS";
+    else if (putCallRatio > 0 && putCallRatio < 0.5) optionsSignal = "CALL_HEAVY";
+    else optionsSignal = "NEUTRAL_OPT";
+
     // --- Build evidence strings with raw numbers ---
     const evidence: string[] = [];
 
@@ -1021,24 +1053,77 @@ export function computeSectorDiagnostics(
       evidence.push(`Falling: ranked #${rank1W} now vs #${rank3M} over 3M`);
     }
 
+    if (darkPoolSignal === "HEAVY_SHORTING") {
+      const trendNote = darkPoolTrend === "INCREASING" ? " (↑ increasing week-over-week)" : darkPoolTrend === "DECREASING" ? " (↓ easing)" : "";
+      evidence.push(`Dark pool heavy shorting: 5d avg ${(darkPoolShortRatio5d * 100).toFixed(0)}%, 20d avg ${(darkPoolShortRatio20d * 100).toFixed(0)}%${trendNote}`);
+    } else if (darkPoolSignal === "ELEVATED_SHORTING") {
+      const trendNote = darkPoolTrend === "INCREASING" ? " (↑ rising)" : darkPoolTrend === "DECREASING" ? " (↓ declining)" : "";
+      evidence.push(`Dark pool elevated shorting: 5d avg ${(darkPoolShortRatio5d * 100).toFixed(0)}%, 20d avg ${(darkPoolShortRatio20d * 100).toFixed(0)}%${trendNote}`);
+    } else if (darkPoolSignal === "LOW_SHORTING") {
+      const trendNote = darkPoolTrend === "DECREASING" ? " (↓ still declining = bullish)" : "";
+      evidence.push(`Dark pool low shorting: 5d avg ${(darkPoolShortRatio5d * 100).toFixed(0)}% (bullish)${trendNote}`);
+    }
+
+    if (optionsSignal === "EXTREME_FEAR") {
+      evidence.push(`Extreme fear in options: P/C ratio ${putCallRatio.toFixed(2)}, OI P/C ${putCallOIRatio.toFixed(2)}, IV ${(impliedVolatility * 100).toFixed(0)}%`);
+    } else if (optionsSignal === "HEAVY_PUT_BUYING") {
+      evidence.push(`Heavy put buying: P/C ratio ${putCallRatio.toFixed(2)}, IV ${(impliedVolatility * 100).toFixed(0)}%`);
+    } else if (optionsSignal === "ELEVATED_PUTS") {
+      evidence.push(`Elevated puts: P/C ratio ${putCallRatio.toFixed(2)}, IV ${(impliedVolatility * 100).toFixed(0)}%`);
+    } else if (optionsSignal === "CALL_HEAVY") {
+      evidence.push(`Call-heavy options flow: P/C ratio ${putCallRatio.toFixed(2)} (bullish positioning), IV ${(impliedVolatility * 100).toFixed(0)}%`);
+    }
+
     // --- Phase from evidence pattern ---
+    // Dark pool trends + options now influence phase detection.
+    // Trend matters more than level: sustained increasing shorting = institutional conviction.
     let phase: SectorDiagnostic["phase"] = "NEUTRAL";
 
     if (breadthDirection === "BROADENING" && sharesPctChange > 0 && priceChange < 1) {
+      phase = "EARLY_ACCUMULATION";
+    } else if (darkPoolSignal === "LOW_SHORTING" && darkPoolTrend === "DECREASING" && sharesPctChange > 0) {
+      // Shorting declining week-over-week + share creation = stealth accumulation
+      phase = "EARLY_ACCUMULATION";
+    } else if (darkPoolSignal === "LOW_SHORTING" && sharesPctChange > 0 && priceChange < 1) {
+      // Low shorting level + share creation + flat price = accumulation
       phase = "EARLY_ACCUMULATION";
     } else if (momentumRegime === "ACCELERATING" && flowPriceSignal === "CONFIRMED_BULL") {
       phase = "CONFIRMED_UPTREND";
     } else if (momentumRegime === "ACCELERATING" && breadthDirection === "BROADENING") {
       phase = "CONFIRMED_UPTREND";
+    } else if (momentumRegime === "ACCELERATING" && optionsSignal === "CALL_HEAVY" && darkPoolTrend !== "INCREASING") {
+      // Accelerating + call-heavy + not increasing DP shorting = confirmed bullish
+      phase = "CONFIRMED_UPTREND";
     } else if (perf1W > 0 && breadthDirection === "NARROWING" && sharesPctChange > 0) {
+      phase = "LATE_STAGE";
+    } else if (perf1W > 0 && darkPoolSignal === "HEAVY_SHORTING" && darkPoolTrend === "INCREASING") {
+      // Price up but dark pool shorting escalating week-over-week = late stage
+      phase = "LATE_STAGE";
+    } else if (perf1W > 0 && darkPoolSignal === "HEAVY_SHORTING" && optionsSignal !== "CALL_HEAVY") {
+      // Price up + heavy shorting level (even stable) = late stage
       phase = "LATE_STAGE";
     } else if (flowPriceSignal === "DISTRIBUTION") {
       phase = "DISTRIBUTION";
+    } else if (darkPoolSignal === "HEAVY_SHORTING" && darkPoolTrend === "INCREASING" && sharesPctChange < 0) {
+      // Shorting increasing + share redemption = confirmed distribution
+      phase = "DISTRIBUTION";
+    } else if (darkPoolSignal === "HEAVY_SHORTING" && priceChange > 0.5 && sharesPctChange < 0) {
+      // Heavy shorting + rising price + share redemption = smart money distributing
+      phase = "DISTRIBUTION";
     } else if (momentumRegime === "DECELERATING" && breadthDirection === "NARROWING") {
+      phase = "EARLY_DECLINE";
+    } else if (momentumRegime === "DECELERATING" && (optionsSignal === "HEAVY_PUT_BUYING" || optionsSignal === "EXTREME_FEAR")) {
+      // Decelerating + heavy puts = early decline with hedging
+      phase = "EARLY_DECLINE";
+    } else if (darkPoolTrend === "INCREASING" && optionsSignal === "ELEVATED_PUTS" && priceChange < 0) {
+      // Rising DP shorting + elevated puts + price down = early decline
       phase = "EARLY_DECLINE";
     } else if (momentumRegime === "DECELERATING" && flowPriceSignal === "CONFIRMED_BEAR") {
       phase = "CONFIRMED_DOWNTREND";
     } else if (momentumRegime === "DECELERATING" && sharesPctChange < -0.1) {
+      phase = "CONFIRMED_DOWNTREND";
+    } else if (optionsSignal === "EXTREME_FEAR" && darkPoolSignal === "HEAVY_SHORTING" && darkPoolTrend === "INCREASING") {
+      // Both options + sustained/escalating dark pool shorting = confirmed downtrend
       phase = "CONFIRMED_DOWNTREND";
     }
 
@@ -1068,6 +1153,15 @@ export function computeSectorDiagnostics(
       rank3M,
       rankVelocity,
       rankSignal,
+      darkPoolShortRatio,
+      darkPoolShortRatio5d,
+      darkPoolShortRatio20d,
+      darkPoolTrend,
+      darkPoolSignal,
+      putCallRatio,
+      putCallOIRatio,
+      impliedVolatility,
+      optionsSignal,
       phase,
       evidence,
     };

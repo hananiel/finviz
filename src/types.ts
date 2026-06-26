@@ -231,7 +231,77 @@ export interface SectorDiagnostic {
   rankVelocity: number;    // rank3M - rank1W (positive = rising)
   rankSignal: "RAPID_ASCENT" | "RISING" | "STABLE" | "FALLING" | "RAPID_DESCENT";
 
+  // Dark pool signal (with trend)
+  darkPoolShortRatio: number;    // most recent day's short ratio (0-1)
+  darkPoolShortRatio5d: number;  // 5-day average short ratio
+  darkPoolShortRatio20d: number; // 20-day average short ratio
+  darkPoolTrend: "INCREASING" | "DECREASING" | "STABLE"; // 5d vs 20d direction
+  darkPoolSignal: "HEAVY_SHORTING" | "ELEVATED_SHORTING" | "NEUTRAL_DP" | "LOW_SHORTING";
+
+  // Options signal
+  putCallRatio: number;          // put volume / call volume (>1 = bearish positioning)
+  putCallOIRatio: number;        // put OI / call OI (accumulated positioning)
+  impliedVolatility: number;     // ATM IV (annualized decimal, e.g. 0.25 = 25%)
+  optionsSignal: "HEAVY_PUT_BUYING" | "ELEVATED_PUTS" | "NEUTRAL_OPT" | "CALL_HEAVY" | "EXTREME_FEAR";
+
   // Synthesis (human-readable, not a black box)
   phase: "EARLY_ACCUMULATION" | "CONFIRMED_UPTREND" | "LATE_STAGE" | "DISTRIBUTION" | "EARLY_DECLINE" | "CONFIRMED_DOWNTREND" | "NEUTRAL";
   evidence: string[]; // list of plain-English reasons for the phase
+}
+
+/** Dark pool short volume data for an ETF — single day, single source */
+export interface DarkPoolData {
+  ticker: string;
+  sector: string;
+  source: "FINRA" | "NYSE_ARCA" | "NASDAQ"; // which exchange reported this
+  shortVolume: number;       // shares sold short
+  totalVolume: number;       // total volume on this venue
+  shortRatio: number;        // shortVolume / totalVolume (0-1)
+  date: string;              // ISO date YYYY-MM-DD
+}
+
+/** Cross-validated dark pool aggregate for an ETF — combines all sources for one day */
+export interface DarkPoolAggregate {
+  ticker: string;
+  sector: string;
+  date: string;
+  // Per-source ratios (for transparency / validation)
+  finraRatio: number;        // FINRA (off-exchange) short ratio
+  arcaRatio: number;         // NYSE Arca short ratio
+  nasdaqRatio: number;       // Nasdaq short ratio
+  // Volume-weighted combined ratio (the signal we use)
+  combinedShortRatio: number;
+  combinedShortVolume: number;
+  combinedTotalVolume: number;
+  // Validation flag: do sources agree?
+  sourcesAgree: boolean;     // true if max divergence between sources < 10%
+  maxDivergence: number;     // largest difference between any two source ratios
+}
+
+/** Aggregated dark pool trend for an ETF over multiple days */
+export interface DarkPoolTrend {
+  ticker: string;
+  sector: string;
+  shortRatio1d: number;      // most recent day's combined short ratio
+  shortRatio5d: number;      // 5-day average combined short ratio
+  shortRatio20d: number;     // 20-day (monthly) average combined short ratio
+  trend: "INCREASING" | "DECREASING" | "STABLE"; // 5d avg vs 20d avg direction
+  trendStrength: number;     // magnitude of change (5d avg - 20d avg, in ratio units)
+  daysOfData: number;        // how many days of data we have
+  sourcesAgree: boolean;     // did all sources agree on today's reading?
+  maxDivergence: number;     // largest divergence between sources today
+}
+
+/** Options flow data for an ETF */
+export interface OptionsData {
+  ticker: string;
+  sector: string;
+  putVolume: number;         // total put contracts traded
+  callVolume: number;        // total call contracts traded
+  putCallRatio: number;      // putVolume / callVolume
+  putOpenInterest: number;   // total put open interest
+  callOpenInterest: number;  // total call open interest
+  putCallOIRatio: number;    // putOI / callOI
+  impliedVolatility: number; // ATM IV (annualized, decimal)
+  date: string;              // ISO date
 }

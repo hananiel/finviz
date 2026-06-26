@@ -96,6 +96,11 @@
   .date-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
   .date-nav .date-label { color: var(--text); font-size: 0.9em; font-weight: 600; min-width: 100px; text-align: center; }
   .date-nav .date-hint { color: var(--dim); font-size: 0.75em; }
+  /* Delta badges for day-over-day comparison */
+  .delta { font-size: 0.75em; font-weight: 600; margin-left: 3px; opacity: 0.85; }
+  .delta.pos { color: var(--green); }
+  .delta.neg { color: var(--red); }
+  .phase-change { font-size: 0.7em; color: var(--yellow); margin-top: 2px; font-style: italic; }
 </style>
 </head>
 <body>
@@ -519,6 +524,28 @@ function renderRotationHeatmap(signals, timeframe) {
 function renderDiagnostics(diagnostics) {
   if (!diagnostics || diagnostics.length === 0) return '';
 
+  // Build lookup of previous day's diagnostics by ticker
+  const prevDiag = {};
+  if (prevDayData && prevDayData.diagnostics) {
+    for (const pd of prevDayData.diagnostics) {
+      prevDiag[pd.ticker] = pd;
+    }
+  }
+  const hasPrev = Object.keys(prevDiag).length > 0;
+  const prevDate = prevDayData ? (prevDayData.timestamp || '').slice(0, 10) : '';
+
+  // Delta badge: shows change vs previous day
+  function delta(current, previous, fmt, invertColor) {
+    if (!hasPrev || previous === undefined || previous === 0 || current === 0) return '';
+    const diff = current - previous;
+    if (Math.abs(diff) < 0.001) return '';
+    const sign = diff > 0 ? '+' : '';
+    const cls = invertColor
+      ? (diff > 0 ? 'neg' : 'pos')    // higher = bad (e.g. short ratio, P/C)
+      : (diff > 0 ? 'pos' : 'neg');   // higher = good
+    return ` <span class="delta ${cls}" title="vs ${prevDate}">${sign}${fmt(diff)}</span>`;
+  }
+
   const phaseLabels = {
     EARLY_ACCUMULATION: 'Early Accumulation',
     CONFIRMED_UPTREND: 'Confirmed Uptrend',
@@ -539,10 +566,23 @@ function renderDiagnostics(diagnostics) {
     CONFIRMED_DOWNTREND: 'confirmed-down',
   };
 
+  const fmtPct = v => (v * 100).toFixed(0) + '%';
+  const fmtPct2 = v => v.toFixed(2) + '%';
+  const fmtDec = v => v.toFixed(2);
+  const fmtInt = v => Math.round(v).toString();
+
   let cards = '';
   for (const d of diagnostics) {
     const pLabel = phaseLabels[d.phase] || d.phase;
     const pClass = phaseClass[d.phase] || 'neutral';
+    const prev = prevDiag[d.ticker];
+
+    // Phase change indicator
+    let phaseChange = '';
+    if (prev && prev.phase && prev.phase !== d.phase) {
+      const prevLabel = phaseLabels[prev.phase] || prev.phase;
+      phaseChange = `<div class="phase-change" title="Phase changed from ${prevLabel}">← ${prevLabel}</div>`;
+    }
 
     const evidenceHtml = d.evidence.length > 0
       ? `<ul class="diag-evidence">${d.evidence.map(e => `<li>${e}</li>`).join('')}</ul>`
@@ -552,15 +592,20 @@ function renderDiagnostics(diagnostics) {
       <div class="diag-card-header">
         <h3>${d.ticker} — ${d.sector}</h3>
         <span class="diag-phase ${pClass}">${pLabel}</span>
+        ${phaseChange}
       </div>
       ${evidenceHtml}
       <div class="diag-metrics">
-        <div><span class="metric-label">1W</span> <span class="metric-val">${d.perf1W > 0 ? '+' : ''}${d.perf1W.toFixed(2)}%</span></div>
-        <div><span class="metric-label">Breadth</span> <span class="metric-val">${d.breadth1W.toFixed(0)}%</span></div>
-        <div><span class="metric-label">Rank</span> <span class="metric-val">#${d.rank1W}</span></div>
+        <div><span class="metric-label">1W</span> <span class="metric-val">${d.perf1W > 0 ? '+' : ''}${d.perf1W.toFixed(2)}%${delta(d.perf1W, prev?.perf1W, fmtPct2, false)}</span></div>
+        <div><span class="metric-label">Breadth</span> <span class="metric-val">${d.breadth1W.toFixed(0)}%${delta(d.breadth1W, prev?.breadth1W, fmtInt, false)}</span></div>
+        <div><span class="metric-label">Rank</span> <span class="metric-val">#${d.rank1W}${delta(d.rank1W, prev?.rank1W, fmtInt, true)}</span></div>
         <div><span class="metric-label">MCW-EW</span> <span class="metric-val">${d.sizeSpread > 0 ? '+' : ''}${d.sizeSpread.toFixed(2)}%</span></div>
         <div><span class="metric-label">Shares Δ</span> <span class="metric-val">${d.sharesPctChange !== 0 ? (d.sharesPctChange > 0 ? '+' : '') + (d.sharesPctChange * 100).toFixed(2) + '%' : '—'}</span></div>
         <div><span class="metric-label">Velocity</span> <span class="metric-val">${d.rankVelocity > 0 ? '+' : ''}${d.rankVelocity}</span></div>
+        <div><span class="metric-label">DP Short</span> <span class="metric-val ${d.darkPoolShortRatio5d >= 0.5 ? 'neg' : d.darkPoolShortRatio5d > 0 && d.darkPoolShortRatio5d < 0.35 ? 'pos' : ''}">${d.darkPoolShortRatio5d > 0 ? (d.darkPoolShortRatio5d * 100).toFixed(0) + '%' : d.darkPoolShortRatio > 0 ? (d.darkPoolShortRatio * 100).toFixed(0) + '%' : '—'}${delta(d.darkPoolShortRatio5d || d.darkPoolShortRatio, prev?.darkPoolShortRatio5d || prev?.darkPoolShortRatio, fmtPct, true)}</span></div>
+        <div><span class="metric-label">DP Trend</span> <span class="metric-val ${d.darkPoolTrend === 'INCREASING' ? 'neg' : d.darkPoolTrend === 'DECREASING' ? 'pos' : ''}">${d.darkPoolTrend === 'INCREASING' ? '↑ Rising' : d.darkPoolTrend === 'DECREASING' ? '↓ Falling' : '→ Stable'}</span></div>
+        <div><span class="metric-label">P/C Ratio</span> <span class="metric-val ${d.putCallRatio >= 1.3 ? 'neg' : d.putCallRatio > 0 && d.putCallRatio < 0.5 ? 'pos' : ''}">${d.putCallRatio > 0 ? d.putCallRatio.toFixed(2) : '—'}${delta(d.putCallRatio, prev?.putCallRatio, fmtDec, true)}</span></div>
+        <div><span class="metric-label">IV</span> <span class="metric-val">${d.impliedVolatility > 0 ? (d.impliedVolatility * 100).toFixed(0) + '%' : '—'}${delta(d.impliedVolatility, prev?.impliedVolatility, fmtPct, true)}</span></div>
       </div>
     </div>`;
   }
@@ -568,7 +613,7 @@ function renderDiagnostics(diagnostics) {
   return `<div class="diag-panel">
     <h2>🔬 Sector Phase Diagnostics</h2>
     <div style="margin-bottom:12px;font-size:0.82em;color:var(--dim)">
-      Phase determined by convergence of momentum, breadth, size leadership, flow-price alignment, and rank velocity. Evidence shows raw data behind each classification.
+      Phase determined by convergence of momentum, breadth, size leadership, flow-price alignment, rank velocity, dark pool short volume, and options positioning.${hasPrev ? ` <span style="color:var(--yellow)">Deltas vs ${prevDate}</span>` : ''} Evidence shows raw data behind each classification.
     </div>
     <div class="diag-grid">${cards}</div>
   </div>`;
@@ -658,6 +703,7 @@ function renderRRG(signals) {
 }
 
 let currentData = null;
+let prevDayData = null; // previous day's snapshot for comparison deltas
 let currentCapital = 'deploy';
 let currentStrategy = 'momentum';
 let currentTimeframe = '5d';
@@ -780,6 +826,14 @@ async function navigateDate(direction) {
 
   currentDateIdx = newIdx;
   currentData = data;
+
+  // Load previous day for comparison deltas
+  if (newIdx > 0) {
+    prevDayData = await loadDateData(availableDates[newIdx - 1]);
+  } else {
+    prevDayData = null;
+  }
+
   $('#meta').innerHTML = `${currentData.stockCount} stocks analyzed &bull; ${currentData.timestamp} &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this &rarr;</a>`;
   updateDateNav();
   renderDashboard();
@@ -814,11 +868,20 @@ async function load() {
       const mRes = await fetch('history/index.json');
       if (mRes.ok) availableDates = await mRes.json();
     } catch {}
-    // If no manifest but we have data, treat today as the only date
+    // Fallback: use embedded availableDates from data (works with file:// protocol)
+    if (availableDates.length === 0 && currentData.availableDates) {
+      availableDates = currentData.availableDates;
+    }
+    // If still nothing, treat today as the only date
     if (availableDates.length === 0 && currentData.timestamp) {
       availableDates = [currentData.timestamp.slice(0, 10)];
     }
     currentDateIdx = availableDates.length - 1;
+
+    // Load previous day's snapshot for comparison deltas
+    if (availableDates.length >= 2) {
+      prevDayData = await loadDateData(availableDates[availableDates.length - 2]);
+    }
 
     $('#meta').innerHTML = `${currentData.stockCount} stocks analyzed &bull; ${currentData.timestamp} &nbsp;|&nbsp; <a href="guide.html" style="color:var(--blue)">How to use this &rarr;</a>`;
 
