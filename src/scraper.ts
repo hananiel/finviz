@@ -28,14 +28,31 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchWithRetry(url: string, retries = 2): Promise<Response> {
+async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
   for (let i = 0; i <= retries; i++) {
-    const res = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT },
-    });
-    if (res.ok) return res;
-    if (res.status === 429 && i < retries) {
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        headers: {
+          Accept: "text/html,application/json;q=0.9,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          "User-Agent": USER_AGENT,
+        },
+      });
+    } catch (err) {
+      if (i === retries) throw err;
       await sleep(2000 * (i + 1));
+      continue;
+    }
+
+    if (res.ok) return res;
+    if (
+      (res.status === 403 || res.status === 429 || res.status >= 500) &&
+      i < retries
+    ) {
+      const retryAfterHeader = res.headers.get("retry-after");
+      const retryAfter = retryAfterHeader ? Number(retryAfterHeader) : NaN;
+      await sleep(Number.isFinite(retryAfter) ? retryAfter * 1000 : 2000 * (i + 1));
       continue;
     }
     throw new Error(`HTTP ${res.status} fetching ${url}`);
@@ -51,9 +68,23 @@ export async function fetchMapPerformance(
   timeframe: Timeframe
 ): Promise<Map<string, number>> {
   const url = `${MAP_API}?t=sec&st=${timeframe}`;
-  const res = await fetchWithRetry(url);
-  const json = (await res.json()) as { nodes: Record<string, number> };
-  return new Map(Object.entries(json.nodes));
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const res = await fetchWithRetry(url);
+    const json = (await res.json()) as { nodes?: Record<string, number> };
+    const performance = new Map(Object.entries(json.nodes ?? {}));
+    if (performance.size > 400) return performance;
+
+    if (attempt < 3) {
+      console.warn(
+        `  ⚠ ${timeframe} map returned only ${performance.size} stocks; retrying (${attempt}/3)`
+      );
+      await sleep(2000 * attempt);
+    }
+  }
+
+  throw new Error(
+    `${timeframe} map returned fewer than 400 S&P 500 stocks after 3 attempts`
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -103,67 +134,76 @@ function parseVolume(raw: string): number {
 
 async function fetchScreenerPage(offset: number): Promise<ScreenerStock[]> {
   const url = `${SCREENER_URL}?v=152&f=idx_sp500&r=${offset}`;
-  const res = await fetchWithRetry(url);
-  const html = await res.text();
-  const $ = cheerio.load(html);
+  const validSectors = new Set(Object.values(ETF_SECTOR_MAP));
 
-  const stocks: ScreenerStock[] = [];
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const res = await fetchWithRetry(url);
+    const html = await res.text();
+    const $ = cheerio.load(html);
+    const stocks: ScreenerStock[] = [];
 
-  // The screener table uses class "screener_table" or is inside #screener-content
-  // Each data row in the main table has class "styled-row" or is a <tr> inside the table body
-  const rows = $("table.screener_table tr, table.table-light tr").toArray();
+    // Locate data rows by their quote link instead of Finviz's frequently changed table classes.
+    for (const row of $("tr").toArray()) {
+      const cells = $(row).find("td").toArray();
+      const tickerLink = $(row)
+        .find('a[href*="stock?t="], a[href*="quote.ashx?t="]')
+        .first();
+      const href = tickerLink.attr("href") ?? "";
+      const tickerMatch = href.match(/(?:stock|quote\.ashx)\?t=([^&]+)/);
+      if (!tickerMatch) continue;
 
-  for (const row of rows) {
-    const cells = $(row).find("td").toArray();
-    if (cells.length < 8) continue;
+      const ticker = decodeURIComponent(tickerMatch[1]).toUpperCase();
+      const tickerCell = cells.findIndex((cell) => $(cell).text().trim() === ticker);
+      if (tickerCell < 0 || cells.length <= tickerCell + 5) continue;
 
-    const cellTexts = cells.map((c) => $(c).text().trim());
-    // v=152 columns: #, Ticker, Company, Sector, Industry, Country, Market Cap, P/E, ...
-    const ticker = cellTexts[1];
-    const company = cellTexts[2];
-    const sector = cellTexts[3];
-    const industry = cellTexts[4];
-    const marketCapStr = cellTexts[6];
+      const company = $(cells[tickerCell + 1]).text().trim();
+      const sector = $(cells[tickerCell + 2]).text().trim();
+      const industry = $(cells[tickerCell + 3]).text().trim();
+      const marketCapStr = $(cells[tickerCell + 5]).text().trim();
+      if (!validSectors.has(sector)) continue;
 
-    // Skip header rows or rows without valid ticker
-    if (!ticker || ticker === "Ticker" || !sector) continue;
+      stocks.push({
+        ticker,
+        company,
+        sector,
+        industry,
+        marketCap: parseMarketCap(marketCapStr),
+      });
+    }
 
-    stocks.push({
-      ticker,
-      company,
-      sector,
-      industry,
-      marketCap: parseMarketCap(marketCapStr),
-    });
+    // Every page except the final partial page should contain 20 constituents.
+    const minimumExpected = offset >= 501 ? 1 : 15;
+    if (stocks.length >= minimumExpected) return stocks;
+
+    if (attempt < 3) {
+      console.warn(
+        `  ⚠ Screener offset ${offset} returned only ${stocks.length} stocks; retrying (${attempt}/3)`
+      );
+      await sleep(2000 * attempt);
+    }
   }
 
-  return stocks;
+  throw new Error(`Screener offset ${offset} returned too few stocks after 3 attempts`);
 }
 
 export async function fetchSectorMapping(): Promise<Map<string, ScreenerStock>> {
   const allStocks = new Map<string, ScreenerStock>();
   const totalPages = 26; // 503 stocks, 20 per page
 
-  // Fetch in batches of 5 with delays
-  for (let batch = 0; batch < totalPages; batch += 5) {
-    const promises: Promise<ScreenerStock[]>[] = [];
-    for (let i = batch; i < Math.min(batch + 5, totalPages); i++) {
-      const offset = i * 20 + 1;
-      promises.push(fetchScreenerPage(offset));
+  // Finviz throttles cloud-hosted IPs aggressively. Fetch sequentially so a CI run does
+  // not issue ten requests at once (five pages plus the other top-level Finviz calls).
+  for (let page = 0; page < totalPages; page++) {
+    const stocks = await fetchScreenerPage(page * 20 + 1);
+    for (const stock of stocks) {
+      allStocks.set(stock.ticker, stock);
     }
-    const results = await Promise.all(promises);
-    for (const stocks of results) {
-      for (const stock of stocks) {
-        allStocks.set(stock.ticker, stock);
-      }
-    }
-    // Delay between batches to avoid rate limiting
-    if (batch + 5 < totalPages) {
-      await sleep(300);
-    }
+    if (page + 1 < totalPages) await sleep(250);
   }
 
   console.log(`  Fetched sector mapping for ${allStocks.size} stocks`);
+  if (allStocks.size <= 400) {
+    throw new Error(`Finviz screener returned only ${allStocks.size} S&P 500 stocks`);
+  }
   return allStocks;
 }
 
@@ -891,24 +931,17 @@ export async function fetchAllData(): Promise<{
 }> {
   console.log("Fetching data from finviz...");
 
-  // Fetch map performance (3 timeframes) + sector mapping + ETFs in parallel
-  const [perf1W, perf1M, perf3M, sectorMap, etfs, assetClassETFs] = await Promise.all([
-    fetchMapPerformance("w1").then((r) => {
-      console.log("  1W performance: done");
-      return r;
-    }),
-    fetchMapPerformance("w4").then((r) => {
-      console.log("  1M performance: done");
-      return r;
-    }),
-    fetchMapPerformance("w13").then((r) => {
-      console.log("  3M performance: done");
-      return r;
-    }),
-    fetchSectorMapping(),
-    fetchSectorETFs(),
-    fetchAssetClassETFs(),
-  ]);
+  // Keep Finviz requests sequential. Bursting requests from GitHub-hosted runners causes
+  // successful-looking but incomplete responses instead of a reliable HTTP 429.
+  const perf1W = await fetchMapPerformance("w1");
+  console.log("  1W performance: done");
+  const perf1M = await fetchMapPerformance("w4");
+  console.log("  1M performance: done");
+  const perf3M = await fetchMapPerformance("w13");
+  console.log("  3M performance: done");
+  const sectorMap = await fetchSectorMapping();
+  const etfs = await fetchSectorETFs();
+  const assetClassETFs = await fetchAssetClassETFs();
 
   // Fetch technical data for all ETFs (asset class + sector)
   const allETFTickers = [
@@ -938,6 +971,11 @@ export async function fetchAllData(): Promise<{
   }
 
   console.log(`  Joined ${stocks.length} stocks with performance data`);
+  if (stocks.length <= 400) {
+    throw new Error(
+      `Only ${stocks.length} stocks matched between the Finviz screener and map performance data`
+    );
+  }
 
   // Fetch AUM snapshots from Yahoo Finance + quarterly data from SEC EDGAR + chart history
   const [aumSnapshots, nportData, chartHistory] = await Promise.all([
