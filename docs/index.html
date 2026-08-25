@@ -806,7 +806,7 @@ function setupModeBar() {
 async function loadDateData(date) {
   // Try fetch first, fall back to checking if __FINVIZ_DATA matches the date
   try {
-    const res = await fetch(`history/${date}.json`);
+    const res = await fetch(`history/${date}.json`, { cache: 'no-cache' });
     if (res.ok) return await res.json();
   } catch {}
   // If today's data matches the requested date, use it
@@ -879,7 +879,9 @@ async function load() {
     } catch {}
     if (!data) {
       try {
-        const res2 = await fetch('data.json');
+        // GitHub Pages serves these with max-age=600; revalidate so a cached
+        // copy can never render as if it were current.
+        const res2 = await fetch('data.json', { cache: 'no-cache' });
         if (res2.ok) data = await res2.json();
       } catch {}
     }
@@ -891,7 +893,7 @@ async function load() {
 
     // Load available dates manifest
     try {
-      const mRes = await fetch('history/index.json');
+      const mRes = await fetch('history/index.json', { cache: 'no-cache' });
       if (mRes.ok) availableDates = await mRes.json();
     } catch {}
     // Fallback: use embedded availableDates from data (works with file:// protocol)

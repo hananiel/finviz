@@ -48,17 +48,24 @@ jobs:
       - name: Wait for GitHub Pages deployment
         run: |
           SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-          echo "Waiting for Pages deployment at $SITE_URL"
-          # Wait up to 3 minutes for deployment to propagate
-          for i in $(seq 1 18); do
+          EXPECTED=$(jq -r .timestamp docs/data.json)
+          echo "Waiting for Pages to publish timestamp $EXPECTED at $SITE_URL"
+
+          # A stale deploy also answers HTTP 200, so poll for the timestamp this
+          # run just built rather than for mere reachability.
+          for i in $(seq 1 30); do
             sleep 10
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL")
-            if [ "$STATUS" = "200" ]; then
-              echo "Site responding (attempt $i)"
-              break
+            LIVE=$(curl -sL -H 'Cache-Control: no-cache' "${SITE_URL}data.js?cb=$(date +%s)" \
+              | grep -o '"timestamp":"[^"]*"' | head -1 | cut -d'"' -f4)
+            if [ "$LIVE" = "$EXPECTED" ]; then
+              echo "Pages published the new data (attempt $i)"
+              exit 0
             fi
-            echo "Attempt $i: HTTP $STATUS, waiting..."
+            echo "Attempt $i: live timestamp is '${LIVE:-unavailable}', waiting..."
           done
+
+          echo "❌ Pages did not publish $EXPECTED within 5 minutes"
+          exit 1
 
       - name: Verify live site
         run: |
@@ -72,43 +79,54 @@ jobs:
             exit 1
           fi
           
-          # Check for critical markers
+          # Check for critical markers. Use a here-string rather than a pipe:
+          # `grep -q` exits on first match and would SIGPIPE the writer.
           CHECKS_FAILED=0
           
-          if echo "$BODY" | grep -q "renderDashboard"; then
+          if grep -q "renderDashboard" <<< "$BODY"; then
             echo "✓ renderDashboard function present"
           else
             echo "❌ renderDashboard function MISSING"
             CHECKS_FAILED=1
           fi
           
-          if echo "$BODY" | grep -q "__FINVIZ_DATA"; then
+          if grep -q "__FINVIZ_DATA" <<< "$BODY"; then
             echo "✓ __FINVIZ_DATA reference present"
           else
             echo "❌ __FINVIZ_DATA reference MISSING"
             CHECKS_FAILED=1
           fi
           
-          if echo "$BODY" | grep -q "squarify"; then
+          if grep -q "squarify" <<< "$BODY"; then
             echo "✓ squarify (treemap) function present"
           else
             echo "❌ squarify function MISSING"
             CHECKS_FAILED=1
           fi
           
-          if echo "$BODY" | grep -q "flow-treemap"; then
+          if grep -q "flow-treemap" <<< "$BODY"; then
             echo "✓ flow-treemap CSS present"
           else
             echo "❌ flow-treemap CSS MISSING"
             CHECKS_FAILED=1
           fi
           
-          # Check data.js is fetchable
-          DATA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${SITE_URL}data.js")
-          if [ "$DATA_STATUS" = "200" ]; then
-            echo "✓ data.js accessible (HTTP 200)"
+          # Check data.js is fetchable and carries the data this run built
+          EXPECTED=$(jq -r .timestamp docs/data.json)
+          LIVE_DATA=$(curl -sL -H 'Cache-Control: no-cache' "${SITE_URL}data.js?cb=$(date +%s)")
+          LIVE=$(grep -o '"timestamp":"[^"]*"' <<< "$LIVE_DATA" | head -1 | cut -d'"' -f4)
+          if [ "$LIVE" = "$EXPECTED" ]; then
+            echo "✓ data.js serving current timestamp ($LIVE)"
           else
-            echo "❌ data.js NOT accessible (HTTP $DATA_STATUS)"
+            echo "❌ data.js is stale: expected $EXPECTED, got ${LIVE:-nothing}"
+            CHECKS_FAILED=1
+          fi
+          
+          STOCKS=$(jq -r .stockCount docs/data.json)
+          if [ "${STOCKS:-0}" -gt 400 ]; then
+            echo "✓ stockCount is $STOCKS"
+          else
+            echo "❌ stockCount is only ${STOCKS:-0}"
             CHECKS_FAILED=1
           fi
           
