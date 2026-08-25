@@ -91,45 +91,154 @@ export async function fetchMapPerformance(
 // 2. Screener — parse HTML tables for sector mapping + market cap
 // ---------------------------------------------------------------------------
 
+/**
+ * Parse a Finviz numeric cell into a plain number.
+ *
+ * Tolerates the formatting variance Finviz applies across views: thousands
+ * separators, currency symbols, leading "+", unicode minus, percent suffixes,
+ * magnitude suffixes (K/M/B/T) and the "-"/"N/A" placeholders used for missing
+ * data. Returns `fallback` when the cell holds no number.
+ */
+function parseNumeric(raw: string, fallback = 0): number {
+  const cleaned = raw
+    .replace(/[\u2212\u2012-\u2015]/g, "-") // unicode minus / dashes → ASCII
+    .replace(/[,\s$%+]/g, "")
+    .trim();
+  const match = cleaned.match(/^(-?\d*\.?\d+)([KMBT])?$/i);
+  if (!match) return fallback;
+
+  const multipliers: Record<string, number> = { T: 1e12, B: 1e9, M: 1e6, K: 1e3 };
+  const value = parseFloat(match[1]);
+  if (!Number.isFinite(value)) return fallback;
+  return value * (match[2] ? multipliers[match[2].toUpperCase()] : 1);
+}
+
 /** Parse market cap strings like "3643.71B", "78.83M", "1.2T" into raw dollars */
 function parseMarketCap(raw: string): number {
-  const cleaned = raw.trim().replace(/,/g, "");
-  const match = cleaned.match(/^([\d.]+)\s*([BMTK]?)$/i);
-  if (!match) return 0;
-  const num = parseFloat(match[1]);
-  const suffix = match[2].toUpperCase();
-  const multipliers: Record<string, number> = {
-    T: 1e12,
-    B: 1e9,
-    M: 1e6,
-    K: 1e3,
-    "": 1,
-  };
-  return num * (multipliers[suffix] ?? 1);
+  return parseNumeric(raw);
 }
 
 /** Parse a percentage string like "-3.80%" → -3.80 */
 function parsePct(raw: string): number {
-  const cleaned = raw.trim().replace("%", "");
-  const val = parseFloat(cleaned);
-  return isNaN(val) ? 0 : val;
+  return parseNumeric(raw);
 }
 
 /** Parse a volume string like "18,570,783" or "2.19M" → number */
 function parseVolume(raw: string): number {
-  const cleaned = raw.trim().replace(/,/g, "");
-  const match = cleaned.match(/^([\d.]+)\s*([BMTK]?)$/i);
-  if (!match) return parseFloat(cleaned) || 0;
-  const num = parseFloat(match[1]);
-  const suffix = match[2].toUpperCase();
-  const multipliers: Record<string, number> = {
-    T: 1e12,
-    B: 1e9,
-    M: 1e6,
-    K: 1e3,
-    "": 1,
+  return parseNumeric(raw);
+}
+
+/**
+ * A single screener result row, with its columns addressable by the table's own
+ * header labels. Finviz renames, reorders and restyles view columns without
+ * notice, so positional indexes never escape this module.
+ */
+export interface ScreenerRow {
+  ticker: string;
+  /**
+   * Look up a cell by header label. Labels are matched case-insensitively and
+   * ignoring punctuation/whitespace ("Market Cap." === "market cap"), then by
+   * prefix, so a renamed "Perf Week" → "Perf Week %" still resolves. The first
+   * label that matches wins; returns "" when none do.
+   */
+  get(...labels: string[]): string;
+}
+
+/** Reduce a header label to a comparable key: lowercase alphanumerics only. */
+function normalizeLabel(raw: string): string {
+  return raw.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+/** Extract a ticker symbol from any Finviz link that carries a `t=` parameter. */
+function tickerFromHref(href: string): string | null {
+  const match = href.match(/[?&]t=([^&"'#]+)/);
+  if (!match) return null;
+  const ticker = decodeURIComponent(match[1]).trim().toUpperCase();
+  return /^[A-Z0-9.\-]{1,10}$/.test(ticker) ? ticker : null;
+}
+
+/**
+ * Parse a Finviz screener HTML page into label-addressable rows.
+ *
+ * Deliberately assumes as little as possible about the markup:
+ * - The results table is located by finding the header row that contains a
+ *   "Ticker" column, not by class name (Finviz churns its CSS classes).
+ * - Columns are addressed by header label, never by position.
+ * - Tickers come from each row's link `t=` parameter, not from cell text: the
+ *   ticker cell also renders a logo whose alt text duplicates the first letter
+ *   (e.g. AAPL reads as "AAAPL").
+ * - Header and data cells may be `th` or `td`.
+ */
+export function parseScreenerTable(html: string): ScreenerRow[] {
+  const $ = cheerio.load(html);
+
+  // The header row is any row whose cells include a bare "Ticker" label. Prefer
+  // the last such row so a nested/duplicated layout header loses to the real one.
+  const headerRows = $("tr")
+    .toArray()
+    .filter((row) =>
+      $(row)
+        .children("th,td")
+        .toArray()
+        .some((cell) => normalizeLabel($(cell).text()) === "ticker")
+    );
+  const headerRow = headerRows[headerRows.length - 1];
+  if (!headerRow) return [];
+
+  const columnIndex = new Map<string, number>();
+  $(headerRow)
+    .children("th,td")
+    .toArray()
+    .forEach((cell, index) => {
+      const key = normalizeLabel($(cell).text());
+      if (key && !columnIndex.has(key)) columnIndex.set(key, index);
+    });
+
+  const resolveColumn = (label: string): number | undefined => {
+    const key = normalizeLabel(label);
+    if (!key) return undefined;
+    const exact = columnIndex.get(key);
+    if (exact !== undefined) return exact;
+    for (const [candidate, index] of columnIndex) {
+      if (candidate.startsWith(key)) return index;
+    }
+    return undefined;
   };
-  return num * (multipliers[suffix] ?? 1);
+
+  // Data rows are the siblings of the header row inside the same table.
+  const table = $(headerRow).closest("table");
+  const candidateRows = (table.length > 0 ? table.find("tr") : $("tr")).toArray();
+
+  const rows: ScreenerRow[] = [];
+  for (const row of candidateRows) {
+    if (row === headerRow) continue;
+
+    const ticker = $(row)
+      .find("a[href]")
+      .toArray()
+      .map((link) => tickerFromHref($(link).attr("href") ?? ""))
+      .find((value): value is string => value !== null);
+    if (!ticker) continue;
+
+    const cells = $(row)
+      .children("th,td")
+      .toArray()
+      .map((cell) => $(cell).text().trim());
+    if (cells.length === 0) continue;
+
+    rows.push({
+      ticker,
+      get(...labels: string[]): string {
+        for (const label of labels) {
+          const index = resolveColumn(label);
+          if (index !== undefined && cells[index] !== undefined) return cells[index];
+        }
+        return "";
+      },
+    });
+  }
+
+  return rows;
 }
 
 async function fetchScreenerPage(offset: number): Promise<ScreenerStock[]> {
@@ -138,36 +247,18 @@ async function fetchScreenerPage(offset: number): Promise<ScreenerStock[]> {
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     const res = await fetchWithRetry(url);
-    const html = await res.text();
-    const $ = cheerio.load(html);
     const stocks: ScreenerStock[] = [];
 
-    // Locate data rows by their quote link instead of Finviz's frequently changed table classes.
-    for (const row of $("tr").toArray()) {
-      const cells = $(row).find("td").toArray();
-      const tickerLink = $(row)
-        .find('a[href*="stock?t="], a[href*="quote.ashx?t="]')
-        .first();
-      const href = tickerLink.attr("href") ?? "";
-      const tickerMatch = href.match(/(?:stock|quote\.ashx)\?t=([^&]+)/);
-      if (!tickerMatch) continue;
-
-      const ticker = decodeURIComponent(tickerMatch[1]).toUpperCase();
-      const tickerCell = cells.findIndex((cell) => $(cell).text().trim() === ticker);
-      if (tickerCell < 0 || cells.length <= tickerCell + 5) continue;
-
-      const company = $(cells[tickerCell + 1]).text().trim();
-      const sector = $(cells[tickerCell + 2]).text().trim();
-      const industry = $(cells[tickerCell + 3]).text().trim();
-      const marketCapStr = $(cells[tickerCell + 5]).text().trim();
+    for (const row of parseScreenerTable(await res.text())) {
+      const sector = row.get("Sector");
       if (!validSectors.has(sector)) continue;
 
       stocks.push({
-        ticker,
-        company,
+        ticker: row.ticker,
+        company: row.get("Company"),
         sector,
-        industry,
-        marketCap: parseMarketCap(marketCapStr),
+        industry: row.get("Industry"),
+        marketCap: parseMarketCap(row.get("Market Cap")),
       });
     }
 
@@ -214,37 +305,28 @@ export async function fetchSectorMapping(): Promise<Map<string, ScreenerStock>> 
 export async function fetchSectorETFs(): Promise<SectorETF[]> {
   const url = `${SCREENER_URL}?v=140&t=${SECTOR_ETF_TICKERS}`;
   const res = await fetchWithRetry(url);
-  const html = await res.text();
-  const $ = cheerio.load(html);
 
   const etfs: SectorETF[] = [];
-  const rows = $("table.screener_table tr, table.table-light tr").toArray();
-
-  for (const row of rows) {
-    const cells = $(row).find("td").toArray();
-    if (cells.length < 16) continue;
-
-    const cellTexts = cells.map((c) => $(c).text().trim());
-    // v=140 performance view columns:
-    // #, Ticker, Perf Week, Perf Month, Perf Quart, Perf Half, Perf Year, Perf YTD,
-    // ... more perf columns ..., Volatility W, Volatility M, Recom, Avg Volume, Rel Volume, Price, Change, Volume
-    const ticker = cellTexts[1];
-
-    if (!ticker || !(ticker in ETF_SECTOR_MAP)) continue;
+  for (const row of parseScreenerTable(await res.text())) {
+    if (!(row.ticker in ETF_SECTOR_MAP)) continue;
 
     etfs.push({
-      ticker,
-      sector: ETF_SECTOR_MAP[ticker],
-      perf1W: parsePct(cellTexts[2]),
-      perf1M: parsePct(cellTexts[3]),
-      perf3M: parsePct(cellTexts[4]),
-      avgVolume: parseVolume(cellTexts[12]),
-      relVolume: parseFloat(cellTexts[13]) || 1,
-      price: parseFloat(cellTexts[14].replace(",", "")) || 0,
+      ticker: row.ticker,
+      sector: ETF_SECTOR_MAP[row.ticker],
+      perf1W: parsePct(row.get("Perf Week")),
+      perf1M: parsePct(row.get("Perf Month")),
+      perf3M: parsePct(row.get("Perf Quart", "Perf Quarter")),
+      avgVolume: parseVolume(row.get("Avg Volume", "Average Volume")),
+      relVolume: parseNumeric(row.get("Rel Volume", "Relative Volume"), 1),
+      price: parseNumeric(row.get("Price")),
     });
   }
 
   console.log(`  Fetched ${etfs.length} sector ETFs`);
+  const expected = Object.keys(ETF_SECTOR_MAP).length;
+  if (etfs.length < expected) {
+    throw new Error(`Sector ETF screener returned ${etfs.length}/${expected} ETFs`);
+  }
   return etfs;
 }
 
@@ -279,34 +361,27 @@ const ASSET_CLASS_TICKERS = Object.keys(ASSET_CLASS_ETF_MAP).join(",");
 export async function fetchAssetClassETFs(): Promise<AssetClassETF[]> {
   const url = `${SCREENER_URL}?v=140&t=${ASSET_CLASS_TICKERS}`;
   const res = await fetchWithRetry(url);
-  const html = await res.text();
-  const $ = cheerio.load(html);
 
   const etfs: AssetClassETF[] = [];
-  const rows = $("table.screener_table tr, table.table-light tr").toArray();
+  for (const row of parseScreenerTable(await res.text())) {
+    const info = ASSET_CLASS_ETF_MAP[row.ticker];
+    if (!info) continue;
 
-  for (const row of rows) {
-    const cells = $(row).find("td").toArray();
-    if (cells.length < 16) continue;
-
-    const cellTexts = cells.map((c) => $(c).text().trim());
-    const ticker = cellTexts[1];
-
-    if (!ticker || !(ticker in ASSET_CLASS_ETF_MAP)) continue;
-
-    const info = ASSET_CLASS_ETF_MAP[ticker];
     etfs.push({
-      ticker,
+      ticker: row.ticker,
       assetClass: info.assetClass,
       label: info.label,
-      perf1W: parsePct(cellTexts[2]),
-      perf1M: parsePct(cellTexts[3]),
-      perf3M: parsePct(cellTexts[4]),
-      relVolume: parseFloat(cellTexts[13]) || 1,
+      perf1W: parsePct(row.get("Perf Week")),
+      perf1M: parsePct(row.get("Perf Month")),
+      perf3M: parsePct(row.get("Perf Quart", "Perf Quarter")),
+      relVolume: parseNumeric(row.get("Rel Volume", "Relative Volume"), 1),
     });
   }
 
   console.log(`  Fetched ${etfs.length} asset class ETFs`);
+  if (etfs.length === 0) {
+    throw new Error("Asset class ETF screener returned no rows");
+  }
   return etfs;
 }
 
@@ -325,31 +400,18 @@ export async function fetchTechnicalData(tickers: string[]): Promise<Map<string,
     // v=171 = Technical view: No, Ticker, Beta, ATR, SMA20, SMA50, SMA200, 52W High, 52W Low, RSI, ...
     const url = `${SCREENER_URL}?v=171&t=${tickerStr}`;
     const res = await fetchWithRetry(url);
-    const html = await res.text();
-    const $ = cheerio.load(html);
 
-    const rows = $("table.screener_table tr, table.table-light tr").toArray();
+    for (const row of parseScreenerTable(await res.text())) {
+      if (!batch.includes(row.ticker)) continue;
 
-    for (const row of rows) {
-      const cells = $(row).find("td").toArray();
-      if (cells.length < 10) continue;
-
-      const cellTexts = cells.map((c) => $(c).text().trim());
-      const ticker = cellTexts[1];
-
-      if (!ticker || !batch.includes(ticker)) continue;
-
-      // v=171 columns (0-indexed):
-      // 0: #, 1: Ticker, 2: Beta, 3: ATR, 4: SMA20, 5: SMA50, 6: SMA200,
-      // 7: 52W High, 8: 52W Low, 9: RSI, 10: from Open, 11: Gap, ...
-      results.set(ticker, {
-        ticker,
-        sma20: parsePct(cellTexts[4]),
-        sma50: parsePct(cellTexts[5]),
-        sma200: parsePct(cellTexts[6]),
-        from52WHigh: parsePct(cellTexts[7]),
-        from52WLow: parsePct(cellTexts[8]),
-        rsi: parseFloat(cellTexts[9]) || 50,
+      results.set(row.ticker, {
+        ticker: row.ticker,
+        sma20: parsePct(row.get("SMA20", "SMA 20")),
+        sma50: parsePct(row.get("SMA50", "SMA 50")),
+        sma200: parsePct(row.get("SMA200", "SMA 200")),
+        from52WHigh: parsePct(row.get("52W High", "52-Week High")),
+        from52WLow: parsePct(row.get("52W Low", "52-Week Low")),
+        rsi: parseNumeric(row.get("RSI", "Relative Strength Index"), 50),
       });
     }
 
@@ -359,6 +421,11 @@ export async function fetchTechnicalData(tickers: string[]): Promise<Map<string,
   }
 
   console.log(`  Fetched technical data for ${results.size}/${tickers.length} tickers`);
+  if (results.size < tickers.length) {
+    throw new Error(
+      `Technical screener returned ${results.size}/${tickers.length} tickers`
+    );
+  }
   return results;
 }
 

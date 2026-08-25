@@ -1,6 +1,15 @@
 name: Update Data
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - '.github/workflows/update-data.yml'
   schedule:
     # Run at 9:30 PM UTC (4:30 PM ET) on weekdays — after market close
     - cron: '30 21 * * 1-5'
