@@ -1,976 +1,985 @@
 {
-  "timestamp": "2026-08-28T22:14:09.583Z",
+  "timestamp": "2026-08-31T21:35:16.195Z",
   "stockCount": 503,
   "sectorPerformance": [
     {
       "sector": "Healthcare",
       "stockCount": 59,
-      "mcw1W": -2.0398046698256818,
-      "mcw1M": 5.679369575094263,
-      "mcw3M": 16.352167726524016,
-      "ew1W": -0.799118644067797,
-      "ew1M": 6.859677966101695,
-      "ew3M": 19.68816949152542,
-      "breadth1W": 35.59322033898305,
+      "mcw1W": -2.4706570556958454,
+      "mcw1M": 5.8912626519441,
+      "mcw3M": 17.268443253289835,
+      "ew1W": -0.8978474576271185,
+      "ew1M": 7.21615254237288,
+      "ew3M": 20.300661016949153,
+      "breadth1W": 27.11864406779661,
       "breadth1M": 77.96610169491525,
       "breadth3M": 89.83050847457628,
       "topMovers": [
         {
           "ticker": "VEEV",
-          "perf1W": 11.614
+          "perf1W": 14.984
         },
         {
-          "ticker": "MCK",
-          "perf1W": 4.016
+          "ticker": "RVTY",
+          "perf1W": 4.61
         },
         {
-          "ticker": "DVA",
-          "perf1W": 3.947
+          "ticker": "RMD",
+          "perf1W": 3.291
         }
       ]
     },
     {
       "sector": "Technology",
       "stockCount": 86,
-      "mcw1W": 1.9373981793936337,
-      "mcw1M": 6.573512735169987,
-      "mcw3M": 1.3868883999981543,
-      "ew1W": 0.7553023255813955,
-      "ew1M": 7.422069767441861,
-      "ew3M": 1.4850930232558144,
-      "breadth1W": 54.65116279069767,
-      "breadth1M": 66.27906976744185,
-      "breadth3M": 55.81395348837209,
+      "mcw1W": 3.78467787024592,
+      "mcw1M": 7.128668860739295,
+      "mcw3M": -1.1681127258513921,
+      "ew1W": 2.2950697674418596,
+      "ew1M": 7.1310697674418595,
+      "ew3M": -1.6823953488372103,
+      "breadth1W": 66.27906976744185,
+      "breadth1M": 65.11627906976744,
+      "breadth3M": 50,
       "topMovers": [
         {
           "ticker": "CRM",
-          "perf1W": 22.388
+          "perf1W": 23.19
         },
         {
           "ticker": "CRWD",
-          "perf1W": 13.78
+          "perf1W": 21.145
         },
         {
           "ticker": "NOW",
-          "perf1W": 12.632
+          "perf1W": 15.572
         }
       ]
     },
     {
       "sector": "Consumer Cyclical",
       "stockCount": 54,
-      "mcw1W": -0.033727331927162846,
-      "mcw1M": 7.9045848693389615,
-      "mcw3M": -2.4960161428752996,
-      "ew1W": -1.605259259259259,
-      "ew1M": -1.1314629629629627,
-      "ew3M": 3.1294259259259256,
-      "breadth1W": 27.77777777777778,
+      "mcw1W": -0.6082438405828303,
+      "mcw1M": 1.6733859442143244,
+      "mcw3M": -1.0146749897378928,
+      "ew1W": -3.7522407407407408,
+      "ew1M": -1.8860000000000003,
+      "ew3M": 1.9702777777777793,
+      "breadth1W": 9.25925925925926,
       "breadth1M": 38.88888888888889,
       "breadth3M": 53.70370370370371,
       "topMovers": [
         {
-          "ticker": "DASH",
-          "perf1W": 5.929
+          "ticker": "TSLA",
+          "perf1W": 5.445
         },
         {
           "ticker": "CVNA",
-          "perf1W": 5.908
+          "perf1W": 1.562
         },
         {
-          "ticker": "CMG",
-          "perf1W": 3.062
+          "ticker": "DASH",
+          "perf1W": 1.17
         }
       ]
     },
     {
       "sector": "Financial",
       "stockCount": 70,
-      "mcw1W": 1.0834814835987256,
-      "mcw1M": 2.144903757645898,
-      "mcw3M": 13.259288135573447,
-      "ew1W": 0.5354428571428572,
-      "ew1M": 1.900985714285713,
-      "ew3M": 12.795257142857146,
-      "breadth1W": 67.14285714285714,
-      "breadth1M": 58.57142857142858,
+      "mcw1W": -0.8262801166575247,
+      "mcw1M": 1.6069297435578196,
+      "mcw3M": 12.870464485347924,
+      "ew1W": -1.3113142857142857,
+      "ew1M": 1.3774000000000004,
+      "ew3M": 12.09484285714286,
+      "breadth1W": 18.571428571428573,
+      "breadth1M": 52.85714285714286,
       "breadth3M": 95.71428571428572,
       "topMovers": [
         {
-          "ticker": "CME",
-          "perf1W": 3.935
+          "ticker": "COIN",
+          "perf1W": 4.814
         },
         {
-          "ticker": "WFC",
-          "perf1W": 3.399
+          "ticker": "IBKR",
+          "perf1W": 4.557
         },
         {
-          "ticker": "STT",
-          "perf1W": 3.313
+          "ticker": "APO",
+          "perf1W": 2.854
         }
       ]
     },
     {
       "sector": "Consumer Defensive",
       "stockCount": 33,
-      "mcw1W": -0.44551099769461644,
-      "mcw1M": -1.1693466049964476,
-      "mcw3M": 1.1800582174600183,
-      "ew1W": -0.7957272727272727,
-      "ew1M": 1.1363333333333334,
-      "ew3M": 5.572121212121212,
-      "breadth1W": 36.36363636363637,
-      "breadth1M": 45.45454545454545,
-      "breadth3M": 69.6969696969697,
+      "mcw1W": -2.3638839060630352,
+      "mcw1M": -1.011111095621464,
+      "mcw3M": 2.1345719716771803,
+      "ew1W": -2.925424242424243,
+      "ew1M": 0.9630606060606058,
+      "ew3M": 5.797515151515152,
+      "breadth1W": 18.181818181818183,
+      "breadth1M": 48.484848484848484,
+      "breadth3M": 66.66666666666666,
       "topMovers": [
         {
+          "ticker": "BG",
+          "perf1W": 5.492
+        },
+        {
           "ticker": "SJM",
-          "perf1W": 6.451
+          "perf1W": 4.203
         },
         {
-          "ticker": "GIS",
-          "perf1W": 3.953
-        },
-        {
-          "ticker": "MO",
-          "perf1W": 3.874
+          "ticker": "ADM",
+          "perf1W": 4.005
         }
       ]
     },
     {
       "sector": "Utilities",
       "stockCount": 31,
-      "mcw1W": -0.15916914248383482,
-      "mcw1M": -4.555619028529431,
-      "mcw3M": -3.7717894627439628,
-      "ew1W": -0.04458064516129036,
-      "ew1M": -4.784483870967742,
-      "ew3M": -3.4510645161290325,
-      "breadth1W": 54.83870967741935,
-      "breadth1M": 6.451612903225806,
-      "breadth3M": 19.35483870967742,
+      "mcw1W": -2.0203307093120206,
+      "mcw1M": -4.775963907187765,
+      "mcw3M": -1.7251979508596924,
+      "ew1W": -2.516870967741936,
+      "ew1M": -5.453322580645162,
+      "ew3M": -2.48116129032258,
+      "breadth1W": 19.35483870967742,
+      "breadth1M": 9.67741935483871,
+      "breadth3M": 38.70967741935484,
       "topMovers": [
         {
-          "ticker": "AWK",
-          "perf1W": 2.149
+          "ticker": "CNP",
+          "perf1W": 1.279
         },
         {
-          "ticker": "SRE",
-          "perf1W": 1.713
+          "ticker": "VST",
+          "perf1W": 1.26
         },
         {
-          "ticker": "CEG",
-          "perf1W": 1.418
+          "ticker": "ETR",
+          "perf1W": 0.492
         }
       ]
     },
     {
       "sector": "Basic Materials",
       "stockCount": 20,
-      "mcw1W": -0.032091734172099304,
-      "mcw1M": 5.5213572897081304,
-      "mcw3M": 4.580379632395579,
-      "ew1W": -0.5309,
-      "ew1M": 3.88525,
-      "ew3M": 1.35245,
-      "breadth1W": 45,
-      "breadth1M": 65,
+      "mcw1W": -1.1188856202500288,
+      "mcw1M": 7.495108611216789,
+      "mcw3M": 4.482461270315942,
+      "ew1W": -0.9508999999999999,
+      "ew1M": 5.0801,
+      "ew3M": 1.5796000000000006,
+      "breadth1W": 35,
+      "breadth1M": 70,
       "breadth3M": 50,
       "topMovers": [
         {
-          "ticker": "IFF",
-          "perf1W": 4.355
+          "ticker": "CTVA",
+          "perf1W": 2.198
         },
         {
           "ticker": "NUE",
-          "perf1W": 2.82
+          "perf1W": 2.044
         },
         {
           "ticker": "STLD",
-          "perf1W": 2.617
+          "perf1W": 1.461
         }
       ]
     },
     {
       "sector": "Industrials",
       "stockCount": 75,
-      "mcw1W": -1.8438488029905353,
-      "mcw1M": -1.0756327523453508,
-      "mcw3M": 3.1455926778092134,
-      "ew1W": -1.8701599999999996,
-      "ew1M": -1.1352133333333334,
-      "ew3M": 2.055746666666667,
-      "breadth1W": 18.666666666666668,
-      "breadth1M": 38.666666666666664,
+      "mcw1W": -2.163112728017644,
+      "mcw1M": -2.910749186335023,
+      "mcw3M": 2.7221585268260555,
+      "ew1W": -2.3937733333333338,
+      "ew1M": -2.7413200000000004,
+      "ew3M": 1.4305199999999993,
+      "breadth1W": 12,
+      "breadth1M": 28.000000000000004,
       "breadth3M": 56.00000000000001,
       "topMovers": [
         {
           "ticker": "CHRW",
-          "perf1W": 6.185
-        },
-        {
-          "ticker": "UPS",
-          "perf1W": 3.255
+          "perf1W": 4.76
         },
         {
           "ticker": "VRSK",
-          "perf1W": 2.277
+          "perf1W": 2.232
+        },
+        {
+          "ticker": "JBHT",
+          "perf1W": 2.151
         }
       ]
     },
     {
       "sector": "Real Estate",
       "stockCount": 30,
-      "mcw1W": -1.2746213871439358,
-      "mcw1M": -1.8587327731632473,
-      "mcw3M": 2.0956367944989798,
-      "ew1W": -1.3238999999999999,
-      "ew1M": -2.2901666666666665,
-      "ew3M": 0.8593666666666667,
-      "breadth1W": 16.666666666666664,
-      "breadth1M": 23.333333333333332,
-      "breadth3M": 46.666666666666664,
+      "mcw1W": -2.6152046729652927,
+      "mcw1M": -1.9339259951910233,
+      "mcw3M": 3.1798306414397786,
+      "ew1W": -2.968833333333334,
+      "ew1M": -2.6410666666666667,
+      "ew3M": 1.1412666666666669,
+      "breadth1W": 3.3333333333333335,
+      "breadth1M": 16.666666666666664,
+      "breadth3M": 56.666666666666664,
       "topMovers": [
         {
           "ticker": "SBAC",
-          "perf1W": 4.579
-        },
-        {
-          "ticker": "BXP",
-          "perf1W": 2.438
+          "perf1W": 2.48
         },
         {
           "ticker": "CCI",
-          "perf1W": 0.834
+          "perf1W": -0.34
+        },
+        {
+          "ticker": "EQIX",
+          "perf1W": -0.804
         }
       ]
     },
     {
       "sector": "Energy",
       "stockCount": 21,
-      "mcw1W": -1.8805487614517342,
-      "mcw1M": 5.3144865231513085,
-      "mcw3M": 12.326930439546583,
-      "ew1W": -0.7698095238095236,
-      "ew1M": 6.821904761904763,
-      "ew3M": 10.77038095238095,
-      "breadth1W": 52.38095238095239,
-      "breadth1M": 76.19047619047619,
-      "breadth3M": 80.95238095238095,
+      "mcw1W": 0.9443058663202947,
+      "mcw1M": 6.628355692779422,
+      "mcw3M": 12.393432591614676,
+      "ew1W": 1.8378095238095236,
+      "ew1M": 7.2013333333333325,
+      "ew3M": 11.107571428571427,
+      "breadth1W": 76.19047619047619,
+      "breadth1M": 85.71428571428571,
+      "breadth3M": 90.47619047619048,
       "topMovers": [
         {
           "ticker": "SLB",
-          "perf1W": 6.423
-        },
-        {
-          "ticker": "WMB",
-          "perf1W": 4.596
+          "perf1W": 11.296
         },
         {
           "ticker": "HAL",
-          "perf1W": 2.377
+          "perf1W": 6.411
+        },
+        {
+          "ticker": "WMB",
+          "perf1W": 5.749
         }
       ]
     },
     {
       "sector": "Communication Services",
       "stockCount": 24,
-      "mcw1W": 1.1336587846880646,
-      "mcw1M": 4.404808796177955,
-      "mcw3M": -7.780561315992636,
-      "ew1W": 1.064125,
-      "ew1M": 5.68825,
-      "ew3M": -2.1557500000000003,
-      "breadth1W": 75,
+      "mcw1W": -1.6198335393511578,
+      "mcw1M": -2.432765293097614,
+      "mcw3M": -8.192420649824053,
+      "ew1W": -0.694875,
+      "ew1M": 5.111791666666666,
+      "ew3M": -4.466333333333332,
+      "breadth1W": 33.33333333333333,
       "breadth1M": 79.16666666666666,
-      "breadth3M": 58.333333333333336,
+      "breadth3M": 50,
       "topMovers": [
         {
           "ticker": "PSKY",
-          "perf1W": 5.121
-        },
-        {
-          "ticker": "META",
-          "perf1W": 5.114
+          "perf1W": 5.411
         },
         {
           "ticker": "APP",
-          "perf1W": 3.921
+          "perf1W": 4.511
+        },
+        {
+          "ticker": "TTD",
+          "perf1W": 3.391
         }
       ]
     }
   ],
   "rotationSignals": [
     {
-      "sector": "Communication Services",
+      "sector": "Technology",
       "signal": "INFLOW",
-      "rotationScore": 44.65,
-      "rankShift": 9,
-      "momentumAccel": 1.66,
-      "institutionalSpread": -0.74,
-      "breadthDivergence": 19.17,
-      "rank1W": 2,
-      "rank3M": 11
+      "rotationScore": 54,
+      "rankShift": 8,
+      "momentumAccel": 2.59,
+      "institutionalSpread": 0.59,
+      "breadthDivergence": 15.58,
+      "rank1W": 1,
+      "rank3M": 9
     },
     {
       "sector": "Consumer Cyclical",
       "signal": "INFLOW",
-      "rotationScore": 42.25,
-      "rankShift": 4,
-      "momentumAccel": 1.27,
-      "institutionalSpread": 6.05,
-      "breadthDivergence": -19.26,
-      "rank1W": 5,
-      "rank3M": 9
-    },
-    {
-      "sector": "Technology",
-      "signal": "INFLOW",
-      "rotationScore": 36.47,
-      "rankShift": 6,
-      "momentumAccel": 1.58,
-      "institutionalSpread": -0.04,
-      "breadthDivergence": 5.81,
-      "rank1W": 1,
-      "rank3M": 7
+      "rotationScore": 27.64,
+      "rankShift": 5,
+      "momentumAccel": 0.07,
+      "institutionalSpread": 3.39,
+      "breadthDivergence": -26.67,
+      "rank1W": 3,
+      "rank3M": 8
     },
     {
       "sector": "Basic Materials",
-      "signal": "INFLOW",
-      "rotationScore": 13.82,
-      "rankShift": 0,
-      "momentumAccel": 0.4,
-      "institutionalSpread": 1.18,
-      "breadthDivergence": 7,
-      "rank1W": 4,
+      "signal": "NEUTRAL",
+      "rotationScore": 9.69,
+      "rankShift": -1,
+      "momentumAccel": 0.25,
+      "institutionalSpread": 1.38,
+      "breadthDivergence": 6,
+      "rank1W": 5,
       "rank3M": 4
+    },
+    {
+      "sector": "Energy",
+      "signal": "NEUTRAL",
+      "rotationScore": 1.12,
+      "rankShift": 1,
+      "momentumAccel": 0.34,
+      "institutionalSpread": -0.7,
+      "breadthDivergence": -8.57,
+      "rank1W": 2,
+      "rank3M": 3
+    },
+    {
+      "sector": "Communication Services",
+      "signal": "NEUTRAL",
+      "rotationScore": -4.84,
+      "rankShift": 5,
+      "momentumAccel": -0.35,
+      "institutionalSpread": -4.9,
+      "breadthDivergence": 10.83,
+      "rank1W": 6,
+      "rank3M": 11
     },
     {
       "sector": "Utilities",
       "signal": "NEUTRAL",
-      "rotationScore": 9.64,
-      "rankShift": 4,
-      "momentumAccel": -0.4,
-      "institutionalSpread": 0.09,
-      "breadthDivergence": 6.45,
-      "rank1W": 6,
+      "rotationScore": -6.11,
+      "rankShift": 3,
+      "momentumAccel": -1.34,
+      "institutionalSpread": 0.61,
+      "breadthDivergence": -25.16,
+      "rank1W": 7,
       "rank3M": 10
     },
     {
       "sector": "Financial",
       "signal": "OUTFLOW",
-      "rotationScore": -11.09,
-      "rankShift": -1,
-      "momentumAccel": -0.29,
-      "institutionalSpread": 0.37,
-      "breadthDivergence": -33.71,
-      "rank1W": 3,
-      "rank3M": 2
-    },
-    {
-      "sector": "Consumer Defensive",
-      "signal": "OUTFLOW",
-      "rotationScore": -15.54,
-      "rankShift": 1,
-      "momentumAccel": -0.43,
-      "institutionalSpread": -1.24,
-      "breadthDivergence": -27.88,
-      "rank1W": 7,
-      "rank3M": 8
-    },
-    {
-      "sector": "Real Estate",
-      "signal": "OUTFLOW",
-      "rotationScore": -20.55,
+      "rotationScore": -27.97,
       "rankShift": -2,
-      "momentumAccel": -0.93,
-      "institutionalSpread": 0.28,
-      "breadthDivergence": -26,
-      "rank1W": 8,
-      "rank3M": 6
+      "momentumAccel": -1.1,
+      "institutionalSpread": 0.33,
+      "breadthDivergence": -56.57,
+      "rank1W": 4,
+      "rank3M": 2
     },
     {
       "sector": "Industrials",
       "signal": "OUTFLOW",
-      "rotationScore": -30.26,
-      "rankShift": -4,
-      "momentumAccel": -1.13,
-      "institutionalSpread": 0.05,
-      "breadthDivergence": -25.33,
-      "rank1W": 9,
-      "rank3M": 5
+      "rotationScore": -29.02,
+      "rankShift": -2,
+      "momentumAccel": -1.48,
+      "institutionalSpread": -0.01,
+      "breadthDivergence": -34.4,
+      "rank1W": 8,
+      "rank3M": 6
     },
     {
-      "sector": "Energy",
+      "sector": "Consumer Defensive",
       "signal": "OUTFLOW",
-      "rotationScore": -44.76,
-      "rankShift": -7,
-      "momentumAccel": -0.96,
-      "institutionalSpread": -1.35,
-      "breadthDivergence": -14.29,
-      "rank1W": 10,
-      "rank3M": 3
+      "rotationScore": -32.48,
+      "rankShift": -2,
+      "momentumAccel": -1.25,
+      "institutionalSpread": -0.96,
+      "breadthDivergence": -30.3,
+      "rank1W": 9,
+      "rank3M": 7
+    },
+    {
+      "sector": "Real Estate",
+      "signal": "OUTFLOW",
+      "rotationScore": -40.74,
+      "rankShift": -6,
+      "momentumAccel": -1.56,
+      "institutionalSpread": 0.57,
+      "breadthDivergence": -45.33,
+      "rank1W": 11,
+      "rank3M": 5
     },
     {
       "sector": "Healthcare",
       "signal": "OUTFLOW",
-      "rotationScore": -59.39,
-      "rankShift": -10,
-      "momentumAccel": -1.29,
-      "institutionalSpread": -1.2,
-      "breadthDivergence": -28.81,
-      "rank1W": 11,
+      "rotationScore": -59.8,
+      "rankShift": -9,
+      "momentumAccel": -1.5,
+      "institutionalSpread": -1.42,
+      "breadthDivergence": -32.2,
+      "rank1W": 10,
       "rank3M": 1
     }
   ],
   "diagnostics": [
     {
-      "sector": "Utilities",
-      "ticker": "XLU",
-      "perf1W": -0.15916914248383482,
-      "perf1WAnnualized": -8.27679540915941,
-      "perf3MAnnualized": -15.087157850975851,
-      "momentumRegime": "STEADY",
-      "breadth1W": 54.83870967741935,
-      "breadth3M": 19.35483870967742,
-      "breadthDirection": "BROADENING",
-      "mcw1W": -0.15916914248383482,
-      "ew1W": -0.04458064516129036,
-      "sizeSpread": -0.11458849732254446,
+      "sector": "Financial",
+      "ticker": "XLF",
+      "perf1W": -0.8262801166575247,
+      "perf1WAnnualized": -42.966566066191284,
+      "perf3MAnnualized": 51.481857941391695,
+      "momentumRegime": "DECELERATING",
+      "breadth1W": 18.571428571428573,
+      "breadth3M": 95.71428571428572,
+      "breadthDirection": "NARROWING",
+      "mcw1W": -0.8262801166575247,
+      "ew1W": -1.3113142857142857,
+      "sizeSpread": 0.485034169056761,
       "sizeLeadership": "BROAD_BASED",
-      "sharesPctChange": 0.006667334044672655,
-      "priceChange": -0.15916914248383482,
+      "sharesPctChange": 0.005136568330517686,
+      "priceChange": -0.8262801166575247,
       "flowPriceSignal": "NEUTRAL",
-      "rank1W": 6,
-      "rank3M": 10,
-      "rankVelocity": 4,
-      "rankSignal": "RAPID_ASCENT",
-      "darkPoolShortRatio": 0.6949305563504182,
-      "darkPoolShortRatio5d": 0.5965849348655669,
-      "darkPoolShortRatio20d": 0.6063232430486377,
-      "darkPoolTrend": "STABLE",
-      "darkPoolSignal": "ELEVATED_SHORTING",
-      "putCallRatio": 0.779874213836478,
-      "putCallOIRatio": 0.5822541966426859,
-      "impliedVolatility": 0.29085995605468745,
-      "optionsSignal": "NEUTRAL_OPT",
-      "institutionalIntent": "NONE",
-      "intentEvidence": "",
+      "rank1W": 4,
+      "rank3M": 2,
+      "rankVelocity": -2,
+      "rankSignal": "FALLING",
+      "darkPoolShortRatio": 0.3677754495724319,
+      "darkPoolShortRatio5d": 0.6056903785764141,
+      "darkPoolShortRatio20d": 0.5596502351596854,
+      "darkPoolTrend": "INCREASING",
+      "darkPoolSignal": "HEAVY_SHORTING",
+      "putCallRatio": 3.6134751773049647,
+      "putCallOIRatio": 1.3500160525095424,
+      "impliedVolatility": 0.16449810119628905,
+      "optionsSignal": "EXTREME_FEAR",
+      "institutionalIntent": "DARK_ACCUMULATION",
+      "intentEvidence": "Institutional put writing: DP short 61% (MM hedging bought puts) + P/C 3.61 + IV 16% (premium sellers in control)",
       "phase": "EARLY_ACCUMULATION",
       "evidence": [
-        "Breadth broadening: 55% positive this week vs 19% over 3M",
-        "Rapid ascent: ranked #6 now, was #10 over 3M",
-        "Dark pool elevated shorting: 5d avg 60%, 20d avg 61%"
+        "Momentum decelerating: 1W ann. -43% vs 3M ann. +51%",
+        "Breadth narrowing: 19% positive this week vs 96% over 3M",
+        "Falling: ranked #4 now vs #2 over 3M",
+        "Dark pool heavy shorting: 5d avg 61%, 20d avg 56% (↑ increasing week-over-week)",
+        "Extreme fear in options: P/C ratio 3.61, OI P/C 1.35, IV 16%",
+        "🔍 Intent: Institutional put writing: DP short 61% (MM hedging bought puts) + P/C 3.61 + IV 16% (premium sellers in control)"
       ]
     },
     {
       "sector": "Technology",
       "ticker": "XLK",
-      "perf1W": 1.9373981793936337,
-      "perf1WAnnualized": 100.74470532846895,
-      "perf3MAnnualized": 5.547553599992617,
+      "perf1W": 3.78467787024592,
+      "perf1WAnnualized": 196.80324925278785,
+      "perf3MAnnualized": -4.672450903405569,
       "momentumRegime": "ACCELERATING",
-      "breadth1W": 54.65116279069767,
-      "breadth3M": 55.81395348837209,
-      "breadthDirection": "STABLE",
-      "mcw1W": 1.9373981793936337,
-      "ew1W": 0.7553023255813955,
-      "sizeSpread": 1.1820958538122381,
+      "breadth1W": 66.27906976744185,
+      "breadth3M": 50,
+      "breadthDirection": "BROADENING",
+      "mcw1W": 3.78467787024592,
+      "ew1W": 2.2950697674418596,
+      "sizeSpread": 1.4896081028040604,
       "sizeLeadership": "LARGE_CAP_LED",
-      "sharesPctChange": -0.00549868675627964,
-      "priceChange": 1.9373981793936337,
+      "sharesPctChange": -0.005763078038081637,
+      "priceChange": 3.78467787024592,
       "flowPriceSignal": "NEUTRAL",
       "rank1W": 1,
-      "rank3M": 7,
-      "rankVelocity": 6,
+      "rank3M": 9,
+      "rankVelocity": 8,
       "rankSignal": "RAPID_ASCENT",
-      "darkPoolShortRatio": 0.612129955054452,
-      "darkPoolShortRatio5d": 0.5867248935944632,
-      "darkPoolShortRatio20d": 0.5901396439249162,
+      "darkPoolShortRatio": 0.5388923088260426,
+      "darkPoolShortRatio5d": 0.574693364192815,
+      "darkPoolShortRatio20d": 0.5863797909869011,
       "darkPoolTrend": "STABLE",
       "darkPoolSignal": "ELEVATED_SHORTING",
-      "putCallRatio": 2.532488114104596,
-      "putCallOIRatio": 0.7542915705867281,
-      "impliedVolatility": 0.27899890930175786,
+      "putCallRatio": 3.272727272727273,
+      "putCallOIRatio": 1.3829787234042554,
+      "impliedVolatility": 0.2855296057128906,
       "optionsSignal": "EXTREME_FEAR",
       "institutionalIntent": "NONE",
       "intentEvidence": "",
       "phase": "CONFIRMED_UPTREND",
       "evidence": [
-        "Momentum accelerating: 1W ann. +101% vs 3M ann. +6%",
-        "Large-cap led: MCW +1.94% vs EW +0.76%",
-        "Rapid ascent: ranked #1 now, was #7 over 3M",
-        "Dark pool elevated shorting: 5d avg 59%, 20d avg 59%",
-        "Extreme fear in options: P/C ratio 2.53, OI P/C 0.75, IV 28%"
-      ]
-    },
-    {
-      "sector": "Communication Services",
-      "ticker": "XLC",
-      "perf1W": 1.1336587846880646,
-      "perf1WAnnualized": 58.95025680377936,
-      "perf3MAnnualized": -31.122245263970544,
-      "momentumRegime": "ACCELERATING",
-      "breadth1W": 75,
-      "breadth3M": 58.333333333333336,
-      "breadthDirection": "BROADENING",
-      "mcw1W": 1.1336587846880646,
-      "ew1W": 1.064125,
-      "sizeSpread": 0.06953378468806459,
-      "sizeLeadership": "BROAD_BASED",
-      "sharesPctChange": -0.009534180783136347,
-      "priceChange": 1.1336587846880646,
-      "flowPriceSignal": "NEUTRAL",
-      "rank1W": 2,
-      "rank3M": 11,
-      "rankVelocity": 9,
-      "rankSignal": "RAPID_ASCENT",
-      "darkPoolShortRatio": 0.7836455895416141,
-      "darkPoolShortRatio5d": 0.655466730871866,
-      "darkPoolShortRatio20d": 0.5339698634444805,
-      "darkPoolTrend": "INCREASING",
-      "darkPoolSignal": "HEAVY_SHORTING",
-      "putCallRatio": 0.2621359223300971,
-      "putCallOIRatio": 0.3669724770642202,
-      "impliedVolatility": 0.36143216699218744,
-      "optionsSignal": "CALL_HEAVY",
-      "institutionalIntent": "AGGRESSIVE_BREAKOUT",
-      "intentEvidence": "Gamma squeeze: DP short 66% (MM hedging short calls) + call-heavy P/C 0.26 + IV 36% (aggressive call buying)",
-      "phase": "CONFIRMED_UPTREND",
-      "evidence": [
-        "Momentum accelerating: 1W ann. +59% vs 3M ann. -31%",
-        "Breadth broadening: 75% positive this week vs 58% over 3M",
-        "Rapid ascent: ranked #2 now, was #11 over 3M",
-        "Dark pool heavy shorting: 5d avg 66%, 20d avg 53% (↑ increasing week-over-week)",
-        "Call-heavy options flow: P/C ratio 0.26 (bullish positioning), IV 36%",
-        "🔍 Intent: Gamma squeeze: DP short 66% (MM hedging short calls) + call-heavy P/C 0.26 + IV 36% (aggressive call buying)"
-      ]
-    },
-    {
-      "sector": "Financial",
-      "ticker": "XLF",
-      "perf1W": 1.0834814835987256,
-      "perf1WAnnualized": 56.34103714713373,
-      "perf3MAnnualized": 53.03715254229379,
-      "momentumRegime": "STEADY",
-      "breadth1W": 67.14285714285714,
-      "breadth3M": 95.71428571428572,
-      "breadthDirection": "NARROWING",
-      "mcw1W": 1.0834814835987256,
-      "ew1W": 0.5354428571428572,
-      "sizeSpread": 0.5480386264558684,
-      "sizeLeadership": "LARGE_CAP_LED",
-      "sharesPctChange": 0.004606453973822301,
-      "priceChange": 1.0834814835987256,
-      "flowPriceSignal": "NEUTRAL",
-      "rank1W": 3,
-      "rank3M": 2,
-      "rankVelocity": -1,
-      "rankSignal": "STABLE",
-      "darkPoolShortRatio": 0.6416132167521078,
-      "darkPoolShortRatio5d": 0.6689749373381225,
-      "darkPoolShortRatio20d": 0.5794266597727191,
-      "darkPoolTrend": "INCREASING",
-      "darkPoolSignal": "HEAVY_SHORTING",
-      "putCallRatio": 1.5091533180778032,
-      "putCallOIRatio": 1.3586496376551624,
-      "impliedVolatility": 0.1674481042480469,
-      "optionsSignal": "HEAVY_PUT_BUYING",
-      "institutionalIntent": "DARK_ACCUMULATION",
-      "intentEvidence": "Institutional put writing: DP short 67% (MM hedging bought puts) + P/C 1.51 + IV 17% (premium sellers in control)",
-      "phase": "LATE_STAGE",
-      "evidence": [
-        "Breadth narrowing: 67% positive this week vs 96% over 3M",
-        "Large-cap led: MCW +1.08% vs EW +0.54%",
-        "Dark pool heavy shorting: 5d avg 67%, 20d avg 58% (↑ increasing week-over-week)",
-        "Heavy put buying: P/C ratio 1.51, IV 17%",
-        "🔍 Intent: Institutional put writing: DP short 67% (MM hedging bought puts) + P/C 1.51 + IV 17% (premium sellers in control)"
-      ]
-    },
-    {
-      "sector": "Consumer Cyclical",
-      "ticker": "XLY",
-      "perf1W": -0.033727331927162846,
-      "perf1WAnnualized": -1.7538212602124679,
-      "perf3MAnnualized": -9.984064571501198,
-      "momentumRegime": "STEADY",
-      "breadth1W": 27.77777777777778,
-      "breadth3M": 53.70370370370371,
-      "breadthDirection": "NARROWING",
-      "mcw1W": -0.033727331927162846,
-      "ew1W": -1.605259259259259,
-      "sizeSpread": 1.571531927332096,
-      "sizeLeadership": "LARGE_CAP_LED",
-      "sharesPctChange": -0.0006550710038757533,
-      "priceChange": -0.033727331927162846,
-      "flowPriceSignal": "NEUTRAL",
-      "rank1W": 5,
-      "rank3M": 9,
-      "rankVelocity": 4,
-      "rankSignal": "RAPID_ASCENT",
-      "darkPoolShortRatio": 0.6622262020513582,
-      "darkPoolShortRatio5d": 0.6257303335881855,
-      "darkPoolShortRatio20d": 0.6311682929674057,
-      "darkPoolTrend": "STABLE",
-      "darkPoolSignal": "HEAVY_SHORTING",
-      "putCallRatio": 0.41379310344827586,
-      "putCallOIRatio": 0.3333333333333333,
-      "impliedVolatility": 0.36272813385009767,
-      "optionsSignal": "CALL_HEAVY",
-      "institutionalIntent": "NONE",
-      "intentEvidence": "",
-      "phase": "NEUTRAL",
-      "evidence": [
-        "Breadth narrowing: 28% positive this week vs 54% over 3M",
-        "Large-cap led: MCW -0.03% vs EW -1.61%",
-        "Rapid ascent: ranked #5 now, was #9 over 3M",
-        "Dark pool heavy shorting: 5d avg 63%, 20d avg 63%",
-        "Call-heavy options flow: P/C ratio 0.41 (bullish positioning), IV 36%"
+        "Momentum accelerating: 1W ann. +197% vs 3M ann. -5%",
+        "Breadth broadening: 66% positive this week vs 50% over 3M",
+        "Large-cap led: MCW +3.78% vs EW +2.30%",
+        "Rapid ascent: ranked #1 now, was #9 over 3M",
+        "Dark pool elevated shorting: 5d avg 57%, 20d avg 59%",
+        "Extreme fear in options: P/C ratio 3.27, OI P/C 1.38, IV 29%"
       ]
     },
     {
       "sector": "Energy",
       "ticker": "XLE",
-      "perf1W": -1.8805487614517342,
-      "perf1WAnnualized": -97.78853559549017,
-      "perf3MAnnualized": 49.30772175818633,
-      "momentumRegime": "DECELERATING",
-      "breadth1W": 52.38095238095239,
-      "breadth3M": 80.95238095238095,
+      "perf1W": 0.9443058663202947,
+      "perf1WAnnualized": 49.10390504865532,
+      "perf3MAnnualized": 49.573730366458705,
+      "momentumRegime": "STEADY",
+      "breadth1W": 76.19047619047619,
+      "breadth3M": 90.47619047619048,
       "breadthDirection": "NARROWING",
-      "mcw1W": -1.8805487614517342,
-      "ew1W": -0.7698095238095236,
-      "sizeSpread": -1.1107392376422105,
+      "mcw1W": 0.9443058663202947,
+      "ew1W": 1.8378095238095236,
+      "sizeSpread": -0.8935036574892289,
       "sizeLeadership": "SMALL_CAP_LED",
-      "sharesPctChange": -0.008873656348046773,
-      "priceChange": -1.8805487614517342,
+      "sharesPctChange": -0.010920677712733607,
+      "priceChange": 0.9443058663202947,
       "flowPriceSignal": "NEUTRAL",
-      "rank1W": 10,
+      "rank1W": 2,
       "rank3M": 3,
-      "rankVelocity": -7,
-      "rankSignal": "RAPID_DESCENT",
-      "darkPoolShortRatio": 0.6410269217392286,
-      "darkPoolShortRatio5d": 0.6145173929065031,
-      "darkPoolShortRatio20d": 0.5106521211739118,
+      "rankVelocity": 1,
+      "rankSignal": "STABLE",
+      "darkPoolShortRatio": 0.6547129943833496,
+      "darkPoolShortRatio5d": 0.6156144645669495,
+      "darkPoolShortRatio20d": 0.5109949560678012,
       "darkPoolTrend": "INCREASING",
       "darkPoolSignal": "HEAVY_SHORTING",
-      "putCallRatio": 1.2745901639344261,
-      "putCallOIRatio": 0.31794382160896884,
-      "impliedVolatility": 0.5062408207233138,
-      "optionsSignal": "ELEVATED_PUTS",
-      "institutionalIntent": "TRUE_DISTRIBUTION",
-      "intentEvidence": "Institutional exit: DP short 61% + decel momentum + panic puts P/C 1.27 + IV 51%",
+      "putCallRatio": 0.2682598451699764,
+      "putCallOIRatio": 0.33146246571847693,
+      "impliedVolatility": 0.26843993286132806,
+      "optionsSignal": "CALL_HEAVY",
+      "institutionalIntent": "NONE",
+      "intentEvidence": "",
+      "phase": "LATE_STAGE",
+      "evidence": [
+        "Breadth narrowing: 76% positive this week vs 90% over 3M",
+        "Small-cap led: EW +1.84% vs MCW +0.94%",
+        "Dark pool heavy shorting: 5d avg 62%, 20d avg 51% (↑ increasing week-over-week)",
+        "Call-heavy options flow: P/C ratio 0.27 (bullish positioning), IV 27%"
+      ]
+    },
+    {
+      "sector": "Communication Services",
+      "ticker": "XLC",
+      "perf1W": -1.6198335393511578,
+      "perf1WAnnualized": -84.2313440462602,
+      "perf3MAnnualized": -32.76968259929621,
+      "momentumRegime": "DECELERATING",
+      "breadth1W": 33.33333333333333,
+      "breadth3M": 50,
+      "breadthDirection": "NARROWING",
+      "mcw1W": -1.6198335393511578,
+      "ew1W": -0.694875,
+      "sizeSpread": -0.9249585393511578,
+      "sizeLeadership": "SMALL_CAP_LED",
+      "sharesPctChange": -0.00746903372875316,
+      "priceChange": -1.6198335393511578,
+      "flowPriceSignal": "NEUTRAL",
+      "rank1W": 6,
+      "rank3M": 11,
+      "rankVelocity": 5,
+      "rankSignal": "RAPID_ASCENT",
+      "darkPoolShortRatio": 0.7192134833322014,
+      "darkPoolShortRatio5d": 0.6435431790943158,
+      "darkPoolShortRatio20d": 0.530243753513996,
+      "darkPoolTrend": "INCREASING",
+      "darkPoolSignal": "HEAVY_SHORTING",
+      "putCallRatio": 0.2903225806451613,
+      "putCallOIRatio": 0.3829787234042553,
+      "impliedVolatility": 0.39018350708007815,
+      "optionsSignal": "CALL_HEAVY",
+      "institutionalIntent": "NONE",
+      "intentEvidence": "",
       "phase": "DISTRIBUTION",
       "evidence": [
-        "Momentum decelerating: 1W ann. -98% vs 3M ann. +49%",
-        "Breadth narrowing: 52% positive this week vs 81% over 3M",
-        "Small-cap led: EW -0.77% vs MCW -1.88%",
-        "Rapid descent: ranked #10 now, was #3 over 3M",
-        "Dark pool heavy shorting: 5d avg 61%, 20d avg 51% (↑ increasing week-over-week)",
-        "Elevated puts: P/C ratio 1.27, IV 51%",
-        "🔍 Intent: Institutional exit: DP short 61% + decel momentum + panic puts P/C 1.27 + IV 51%"
+        "Momentum decelerating: 1W ann. -84% vs 3M ann. -33%",
+        "Breadth narrowing: 33% positive this week vs 50% over 3M",
+        "Small-cap led: EW -0.69% vs MCW -1.62%",
+        "Rapid ascent: ranked #6 now, was #11 over 3M",
+        "Dark pool heavy shorting: 5d avg 64%, 20d avg 53% (↑ increasing week-over-week)",
+        "Call-heavy options flow: P/C ratio 0.29 (bullish positioning), IV 39%"
       ]
     },
     {
       "sector": "Healthcare",
       "ticker": "XLV",
-      "perf1W": -2.0398046698256818,
-      "perf1WAnnualized": -106.06984283093546,
-      "perf3MAnnualized": 65.40867090609606,
+      "perf1W": -2.4706570556958454,
+      "perf1WAnnualized": -128.47416689618396,
+      "perf3MAnnualized": 69.07377301315934,
       "momentumRegime": "DECELERATING",
-      "breadth1W": 35.59322033898305,
+      "breadth1W": 27.11864406779661,
       "breadth3M": 89.83050847457628,
       "breadthDirection": "NARROWING",
-      "mcw1W": -2.0398046698256818,
-      "ew1W": -0.799118644067797,
-      "sizeSpread": -1.240686025757885,
+      "mcw1W": -2.4706570556958454,
+      "ew1W": -0.8978474576271185,
+      "sizeSpread": -1.5728095980687269,
       "sizeLeadership": "SMALL_CAP_LED",
-      "sharesPctChange": -0.005804869122784039,
-      "priceChange": -2.0398046698256818,
+      "sharesPctChange": -0.005115245452078225,
+      "priceChange": -2.4706570556958454,
       "flowPriceSignal": "NEUTRAL",
-      "rank1W": 11,
+      "rank1W": 10,
       "rank3M": 1,
-      "rankVelocity": -10,
+      "rankVelocity": -9,
       "rankSignal": "RAPID_DESCENT",
-      "darkPoolShortRatio": 0.559584124973612,
-      "darkPoolShortRatio5d": 0.5633983607334571,
-      "darkPoolShortRatio20d": 0.5882653525119563,
+      "darkPoolShortRatio": 0.7918025770027591,
+      "darkPoolShortRatio5d": 0.6228184854424806,
+      "darkPoolShortRatio20d": 0.6068341414835261,
       "darkPoolTrend": "STABLE",
-      "darkPoolSignal": "ELEVATED_SHORTING",
-      "putCallRatio": 5.797752808988764,
-      "putCallOIRatio": 1.0454545454545454,
-      "impliedVolatility": 0.28207217820111447,
+      "darkPoolSignal": "HEAVY_SHORTING",
+      "putCallRatio": 3.7226277372262775,
+      "putCallOIRatio": 0.6352459016393442,
+      "impliedVolatility": 0.2885609881591797,
       "optionsSignal": "EXTREME_FEAR",
       "institutionalIntent": "NONE",
       "intentEvidence": "",
       "phase": "EARLY_DECLINE",
       "evidence": [
-        "Momentum decelerating: 1W ann. -106% vs 3M ann. +65%",
-        "Breadth narrowing: 36% positive this week vs 90% over 3M",
-        "Small-cap led: EW -0.80% vs MCW -2.04%",
-        "Rapid descent: ranked #11 now, was #1 over 3M",
-        "Dark pool elevated shorting: 5d avg 56%, 20d avg 59%",
-        "Extreme fear in options: P/C ratio 5.80, OI P/C 1.05, IV 28%"
+        "Momentum decelerating: 1W ann. -128% vs 3M ann. +69%",
+        "Breadth narrowing: 27% positive this week vs 90% over 3M",
+        "Small-cap led: EW -0.90% vs MCW -2.47%",
+        "Rapid descent: ranked #10 now, was #1 over 3M",
+        "Dark pool heavy shorting: 5d avg 62%, 20d avg 61%",
+        "Extreme fear in options: P/C ratio 3.72, OI P/C 0.64, IV 29%"
       ]
     },
     {
-      "sector": "Consumer Defensive",
-      "ticker": "XLP",
-      "perf1W": -0.44551099769461644,
-      "perf1WAnnualized": -23.166571880120056,
-      "perf3MAnnualized": 4.720232869840073,
+      "sector": "Utilities",
+      "ticker": "XLU",
+      "perf1W": -2.0203307093120206,
+      "perf1WAnnualized": -105.05719688422508,
+      "perf3MAnnualized": -6.90079180343877,
       "momentumRegime": "DECELERATING",
-      "breadth1W": 36.36363636363637,
-      "breadth3M": 69.6969696969697,
+      "breadth1W": 19.35483870967742,
+      "breadth3M": 38.70967741935484,
       "breadthDirection": "NARROWING",
-      "mcw1W": -0.44551099769461644,
-      "ew1W": -0.7957272727272727,
-      "sizeSpread": 0.3502162750326563,
+      "mcw1W": -2.0203307093120206,
+      "ew1W": -2.516870967741936,
+      "sizeSpread": 0.4965402584299152,
       "sizeLeadership": "BROAD_BASED",
-      "sharesPctChange": 0.004188645147587003,
-      "priceChange": -0.44551099769461644,
+      "sharesPctChange": 0.007635708743946539,
+      "priceChange": -2.0203307093120206,
       "flowPriceSignal": "NEUTRAL",
       "rank1W": 7,
-      "rank3M": 8,
-      "rankVelocity": 1,
-      "rankSignal": "STABLE",
-      "darkPoolShortRatio": 0.5107463519308967,
-      "darkPoolShortRatio5d": 0.6083260334529679,
-      "darkPoolShortRatio20d": 0.6365393179556146,
-      "darkPoolTrend": "STABLE",
-      "darkPoolSignal": "HEAVY_SHORTING",
-      "putCallRatio": 0.322061191626409,
-      "putCallOIRatio": 0.9659735349716446,
-      "impliedVolatility": 0.23680659964425224,
+      "rank3M": 10,
+      "rankVelocity": 3,
+      "rankSignal": "RISING",
+      "darkPoolShortRatio": 0.39513020169260404,
+      "darkPoolShortRatio5d": 0.5647040246007363,
+      "darkPoolShortRatio20d": 0.5963604585908783,
+      "darkPoolTrend": "DECREASING",
+      "darkPoolSignal": "ELEVATED_SHORTING",
+      "putCallRatio": 0.44981412639405205,
+      "putCallOIRatio": 1.5185185185185186,
+      "impliedVolatility": 0.20465205078125,
       "optionsSignal": "CALL_HEAVY",
       "institutionalIntent": "NONE",
       "intentEvidence": "",
       "phase": "EARLY_DECLINE",
       "evidence": [
-        "Momentum decelerating: 1W ann. -23% vs 3M ann. +5%",
-        "Breadth narrowing: 36% positive this week vs 70% over 3M",
-        "Dark pool heavy shorting: 5d avg 61%, 20d avg 64%",
-        "Call-heavy options flow: P/C ratio 0.32 (bullish positioning), IV 24%"
-      ]
-    },
-    {
-      "sector": "Basic Materials",
-      "ticker": "XLB",
-      "perf1W": -0.032091734172099304,
-      "perf1WAnnualized": -1.6687701769491639,
-      "perf3MAnnualized": 18.321518529582317,
-      "momentumRegime": "DECELERATING",
-      "breadth1W": 45,
-      "breadth3M": 50,
-      "breadthDirection": "STABLE",
-      "mcw1W": -0.032091734172099304,
-      "ew1W": -0.5309,
-      "sizeSpread": 0.4988082658279007,
-      "sizeLeadership": "BROAD_BASED",
-      "sharesPctChange": -0.0041349196260725175,
-      "priceChange": -0.032091734172099304,
-      "flowPriceSignal": "NEUTRAL",
-      "rank1W": 4,
-      "rank3M": 4,
-      "rankVelocity": 0,
-      "rankSignal": "STABLE",
-      "darkPoolShortRatio": 0.6165160017620133,
-      "darkPoolShortRatio5d": 0.5559767756297805,
-      "darkPoolShortRatio20d": 0.5734965202990072,
-      "darkPoolTrend": "STABLE",
-      "darkPoolSignal": "ELEVATED_SHORTING",
-      "putCallRatio": 0.5185185185185185,
-      "putCallOIRatio": 0.21437578814627994,
-      "impliedVolatility": 0.5175097077636719,
-      "optionsSignal": "NEUTRAL_OPT",
-      "institutionalIntent": "NONE",
-      "intentEvidence": "",
-      "phase": "EARLY_DECLINE",
-      "evidence": [
-        "Momentum decelerating: 1W ann. -2% vs 3M ann. +18%",
-        "Dark pool elevated shorting: 5d avg 56%, 20d avg 57%"
+        "Momentum decelerating: 1W ann. -105% vs 3M ann. -7%",
+        "Breadth narrowing: 19% positive this week vs 39% over 3M",
+        "Rising: ranked #7 now vs #10 over 3M",
+        "Dark pool elevated shorting: 5d avg 56%, 20d avg 60% (↓ declining)",
+        "Call-heavy options flow: P/C ratio 0.45 (bullish positioning), IV 20%"
       ]
     },
     {
       "sector": "Industrials",
       "ticker": "XLI",
-      "perf1W": -1.8438488029905353,
-      "perf1WAnnualized": -95.88013775550783,
-      "perf3MAnnualized": 12.582370711236853,
+      "perf1W": -2.163112728017644,
+      "perf1WAnnualized": -112.48186185691748,
+      "perf3MAnnualized": 10.888634107304222,
       "momentumRegime": "DECELERATING",
-      "breadth1W": 18.666666666666668,
+      "breadth1W": 12,
       "breadth3M": 56.00000000000001,
       "breadthDirection": "NARROWING",
-      "mcw1W": -1.8438488029905353,
-      "ew1W": -1.8701599999999996,
-      "sizeSpread": 0.02631119700946427,
+      "mcw1W": -2.163112728017644,
+      "ew1W": -2.3937733333333338,
+      "sizeSpread": 0.23066060531568988,
       "sizeLeadership": "BROAD_BASED",
-      "sharesPctChange": 0.0014374001227609725,
-      "priceChange": -1.8438488029905353,
-      "flowPriceSignal": "NEUTRAL",
-      "rank1W": 9,
-      "rank3M": 5,
-      "rankVelocity": -4,
-      "rankSignal": "RAPID_DESCENT",
-      "darkPoolShortRatio": 0.6674726447662613,
-      "darkPoolShortRatio5d": 0.5838675149071404,
-      "darkPoolShortRatio20d": 0.6066931878504906,
-      "darkPoolTrend": "STABLE",
-      "darkPoolSignal": "ELEVATED_SHORTING",
-      "putCallRatio": 0.22382671480144403,
-      "putCallOIRatio": 0.28225806451612906,
-      "impliedVolatility": 0.30042203491210934,
-      "optionsSignal": "CALL_HEAVY",
-      "institutionalIntent": "NONE",
-      "intentEvidence": "",
-      "phase": "EARLY_DECLINE",
-      "evidence": [
-        "Momentum decelerating: 1W ann. -96% vs 3M ann. +13%",
-        "Breadth narrowing: 19% positive this week vs 56% over 3M",
-        "Rapid descent: ranked #9 now, was #5 over 3M",
-        "Dark pool elevated shorting: 5d avg 58%, 20d avg 61%",
-        "Call-heavy options flow: P/C ratio 0.22 (bullish positioning), IV 30%"
-      ]
-    },
-    {
-      "sector": "Real Estate",
-      "ticker": "XLRE",
-      "perf1W": -1.2746213871439358,
-      "perf1WAnnualized": -66.28031213148466,
-      "perf3MAnnualized": 8.382547177995919,
-      "momentumRegime": "DECELERATING",
-      "breadth1W": 16.666666666666664,
-      "breadth3M": 46.666666666666664,
-      "breadthDirection": "NARROWING",
-      "mcw1W": -1.2746213871439358,
-      "ew1W": -1.3238999999999999,
-      "sizeSpread": 0.04927861285606405,
-      "sizeLeadership": "BROAD_BASED",
-      "sharesPctChange": 0.005284452094720001,
-      "priceChange": -1.2746213871439358,
+      "sharesPctChange": 0.002650984068407439,
+      "priceChange": -2.163112728017644,
       "flowPriceSignal": "NEUTRAL",
       "rank1W": 8,
       "rank3M": 6,
       "rankVelocity": -2,
       "rankSignal": "FALLING",
-      "darkPoolShortRatio": 0.7726279111680717,
-      "darkPoolShortRatio5d": 0.7349429149372804,
-      "darkPoolShortRatio20d": 0.7455792003893963,
+      "darkPoolShortRatio": 0.5195849734755216,
+      "darkPoolShortRatio5d": 0.5751478450728641,
+      "darkPoolShortRatio20d": 0.6039682910272792,
+      "darkPoolTrend": "STABLE",
+      "darkPoolSignal": "ELEVATED_SHORTING",
+      "putCallRatio": 0.03449975357318876,
+      "putCallOIRatio": 0.07948476280238768,
+      "impliedVolatility": 0.2996285858154296,
+      "optionsSignal": "CALL_HEAVY",
+      "institutionalIntent": "NONE",
+      "intentEvidence": "",
+      "phase": "EARLY_DECLINE",
+      "evidence": [
+        "Momentum decelerating: 1W ann. -112% vs 3M ann. +11%",
+        "Breadth narrowing: 12% positive this week vs 56% over 3M",
+        "Falling: ranked #8 now vs #6 over 3M",
+        "Dark pool elevated shorting: 5d avg 58%, 20d avg 60%",
+        "Call-heavy options flow: P/C ratio 0.03 (bullish positioning), IV 30%"
+      ]
+    },
+    {
+      "sector": "Real Estate",
+      "ticker": "XLRE",
+      "perf1W": -2.6152046729652927,
+      "perf1WAnnualized": -135.9906429941952,
+      "perf3MAnnualized": 12.719322565759114,
+      "momentumRegime": "DECELERATING",
+      "breadth1W": 3.3333333333333335,
+      "breadth3M": 56.666666666666664,
+      "breadthDirection": "NARROWING",
+      "mcw1W": -2.6152046729652927,
+      "ew1W": -2.968833333333334,
+      "sizeSpread": 0.3536286603680412,
+      "sizeLeadership": "BROAD_BASED",
+      "sharesPctChange": 0.005956531201142051,
+      "priceChange": -2.6152046729652927,
+      "flowPriceSignal": "NEUTRAL",
+      "rank1W": 11,
+      "rank3M": 5,
+      "rankVelocity": -6,
+      "rankSignal": "RAPID_DESCENT",
+      "darkPoolShortRatio": 0.6615451125746238,
+      "darkPoolShortRatio5d": 0.722720859622995,
+      "darkPoolShortRatio20d": 0.7417598081036821,
       "darkPoolTrend": "STABLE",
       "darkPoolSignal": "HEAVY_SHORTING",
-      "putCallRatio": 0.5283018867924528,
-      "putCallOIRatio": 0.4411624583134826,
-      "impliedVolatility": 0.21826953613281252,
+      "putCallRatio": 0.8625954198473282,
+      "putCallOIRatio": 0.43358278765201125,
+      "impliedVolatility": 0.25407646972656256,
       "optionsSignal": "NEUTRAL_OPT",
       "institutionalIntent": "NONE",
       "intentEvidence": "",
       "phase": "EARLY_DECLINE",
       "evidence": [
-        "Momentum decelerating: 1W ann. -66% vs 3M ann. +8%",
-        "Breadth narrowing: 17% positive this week vs 47% over 3M",
-        "Falling: ranked #8 now vs #6 over 3M",
-        "Dark pool heavy shorting: 5d avg 73%, 20d avg 75%"
+        "Momentum decelerating: 1W ann. -136% vs 3M ann. +13%",
+        "Breadth narrowing: 3% positive this week vs 57% over 3M",
+        "Rapid descent: ranked #11 now, was #5 over 3M",
+        "Dark pool heavy shorting: 5d avg 72%, 20d avg 74%"
+      ]
+    },
+    {
+      "sector": "Consumer Cyclical",
+      "ticker": "XLY",
+      "perf1W": -0.6082438405828303,
+      "perf1WAnnualized": -31.628679710307175,
+      "perf3MAnnualized": -4.058699958951571,
+      "momentumRegime": "DECELERATING",
+      "breadth1W": 9.25925925925926,
+      "breadth3M": 53.70370370370371,
+      "breadthDirection": "NARROWING",
+      "mcw1W": -0.6082438405828303,
+      "ew1W": -3.7522407407407408,
+      "sizeSpread": 3.1439969001579104,
+      "sizeLeadership": "LARGE_CAP_LED",
+      "sharesPctChange": -0.0000212980053086392,
+      "priceChange": -0.6082438405828303,
+      "flowPriceSignal": "NEUTRAL",
+      "rank1W": 3,
+      "rank3M": 8,
+      "rankVelocity": 5,
+      "rankSignal": "RAPID_ASCENT",
+      "darkPoolShortRatio": 0.4719413070985578,
+      "darkPoolShortRatio5d": 0.6000446482800986,
+      "darkPoolShortRatio20d": 0.6231415163086287,
+      "darkPoolTrend": "STABLE",
+      "darkPoolSignal": "HEAVY_SHORTING",
+      "putCallRatio": 1.1724137931034482,
+      "putCallOIRatio": 1.3181818181818181,
+      "impliedVolatility": 0.38668826208496093,
+      "optionsSignal": "ELEVATED_PUTS",
+      "institutionalIntent": "TRUE_DISTRIBUTION",
+      "intentEvidence": "Institutional exit: DP short 60% + decel momentum + panic puts P/C 1.17 + IV 39%",
+      "phase": "CONFIRMED_DOWNTREND",
+      "evidence": [
+        "Momentum decelerating: 1W ann. -32% vs 3M ann. -4%",
+        "Breadth narrowing: 9% positive this week vs 54% over 3M",
+        "Large-cap led: MCW -0.61% vs EW -3.75%",
+        "Rapid ascent: ranked #3 now, was #8 over 3M",
+        "Dark pool heavy shorting: 5d avg 60%, 20d avg 62%",
+        "Elevated puts: P/C ratio 1.17, IV 39%",
+        "🔍 Intent: Institutional exit: DP short 60% + decel momentum + panic puts P/C 1.17 + IV 39%"
+      ]
+    },
+    {
+      "sector": "Consumer Defensive",
+      "ticker": "XLP",
+      "perf1W": -2.3638839060630352,
+      "perf1WAnnualized": -122.92196311527783,
+      "perf3MAnnualized": 8.538287886708721,
+      "momentumRegime": "DECELERATING",
+      "breadth1W": 18.181818181818183,
+      "breadth3M": 66.66666666666666,
+      "breadthDirection": "NARROWING",
+      "mcw1W": -2.3638839060630352,
+      "ew1W": -2.925424242424243,
+      "sizeSpread": 0.5615403363612077,
+      "sizeLeadership": "LARGE_CAP_LED",
+      "sharesPctChange": 0.004605824564362809,
+      "priceChange": -2.3638839060630352,
+      "flowPriceSignal": "NEUTRAL",
+      "rank1W": 9,
+      "rank3M": 7,
+      "rankVelocity": -2,
+      "rankSignal": "FALLING",
+      "darkPoolShortRatio": 0.6548642023031668,
+      "darkPoolShortRatio5d": 0.6271936881762457,
+      "darkPoolShortRatio20d": 0.6424354600566389,
+      "darkPoolTrend": "STABLE",
+      "darkPoolSignal": "HEAVY_SHORTING",
+      "putCallRatio": 1.0971074380165289,
+      "putCallOIRatio": 3.9301470588235294,
+      "impliedVolatility": 0.48641678267629523,
+      "optionsSignal": "EXTREME_FEAR",
+      "institutionalIntent": "TRUE_DISTRIBUTION",
+      "intentEvidence": "Institutional exit: DP short 63% + decel momentum + panic puts P/C 1.10 + IV 49%",
+      "phase": "CONFIRMED_DOWNTREND",
+      "evidence": [
+        "Momentum decelerating: 1W ann. -123% vs 3M ann. +9%",
+        "Breadth narrowing: 18% positive this week vs 67% over 3M",
+        "Large-cap led: MCW -2.36% vs EW -2.93%",
+        "Falling: ranked #9 now vs #7 over 3M",
+        "Dark pool heavy shorting: 5d avg 63%, 20d avg 64%",
+        "Extreme fear in options: P/C ratio 1.10, OI P/C 3.93, IV 49%",
+        "🔍 Intent: Institutional exit: DP short 63% + decel momentum + panic puts P/C 1.10 + IV 49%"
+      ]
+    },
+    {
+      "sector": "Basic Materials",
+      "ticker": "XLB",
+      "perf1W": -1.1188856202500288,
+      "perf1WAnnualized": -58.1820522530015,
+      "perf3MAnnualized": 17.929845081263768,
+      "momentumRegime": "DECELERATING",
+      "breadth1W": 35,
+      "breadth3M": 50,
+      "breadthDirection": "NARROWING",
+      "mcw1W": -1.1188856202500288,
+      "ew1W": -0.9508999999999999,
+      "sizeSpread": -0.16798562025002894,
+      "sizeLeadership": "BROAD_BASED",
+      "sharesPctChange": -0.002871524820525923,
+      "priceChange": -1.1188856202500288,
+      "flowPriceSignal": "NEUTRAL",
+      "rank1W": 5,
+      "rank3M": 4,
+      "rankVelocity": -1,
+      "rankSignal": "STABLE",
+      "darkPoolShortRatio": 0.7489812718976882,
+      "darkPoolShortRatio5d": 0.5895471871150335,
+      "darkPoolShortRatio20d": 0.5839872738881488,
+      "darkPoolTrend": "STABLE",
+      "darkPoolSignal": "ELEVATED_SHORTING",
+      "putCallRatio": 4.116279069767442,
+      "putCallOIRatio": 918.2065217391304,
+      "impliedVolatility": 0.6140175317382812,
+      "optionsSignal": "EXTREME_FEAR",
+      "institutionalIntent": "TRUE_DISTRIBUTION",
+      "intentEvidence": "Institutional exit: DP short 59% + decel momentum + panic puts P/C 4.12 + IV 61%",
+      "phase": "CONFIRMED_DOWNTREND",
+      "evidence": [
+        "Momentum decelerating: 1W ann. -58% vs 3M ann. +18%",
+        "Breadth narrowing: 35% positive this week vs 50% over 3M",
+        "Dark pool elevated shorting: 5d avg 59%, 20d avg 58%",
+        "Extreme fear in options: P/C ratio 4.12, OI P/C 918.21, IV 61%",
+        "🔍 Intent: Institutional exit: DP short 59% + decel momentum + panic puts P/C 4.12 + IV 61%"
       ]
     }
   ],
   "etfValidation": [
     {
+      "etfTicker": "XLU",
+      "sector": "Utilities",
+      "etfPerf1W": -2.29,
+      "stockAvg1W": -2.02,
+      "divergence": -0.27,
+      "relVolume": 1.59,
+      "volumeSignal": "HIGH"
+    },
+    {
+      "etfTicker": "XLRE",
+      "sector": "Real Estate",
+      "etfPerf1W": -2.69,
+      "stockAvg1W": -2.62,
+      "divergence": -0.07,
+      "relVolume": 1.42,
+      "volumeSignal": "NORMAL"
+    },
+    {
       "etfTicker": "XLB",
       "sector": "Basic Materials",
-      "etfPerf1W": -0.67,
-      "stockAvg1W": -0.03,
-      "divergence": -0.64,
-      "relVolume": 1.18,
+      "etfPerf1W": -1.66,
+      "stockAvg1W": -1.12,
+      "divergence": -0.54,
+      "relVolume": 1.05,
       "volumeSignal": "NORMAL"
     },
     {
       "etfTicker": "XLI",
       "sector": "Industrials",
-      "etfPerf1W": -1.73,
-      "stockAvg1W": -1.84,
-      "divergence": 0.11,
-      "relVolume": 1.17,
-      "volumeSignal": "NORMAL"
-    },
-    {
-      "etfTicker": "XLU",
-      "sector": "Utilities",
-      "etfPerf1W": -0.09,
-      "stockAvg1W": -0.16,
-      "divergence": 0.07,
-      "relVolume": 1.02,
-      "volumeSignal": "NORMAL"
-    },
-    {
-      "etfTicker": "XLF",
-      "sector": "Financial",
-      "etfPerf1W": 1.08,
-      "stockAvg1W": 1.08,
+      "etfPerf1W": -2.16,
+      "stockAvg1W": -2.16,
       "divergence": 0,
-      "relVolume": 0.75,
-      "volumeSignal": "NORMAL"
-    },
-    {
-      "etfTicker": "XLRE",
-      "sector": "Real Estate",
-      "etfPerf1W": -1.33,
-      "stockAvg1W": -1.27,
-      "divergence": -0.06,
-      "relVolume": 0.74,
+      "relVolume": 1.05,
       "volumeSignal": "NORMAL"
     },
     {
       "etfTicker": "XLE",
       "sector": "Energy",
-      "etfPerf1W": -1.51,
-      "stockAvg1W": -1.88,
-      "divergence": 0.37,
-      "relVolume": 0.66,
-      "volumeSignal": "LOW"
+      "etfPerf1W": 1.35,
+      "stockAvg1W": 0.94,
+      "divergence": 0.41,
+      "relVolume": 0.89,
+      "volumeSignal": "NORMAL"
+    },
+    {
+      "etfTicker": "XLF",
+      "sector": "Financial",
+      "etfPerf1W": -0.88,
+      "stockAvg1W": -0.83,
+      "divergence": -0.05,
+      "relVolume": 0.75,
+      "volumeSignal": "NORMAL"
+    },
+    {
+      "etfTicker": "XLV",
+      "sector": "Healthcare",
+      "etfPerf1W": -2.38,
+      "stockAvg1W": -2.47,
+      "divergence": 0.09,
+      "relVolume": 0.72,
+      "volumeSignal": "NORMAL"
     },
     {
       "etfTicker": "XLY",
       "sector": "Consumer Cyclical",
-      "etfPerf1W": -0.69,
-      "stockAvg1W": -0.03,
-      "divergence": -0.66,
-      "relVolume": 0.61,
-      "volumeSignal": "LOW"
-    },
-    {
-      "etfTicker": "XLC",
-      "sector": "Communication Services",
-      "etfPerf1W": 1.43,
-      "stockAvg1W": 1.13,
-      "divergence": 0.3,
-      "relVolume": 0.6,
-      "volumeSignal": "LOW"
-    },
-    {
-      "etfTicker": "XLK",
-      "sector": "Technology",
-      "etfPerf1W": 1.3,
-      "stockAvg1W": 1.94,
-      "divergence": -0.64,
-      "relVolume": 0.6,
+      "etfPerf1W": -1.45,
+      "stockAvg1W": -0.61,
+      "divergence": -0.84,
+      "relVolume": 0.67,
       "volumeSignal": "LOW"
     },
     {
       "etfTicker": "XLP",
       "sector": "Consumer Defensive",
-      "etfPerf1W": -0.63,
-      "stockAvg1W": -0.45,
-      "divergence": -0.18,
-      "relVolume": 0.6,
+      "etfPerf1W": -2.82,
+      "stockAvg1W": -2.36,
+      "divergence": -0.46,
+      "relVolume": 0.62,
       "volumeSignal": "LOW"
     },
     {
-      "etfTicker": "XLV",
-      "sector": "Healthcare",
-      "etfPerf1W": -1.98,
-      "stockAvg1W": -2.04,
-      "divergence": 0.06,
-      "relVolume": 0.48,
+      "etfTicker": "XLC",
+      "sector": "Communication Services",
+      "etfPerf1W": -0.77,
+      "stockAvg1W": -1.62,
+      "divergence": 0.85,
+      "relVolume": 0.53,
+      "volumeSignal": "LOW"
+    },
+    {
+      "etfTicker": "XLK",
+      "sector": "Technology",
+      "etfPerf1W": 3.58,
+      "stockAvg1W": 3.78,
+      "divergence": -0.2,
+      "relVolume": 0.46,
       "volumeSignal": "LOW"
     }
   ],
@@ -982,11 +991,11 @@
         "GDX",
         "GLD"
       ],
-      "avgPerf1W": -3.25,
-      "avgPerf1M": 19.1,
-      "avgPerf3M": 4.69,
-      "avgRelVolume": 2.36,
-      "flowScore": 59.84,
+      "avgPerf1W": -4.57,
+      "avgPerf1M": 21.44,
+      "avgPerf3M": 6.48,
+      "avgRelVolume": 0.92,
+      "flowScore": 30.25,
       "signal": "INFLOW",
       "trendPhase": "ESTABLISHED_UPTREND"
     },
@@ -997,42 +1006,13 @@
         "BITO",
         "IBIT"
       ],
-      "avgPerf1W": 0.44,
-      "avgPerf1M": 19.39,
-      "avgPerf3M": 4.87,
-      "avgRelVolume": 1.04,
-      "flowScore": 32.98,
-      "signal": "INFLOW",
-      "trendPhase": "EARLY_UPTREND"
-    },
-    {
-      "assetClass": "US Equities",
-      "label": "S&P 500",
-      "tickers": [
-        "SPY"
-      ],
-      "avgPerf1W": 0.47,
-      "avgPerf1M": 3.73,
-      "avgPerf3M": 1.7,
-      "avgRelVolume": 0.73,
-      "flowScore": 5.02,
+      "avgPerf1W": 0.04,
+      "avgPerf1M": 25.06,
+      "avgPerf3M": 9.73,
+      "avgRelVolume": 0.63,
+      "flowScore": 26.99,
       "signal": "INFLOW",
       "trendPhase": "ESTABLISHED_UPTREND"
-    },
-    {
-      "assetClass": "International",
-      "label": "Emerging Markets, Developed Markets",
-      "tickers": [
-        "EEM",
-        "EFA"
-      ],
-      "avgPerf1W": -0.22,
-      "avgPerf1M": 3.49,
-      "avgPerf3M": 0.33,
-      "avgRelVolume": 0.8,
-      "flowScore": 3.34,
-      "signal": "INFLOW",
-      "trendPhase": "NEUTRAL"
     },
     {
       "assetClass": "Commodities",
@@ -1041,13 +1021,42 @@
         "DBC",
         "USO"
       ],
-      "avgPerf1W": -2.58,
-      "avgPerf1M": 3.38,
-      "avgPerf3M": 2.46,
-      "avgRelVolume": 0.66,
-      "flowScore": 1.88,
-      "signal": "NEUTRAL",
+      "avgPerf1W": 1.15,
+      "avgPerf1M": 4.89,
+      "avgPerf3M": 1.52,
+      "avgRelVolume": 0.65,
+      "flowScore": 6.08,
+      "signal": "INFLOW",
       "trendPhase": "ESTABLISHED_UPTREND"
+    },
+    {
+      "assetClass": "US Equities",
+      "label": "S&P 500",
+      "tickers": [
+        "SPY"
+      ],
+      "avgPerf1W": 0.47,
+      "avgPerf1M": 2.68,
+      "avgPerf3M": 1.12,
+      "avgRelVolume": 0.77,
+      "flowScore": 3.94,
+      "signal": "INFLOW",
+      "trendPhase": "NEUTRAL"
+    },
+    {
+      "assetClass": "International",
+      "label": "Emerging Markets, Developed Markets",
+      "tickers": [
+        "EEM",
+        "EFA"
+      ],
+      "avgPerf1W": 0.42,
+      "avgPerf1M": 3.17,
+      "avgPerf3M": -0.75,
+      "avgRelVolume": 0.83,
+      "flowScore": 3.27,
+      "signal": "INFLOW",
+      "trendPhase": "NEUTRAL"
     },
     {
       "assetClass": "Cash",
@@ -1056,10 +1065,10 @@
         "BIL"
       ],
       "avgPerf1W": 0.05,
-      "avgPerf1M": 0,
-      "avgPerf3M": -0.01,
-      "avgRelVolume": 0.73,
-      "flowScore": 0.07,
+      "avgPerf1M": -0.02,
+      "avgPerf3M": 0.28,
+      "avgRelVolume": 1.35,
+      "flowScore": 0.39,
       "signal": "NEUTRAL",
       "trendPhase": "NEUTRAL"
     },
@@ -1071,11 +1080,11 @@
         "SHY",
         "TLT"
       ],
-      "avgPerf1W": 0.3,
-      "avgPerf1M": -0.15,
-      "avgPerf3M": -1.92,
-      "avgRelVolume": 1.38,
-      "flowScore": -2.1,
+      "avgPerf1W": -0.16,
+      "avgPerf1M": -0.01,
+      "avgPerf3M": -1.71,
+      "avgRelVolume": 1.28,
+      "flowScore": -2.26,
       "signal": "NEUTRAL",
       "trendPhase": "NEUTRAL"
     }
@@ -1085,165 +1094,165 @@
       "ticker": "XLK",
       "sector": "Technology",
       "totalAssets": 115410993152,
-      "sharesOutstanding": 621525085.6373526,
-      "sharesPct5Day": -0.00549868675627964,
-      "sharesPct1Month": -0.0237501990507017,
-      "sharesPct3Month": -0.044383011499002596,
+      "sharesOutstanding": 618825700.5469168,
+      "sharesPct5Day": -0.005763078038081637,
+      "sharesPct1Month": -0.02487022461363131,
+      "sharesPct3Month": -0.048533412360588786,
       "sharesPct1Year": 0,
-      "flow5Day": -11516006117.56398,
-      "flow1Month": -2807717919.464691,
-      "flow3Month": -5044421221.325638,
-      "flow6Month": -2232397785.321701,
+      "flow5Day": -12069675509.606339,
+      "flow1Month": -2943502900.8679657,
+      "flow3Month": -2640517262.018463,
+      "flow6Month": -2745571066.915909,
       "flow1Year": 25161102417.649994
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
       "totalAssets": 57884381184,
-      "sharesOutstanding": 996288832.7710843,
-      "sharesPct5Day": 0.004606453973822301,
-      "sharesPct1Month": 0.02059089085421807,
-      "sharesPct3Month": 0.04005976087053556,
+      "sharesOutstanding": 1003021680.5406342,
+      "sharesPct5Day": 0.005136568330517686,
+      "sharesPct1Month": 0.02300262616188823,
+      "sharesPct3Month": 0.0470884094018041,
       "sharesPct1Year": 0,
-      "flow5Day": 4671308047.021217,
-      "flow1Month": 1167844026.244545,
-      "flow3Month": 39434887.729148865,
-      "flow6Month": 1642658394.3597107,
+      "flow5Day": 5028504235.031921,
+      "flow1Month": 1301553629.4205856,
+      "flow3Month": 260256326.89282227,
+      "flow6Month": 2020184588.6447372,
       "flow1Year": 3863835652.4400024
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
       "totalAssets": 39209267200,
-      "sharesOutstanding": 625546700.7019783,
-      "sharesPct5Day": -0.008873656348046773,
-      "sharesPct1Month": -0.037900610165441426,
-      "sharesPct3Month": -0.06994572341063693,
+      "sharesOutstanding": 613027942.46404,
+      "sharesPct5Day": -0.010920677712733607,
+      "sharesPct1Month": -0.046330708629725645,
+      "sharesPct3Month": -0.08855844189147472,
       "sharesPct1Year": 0,
-      "flow5Day": -251669017.8075409,
-      "flow1Month": -1544596292.9831772,
-      "flow3Month": -566445636.579483,
-      "flow6Month": -5404583107.65078,
+      "flow5Day": -1057508174.7761688,
+      "flow1Month": -1904845999.2017746,
+      "flow3Month": -662893256.3897858,
+      "flow6Month": -6315650886.747673,
       "flow1Year": 12283209409.23
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
       "totalAssets": 41749876736,
-      "sharesOutstanding": 243923093.80696425,
-      "sharesPct5Day": -0.005804869122784039,
-      "sharesPct1Month": -0.025047081047135884,
-      "sharesPct3Month": -0.046752594700329296,
+      "sharesOutstanding": 244809878.8319456,
+      "sharesPct5Day": -0.005115245452078225,
+      "sharesPct1Month": -0.02212233205054702,
+      "sharesPct3Month": -0.04328705352942627,
       "sharesPct1Year": 0,
-      "flow5Day": -1301455658.267517,
-      "flow1Month": -1072577481.4210129,
-      "flow3Month": -4739975156.5099945,
-      "flow6Month": -3318268181.749283,
+      "flow5Day": -1145509023.0464096,
+      "flow1Month": -944499160.2681122,
+      "flow3Month": -5081006294.312004,
+      "flow6Month": -3155015962.48658,
       "flow1Year": 7735001557.669998
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
       "totalAssets": 22456301568,
-      "sharesOutstanding": 191590321.3718966,
-      "sharesPct5Day": -0.0006550710038757533,
-      "sharesPct1Month": -0.002875907077709173,
-      "sharesPct3Month": -0.0054760511354280585,
+      "sharesOutstanding": 192609156.60005146,
+      "sharesPct5Day": -0.0000212980053086392,
+      "sharesPct1Month": -0.00009370443791805545,
+      "sharesPct3Month": -0.00018739131643813334,
       "sharesPct1Year": 0,
-      "flow5Day": -364937593.513958,
-      "flow1Month": -64768504.820007324,
-      "flow3Month": 547447198.0258675,
-      "flow6Month": -609031794.7587891,
+      "flow5Day": -244221201.7373314,
+      "flow1Month": -2104452.3126716614,
+      "flow3Month": 167877482.2214241,
+      "flow6Month": -487024229.83335495,
       "flow1Year": -2158511772.970001
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
       "totalAssets": 14550159360,
-      "sharesOutstanding": 170276879.578701,
-      "sharesPct5Day": 0.004188645147587003,
-      "sharesPct1Month": 0.018696300014923253,
-      "sharesPct3Month": 0.036310085715863735,
+      "sharesOutstanding": 171218632.14874086,
+      "sharesPct5Day": 0.004605824564362809,
+      "sharesPct1Month": 0.020588032629005742,
+      "sharesPct3Month": 0.04204161949188688,
       "sharesPct1Year": 0,
-      "flow5Day": 762097963.730936,
-      "flow1Month": 267041457.45451355,
-      "flow3Month": 483197660.2031517,
-      "flow6Month": -1585673864.978157,
+      "flow5Day": 837936335.3663559,
+      "flow1Month": 293516233.8610401,
+      "flow3Month": 409491476.2531204,
+      "flow6Month": -1496922061.4001637,
       "flow1Year": -1552052226.7399998
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
       "totalAssets": 32876894208,
-      "sharesOutstanding": 185598364.0510331,
-      "sharesPct5Day": 0.0014374001227609725,
-      "sharesPct1Month": 0.006355621481882301,
-      "sharesPct3Month": 0.012203971760946473,
+      "sharesOutstanding": 187728511.43721807,
+      "sharesPct5Day": 0.002650984068407439,
+      "sharesPct1Month": 0.01177042077402386,
+      "sharesPct3Month": 0.023821227418112455,
       "sharesPct1Year": 0,
-      "flow5Day": -478783545.9076309,
-      "flow1Month": 207633455.43620682,
-      "flow3Month": -1874957863.866356,
-      "flow6Month": 1842248404.2232552,
+      "flow5Day": -100298097.75727463,
+      "flow1Month": 382473010.3052292,
+      "flow3Month": -1623625079.1401901,
+      "flow6Month": 2194397202.1547813,
       "flow1Year": 9011928608.970001
     },
     {
       "ticker": "XLB",
       "sector": "Basic Materials",
       "totalAssets": 8255610880,
-      "sharesOutstanding": 155239016.17149305,
-      "sharesPct5Day": -0.0041349196260725175,
-      "sharesPct1Month": -0.01794141293316582,
-      "sharesPct3Month": -0.033702094513874806,
+      "sharesOutstanding": 156682688.93528184,
+      "sharesPct5Day": -0.002871524820525923,
+      "sharesPct1Month": -0.012512546907668396,
+      "sharesPct3Month": -0.024715835761014684,
       "sharesPct1Year": 0,
-      "flow5Day": -330163849.6670618,
-      "flow1Month": -150823307.04526138,
-      "flow3Month": -234590918.92439175,
-      "flow6Month": 1295402878.6163635,
+      "flow5Day": -251054605.26057625,
+      "flow1Month": -104607626.2174015,
+      "flow3Month": -194577464.25984287,
+      "flow6Month": 1359534167.083417,
       "flow1Year": 2793600502.9700003
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
       "totalAssets": 21723451392,
-      "sharesOutstanding": 192259946.82715285,
-      "sharesPct5Day": -0.009534180783136347,
-      "sharesPct1Month": -0.04063322025556056,
-      "sharesPct3Month": -0.07480911569238625,
+      "sharesOutstanding": 194899079.41862553,
+      "sharesPct5Day": -0.00746903372875316,
+      "sharesPct1Month": -0.03204985157041843,
+      "sharesPct3Month": -0.062109115216963176,
       "sharesPct1Year": 0,
-      "flow5Day": -818073753.6137619,
-      "flow1Month": -920079581.4060135,
-      "flow3Month": -20063703.35257721,
-      "flow6Month": -2847902686.828453,
+      "flow5Day": -512838480.82157516,
+      "flow1Month": -719286415.5663223,
+      "flow3Month": 260440330.84568405,
+      "flow6Month": -2515181457.1567383,
       "flow1Year": -5420497228.060001
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
       "totalAssets": 8563283968,
-      "sharesOutstanding": 192519873.38129497,
-      "sharesPct5Day": 0.005284452094720001,
-      "sharesPct1Month": 0.023676997069758784,
-      "sharesPct3Month": 0.0461958851674901,
+      "sharesOutstanding": 194134753.29857177,
+      "sharesPct5Day": 0.005956531201142051,
+      "sharesPct1Month": 0.026750493798273548,
+      "sharesPct3Month": 0.05497150243142059,
       "sharesPct1Year": 0,
-      "flow5Day": 500806895.6205826,
-      "flow1Month": 198063305.12282944,
-      "flow3Month": 370993476.1813154,
-      "flow6Month": 603902964.6123219,
+      "flow5Day": 567873364.0733786,
+      "flow1Month": 223103934.26881123,
+      "flow3Month": 303743935.00626373,
+      "flow6Month": 670111844.3617249,
       "flow1Year": 670105453.04
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
       "totalAssets": 23064174592,
-      "sharesOutstanding": 539765377.7673765,
-      "sharesPct5Day": 0.006667334044672655,
-      "sharesPct1Month": 0.030016716821672628,
-      "sharesPct3Month": 0.05891223378581208,
+      "sharesOutstanding": 546156158.9391428,
+      "sharesPct5Day": 0.007635708743946539,
+      "sharesPct1Month": 0.03449259486118645,
+      "sharesPct3Month": 0.07144967439421629,
       "sharesPct1Year": 0,
-      "flow5Day": 1464198979.8635178,
-      "flow1Month": 672135496.5868416,
-      "flow3Month": 830991339.0583038,
-      "flow6Month": 326765736.21170807,
+      "flow5Day": 1716948518.9711304,
+      "flow1Month": 769017810.2398872,
+      "flow3Month": 419608114.6275711,
+      "flow6Month": 592824814.7957039,
       "flow1Year": 1775181078.7700005
     }
   ],
@@ -1252,78 +1261,78 @@
       "ticker": "XLK",
       "sector": "Technology",
       "totalAssets": 115410993152,
-      "price": 185.69,
-      "date": "2026-08-28"
+      "price": 186.5,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
       "totalAssets": 57884381184,
-      "price": 58.1,
-      "date": "2026-08-28"
+      "price": 57.71,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
       "totalAssets": 39209267200,
-      "price": 62.68,
-      "date": "2026-08-28"
+      "price": 63.96,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
       "totalAssets": 41749876736,
-      "price": 171.16,
-      "date": "2026-08-28"
+      "price": 170.54,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
       "totalAssets": 22456301568,
-      "price": 117.21,
-      "date": "2026-08-28"
+      "price": 116.59,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
       "totalAssets": 14550159360,
-      "price": 85.45,
-      "date": "2026-08-28"
+      "price": 84.98,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
       "totalAssets": 32876894208,
-      "price": 177.14,
-      "date": "2026-08-28"
+      "price": 175.13,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLB",
       "sector": "Basic Materials",
       "totalAssets": 8255610880,
-      "price": 53.18,
-      "date": "2026-08-28"
+      "price": 52.69,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
       "totalAssets": 21723451392,
-      "price": 112.99,
-      "date": "2026-08-28"
+      "price": 111.46,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
       "totalAssets": 8563283968,
-      "price": 44.48,
-      "date": "2026-08-28"
+      "price": 44.11,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
       "totalAssets": 23064174592,
-      "price": 42.73,
-      "date": "2026-08-28"
+      "price": 42.23,
+      "date": "2026-08-31"
     }
   ],
   "nportData": [
@@ -1685,811 +1694,811 @@
       "ticker": "XLB",
       "sector": "Basic Materials",
       "source": "FINRA",
-      "shortVolume": 1930598,
-      "totalVolume": 3118466,
-      "shortRatio": 0.6190857941051786,
-      "date": "2026-08-28"
+      "shortVolume": 2975546,
+      "totalVolume": 3969990,
+      "shortRatio": 0.749509696497976,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
       "source": "FINRA",
-      "shortVolume": 965686,
-      "totalVolume": 1231673,
-      "shortRatio": 0.7840441415862814,
-      "date": "2026-08-28"
+      "shortVolume": 866051,
+      "totalVolume": 1204923,
+      "shortRatio": 0.7187604519126949,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
       "source": "FINRA",
-      "shortVolume": 4507263,
-      "totalVolume": 7019152,
-      "shortRatio": 0.6421378251959781,
-      "date": "2026-08-28"
+      "shortVolume": 6121598,
+      "totalVolume": 9340672,
+      "shortRatio": 0.6553701917806342,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
       "source": "FINRA",
-      "shortVolume": 3697862,
-      "totalVolume": 5759290,
-      "shortRatio": 0.6420690744866121,
-      "date": "2026-08-28"
+      "shortVolume": 4302308,
+      "totalVolume": 11708887,
+      "shortRatio": 0.36743953545712754,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
       "source": "FINRA",
-      "shortVolume": 1753146,
-      "totalVolume": 2624920,
-      "shortRatio": 0.6678854974627798,
-      "date": "2026-08-28"
+      "shortVolume": 1631027,
+      "totalVolume": 3137528,
+      "shortRatio": 0.5198446037772412,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLK",
       "sector": "Technology",
       "source": "FINRA",
-      "shortVolume": 1402818,
-      "totalVolume": 2291294,
-      "shortRatio": 0.612238324719569,
-      "date": "2026-08-28"
+      "shortVolume": 841314,
+      "totalVolume": 1562278,
+      "shortRatio": 0.5385174725625017,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
       "source": "FINRA",
-      "shortVolume": 1008841,
-      "totalVolume": 1972920,
-      "shortRatio": 0.5113440991018389,
-      "date": "2026-08-28"
+      "shortVolume": 1324953,
+      "totalVolume": 2015890,
+      "shortRatio": 0.6572546121068114,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
       "source": "FINRA",
-      "shortVolume": 963458,
-      "totalVolume": 1246771,
-      "shortRatio": 0.7727626003492221,
-      "date": "2026-08-28"
+      "shortVolume": 1780455,
+      "totalVolume": 2687693,
+      "shortRatio": 0.6624473107605667,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
       "source": "FINRA",
-      "shortVolume": 4407594,
-      "totalVolume": 6336784,
-      "shortRatio": 0.6955569260369298,
-      "date": "2026-08-28"
+      "shortVolume": 5263515,
+      "totalVolume": 13311209,
+      "shortRatio": 0.39541975488477416,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
       "source": "FINRA",
-      "shortVolume": 797296,
-      "totalVolume": 1427546,
-      "shortRatio": 0.558508097112107,
-      "date": "2026-08-28"
+      "shortVolume": 2380596,
+      "totalVolume": 2997009,
+      "shortRatio": 0.7943239409691463,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
       "source": "FINRA",
-      "shortVolume": 762268,
-      "totalVolume": 1152051,
-      "shortRatio": 0.661661679908268,
-      "date": "2026-08-28"
+      "shortVolume": 725628,
+      "totalVolume": 1535300,
+      "shortRatio": 0.472629453526998,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLB",
       "sector": "Basic Materials",
       "source": "NASDAQ",
-      "shortVolume": 811,
-      "totalVolume": 14314,
-      "shortRatio": 0.05665781752130781,
-      "date": "2026-08-28"
+      "shortVolume": 3166,
+      "totalVolume": 7028,
+      "shortRatio": 0.45048377916903815,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
       "source": "NASDAQ",
-      "shortVolume": 310,
-      "totalVolume": 1022,
-      "shortRatio": 0.30332681017612523,
-      "date": "2026-08-28"
+      "shortVolume": 2254,
+      "totalVolume": 2375,
+      "shortRatio": 0.9490526315789474,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
       "source": "NASDAQ",
-      "shortVolume": 35948,
-      "totalVolume": 68243,
-      "shortRatio": 0.5267646498541975,
-      "date": "2026-08-28"
+      "shortVolume": 53160,
+      "totalVolume": 90572,
+      "shortRatio": 0.5869363600229651,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
       "source": "NASDAQ",
-      "shortVolume": 24681,
-      "totalVolume": 42559,
-      "shortRatio": 0.5799243403275453,
-      "date": "2026-08-28"
+      "shortVolume": 7334,
+      "totalVolume": 9247,
+      "shortRatio": 0.7931220936519953,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
       "source": "NASDAQ",
-      "shortVolume": 2813,
-      "totalVolume": 5838,
-      "shortRatio": 0.48184309695101063,
-      "date": "2026-08-28"
+      "shortVolume": 4547,
+      "totalVolume": 10319,
+      "shortRatio": 0.4406434732047679,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLK",
       "sector": "Technology",
       "source": "NASDAQ",
-      "shortVolume": 6378,
-      "totalVolume": 10825,
-      "shortRatio": 0.5891916859122401,
-      "date": "2026-08-28"
+      "shortVolume": 6958,
+      "totalVolume": 11825,
+      "shortRatio": 0.5884143763213531,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
       "source": "NASDAQ",
-      "shortVolume": 1782,
-      "totalVolume": 5798,
-      "shortRatio": 0.30734736115902034,
-      "date": "2026-08-28"
+      "shortVolume": 3219,
+      "totalVolume": 12274,
+      "shortRatio": 0.26226169138015315,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
       "source": "NASDAQ",
-      "shortVolume": 1110,
-      "totalVolume": 1654,
-      "shortRatio": 0.6711003627569528,
-      "date": "2026-08-28"
+      "shortVolume": 6854,
+      "totalVolume": 14026,
+      "shortRatio": 0.4886639098816484,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
       "source": "NASDAQ",
-      "shortVolume": 24507,
-      "totalVolume": 40977,
-      "shortRatio": 0.5980672084339995,
-      "date": "2026-08-28"
+      "shortVolume": 17201,
+      "totalVolume": 53287,
+      "shortRatio": 0.3227991817891793,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
       "source": "NASDAQ",
-      "shortVolume": 8532,
-      "totalVolume": 12502,
-      "shortRatio": 0.6824508078707406,
-      "date": "2026-08-28"
+      "shortVolume": 3904,
+      "totalVolume": 14474,
+      "shortRatio": 0.2697250241812906,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
       "source": "NASDAQ",
-      "shortVolume": 4631,
-      "totalVolume": 6011,
-      "shortRatio": 0.770420895025786,
-      "date": "2026-08-28"
+      "shortVolume": 558,
+      "totalVolume": 3421,
+      "shortRatio": 0.1631102016954107,
+      "date": "2026-08-31"
     }
   ],
   "darkPoolAggregates": [
     {
       "ticker": "XLK",
       "sector": "Technology",
-      "date": "2026-08-28",
-      "finraRatio": 0.612238324719569,
+      "date": "2026-08-31",
+      "finraRatio": 0.5385174725625017,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.5891916859122401,
-      "combinedShortRatio": 0.612129955054452,
-      "combinedShortVolume": 1409196,
-      "combinedTotalVolume": 2302119,
+      "nasdaqRatio": 0.5884143763213531,
+      "combinedShortRatio": 0.5388923088260426,
+      "combinedShortVolume": 848272,
+      "combinedTotalVolume": 1574103,
       "sourcesAgree": true,
-      "maxDivergence": 0.023046638807328823
+      "maxDivergence": 0.04989690375885136
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
-      "date": "2026-08-28",
-      "finraRatio": 0.6420690744866121,
+      "date": "2026-08-31",
+      "finraRatio": 0.36743953545712754,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.5799243403275453,
-      "combinedShortRatio": 0.6416132167521078,
-      "combinedShortVolume": 3722543,
-      "combinedTotalVolume": 5801849,
-      "sourcesAgree": true,
-      "maxDivergence": 0.06214473415906685
+      "nasdaqRatio": 0.7931220936519953,
+      "combinedShortRatio": 0.3677754495724319,
+      "combinedShortVolume": 4309642,
+      "combinedTotalVolume": 11718134,
+      "sourcesAgree": false,
+      "maxDivergence": 0.4256825581948677
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
-      "date": "2026-08-28",
-      "finraRatio": 0.6421378251959781,
+      "date": "2026-08-31",
+      "finraRatio": 0.6553701917806342,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.5267646498541975,
-      "combinedShortRatio": 0.6410269217392286,
-      "combinedShortVolume": 4543211,
-      "combinedTotalVolume": 7087395,
-      "sourcesAgree": false,
-      "maxDivergence": 0.1153731753417806
+      "nasdaqRatio": 0.5869363600229651,
+      "combinedShortRatio": 0.6547129943833496,
+      "combinedShortVolume": 6174758,
+      "combinedTotalVolume": 9431244,
+      "sourcesAgree": true,
+      "maxDivergence": 0.06843383175766904
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
-      "date": "2026-08-28",
-      "finraRatio": 0.558508097112107,
+      "date": "2026-08-31",
+      "finraRatio": 0.7943239409691463,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.6824508078707406,
-      "combinedShortRatio": 0.559584124973612,
-      "combinedShortVolume": 805828,
-      "combinedTotalVolume": 1440048,
+      "nasdaqRatio": 0.2697250241812906,
+      "combinedShortRatio": 0.7918025770027591,
+      "combinedShortVolume": 2384500,
+      "combinedTotalVolume": 3011483,
       "sourcesAgree": false,
-      "maxDivergence": 0.12394271075863361
+      "maxDivergence": 0.5245989167878558
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
-      "date": "2026-08-28",
-      "finraRatio": 0.661661679908268,
+      "date": "2026-08-31",
+      "finraRatio": 0.472629453526998,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.770420895025786,
-      "combinedShortRatio": 0.6622262020513582,
-      "combinedShortVolume": 766899,
-      "combinedTotalVolume": 1158062,
+      "nasdaqRatio": 0.1631102016954107,
+      "combinedShortRatio": 0.4719413070985578,
+      "combinedShortVolume": 726186,
+      "combinedTotalVolume": 1538721,
       "sourcesAgree": false,
-      "maxDivergence": 0.10875921511751807
+      "maxDivergence": 0.30951925183158724
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
-      "date": "2026-08-28",
-      "finraRatio": 0.5113440991018389,
+      "date": "2026-08-31",
+      "finraRatio": 0.6572546121068114,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.30734736115902034,
-      "combinedShortRatio": 0.5107463519308967,
-      "combinedShortVolume": 1010623,
-      "combinedTotalVolume": 1978718,
+      "nasdaqRatio": 0.26226169138015315,
+      "combinedShortRatio": 0.6548642023031668,
+      "combinedShortVolume": 1328172,
+      "combinedTotalVolume": 2028164,
       "sourcesAgree": false,
-      "maxDivergence": 0.20399673794281853
+      "maxDivergence": 0.3949929207266582
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
-      "date": "2026-08-28",
-      "finraRatio": 0.6678854974627798,
+      "date": "2026-08-31",
+      "finraRatio": 0.5198446037772412,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.48184309695101063,
-      "combinedShortRatio": 0.6674726447662613,
-      "combinedShortVolume": 1755959,
-      "combinedTotalVolume": 2630758,
-      "sourcesAgree": false,
-      "maxDivergence": 0.18604240051176918
+      "nasdaqRatio": 0.4406434732047679,
+      "combinedShortRatio": 0.5195849734755216,
+      "combinedShortVolume": 1635574,
+      "combinedTotalVolume": 3147847,
+      "sourcesAgree": true,
+      "maxDivergence": 0.0792011305724733
     },
     {
       "ticker": "XLB",
       "sector": "Basic Materials",
-      "date": "2026-08-28",
-      "finraRatio": 0.6190857941051786,
+      "date": "2026-08-31",
+      "finraRatio": 0.749509696497976,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.05665781752130781,
-      "combinedShortRatio": 0.6165160017620133,
-      "combinedShortVolume": 1931409,
-      "combinedTotalVolume": 3132780,
+      "nasdaqRatio": 0.45048377916903815,
+      "combinedShortRatio": 0.7489812718976882,
+      "combinedShortVolume": 2978712,
+      "combinedTotalVolume": 3977018,
       "sourcesAgree": false,
-      "maxDivergence": 0.5624279765838708
+      "maxDivergence": 0.2990259173289379
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
-      "date": "2026-08-28",
-      "finraRatio": 0.7840441415862814,
+      "date": "2026-08-31",
+      "finraRatio": 0.7187604519126949,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.30332681017612523,
-      "combinedShortRatio": 0.7836455895416141,
-      "combinedShortVolume": 965996,
-      "combinedTotalVolume": 1232695,
+      "nasdaqRatio": 0.9490526315789474,
+      "combinedShortRatio": 0.7192134833322014,
+      "combinedShortVolume": 868305,
+      "combinedTotalVolume": 1207298,
       "sourcesAgree": false,
-      "maxDivergence": 0.4807173314101562
+      "maxDivergence": 0.23029217966625248
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
-      "date": "2026-08-28",
-      "finraRatio": 0.7727626003492221,
+      "date": "2026-08-31",
+      "finraRatio": 0.6624473107605667,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.6711003627569528,
-      "combinedShortRatio": 0.7726279111680717,
-      "combinedShortVolume": 964568,
-      "combinedTotalVolume": 1248425,
+      "nasdaqRatio": 0.4886639098816484,
+      "combinedShortRatio": 0.6615451125746238,
+      "combinedShortVolume": 1787309,
+      "combinedTotalVolume": 2701719,
       "sourcesAgree": false,
-      "maxDivergence": 0.10166223759226922
+      "maxDivergence": 0.17378340087891836
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
-      "date": "2026-08-28",
-      "finraRatio": 0.6955569260369298,
+      "date": "2026-08-31",
+      "finraRatio": 0.39541975488477416,
       "arcaRatio": 0,
-      "nasdaqRatio": 0.5980672084339995,
-      "combinedShortRatio": 0.6949305563504182,
-      "combinedShortVolume": 4432101,
-      "combinedTotalVolume": 6377761,
+      "nasdaqRatio": 0.3227991817891793,
+      "combinedShortRatio": 0.39513020169260404,
+      "combinedShortVolume": 5280716,
+      "combinedTotalVolume": 13364496,
       "sourcesAgree": true,
-      "maxDivergence": 0.09748971760293024
+      "maxDivergence": 0.07262057309559483
     }
   ],
   "darkPoolTrends": [
     {
       "ticker": "XLK",
       "sector": "Technology",
-      "shortRatio1d": 0.612129955054452,
-      "shortRatio5d": 0.5867248935944632,
-      "shortRatio20d": 0.5901396439249162,
+      "shortRatio1d": 0.5388923088260426,
+      "shortRatio5d": 0.574693364192815,
+      "shortRatio20d": 0.5863797909869011,
       "trend": "STABLE",
-      "trendStrength": -0.0034147503304530202,
+      "trendStrength": -0.011686426794086047,
       "daysOfData": 16,
       "sourcesAgree": true,
-      "maxDivergence": 0.023046638807328823
+      "maxDivergence": 0.04989690375885136
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
-      "shortRatio1d": 0.6416132167521078,
-      "shortRatio5d": 0.6689749373381225,
-      "shortRatio20d": 0.5794266597727191,
+      "shortRatio1d": 0.3677754495724319,
+      "shortRatio5d": 0.6056903785764141,
+      "shortRatio20d": 0.5596502351596854,
       "trend": "INCREASING",
-      "trendStrength": 0.0895482775654034,
+      "trendStrength": 0.046040143416728685,
       "daysOfData": 16,
-      "sourcesAgree": true,
-      "maxDivergence": 0.06214473415906685
+      "sourcesAgree": false,
+      "maxDivergence": 0.4256825581948677
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
-      "shortRatio1d": 0.6410269217392286,
-      "shortRatio5d": 0.6145173929065031,
-      "shortRatio20d": 0.5106521211739118,
+      "shortRatio1d": 0.6547129943833496,
+      "shortRatio5d": 0.6156144645669495,
+      "shortRatio20d": 0.5109949560678012,
       "trend": "INCREASING",
-      "trendStrength": 0.1038652717325913,
+      "trendStrength": 0.10461950849914825,
       "daysOfData": 16,
-      "sourcesAgree": false,
-      "maxDivergence": 0.1153731753417806
+      "sourcesAgree": true,
+      "maxDivergence": 0.06843383175766904
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
-      "shortRatio1d": 0.559584124973612,
-      "shortRatio5d": 0.5633983607334571,
-      "shortRatio20d": 0.5882653525119563,
+      "shortRatio1d": 0.7918025770027591,
+      "shortRatio5d": 0.6228184854424806,
+      "shortRatio20d": 0.6068341414835261,
       "trend": "STABLE",
-      "trendStrength": -0.02486699177849927,
+      "trendStrength": 0.01598434395895454,
       "daysOfData": 16,
       "sourcesAgree": false,
-      "maxDivergence": 0.12394271075863361
+      "maxDivergence": 0.5245989167878558
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
-      "shortRatio1d": 0.6622262020513582,
-      "shortRatio5d": 0.6257303335881855,
-      "shortRatio20d": 0.6311682929674057,
+      "shortRatio1d": 0.4719413070985578,
+      "shortRatio5d": 0.6000446482800986,
+      "shortRatio20d": 0.6231415163086287,
       "trend": "STABLE",
-      "trendStrength": -0.005437959379220203,
+      "trendStrength": -0.02309686802853006,
       "daysOfData": 16,
       "sourcesAgree": false,
-      "maxDivergence": 0.10875921511751807
+      "maxDivergence": 0.30951925183158724
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
-      "shortRatio1d": 0.5107463519308967,
-      "shortRatio5d": 0.6083260334529679,
-      "shortRatio20d": 0.6365393179556146,
+      "shortRatio1d": 0.6548642023031668,
+      "shortRatio5d": 0.6271936881762457,
+      "shortRatio20d": 0.6424354600566389,
       "trend": "STABLE",
-      "trendStrength": -0.028213284502646707,
+      "trendStrength": -0.015241771880393218,
       "daysOfData": 16,
       "sourcesAgree": false,
-      "maxDivergence": 0.20399673794281853
+      "maxDivergence": 0.3949929207266582
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
-      "shortRatio1d": 0.6674726447662613,
-      "shortRatio5d": 0.5838675149071404,
-      "shortRatio20d": 0.6066931878504906,
+      "shortRatio1d": 0.5195849734755216,
+      "shortRatio5d": 0.5751478450728641,
+      "shortRatio20d": 0.6039682910272792,
       "trend": "STABLE",
-      "trendStrength": -0.02282567294335025,
+      "trendStrength": -0.02882044595441513,
       "daysOfData": 16,
-      "sourcesAgree": false,
-      "maxDivergence": 0.18604240051176918
+      "sourcesAgree": true,
+      "maxDivergence": 0.0792011305724733
     },
     {
       "ticker": "XLB",
       "sector": "Basic Materials",
-      "shortRatio1d": 0.6165160017620133,
-      "shortRatio5d": 0.5559767756297805,
-      "shortRatio20d": 0.5734965202990072,
+      "shortRatio1d": 0.7489812718976882,
+      "shortRatio5d": 0.5895471871150335,
+      "shortRatio20d": 0.5839872738881488,
       "trend": "STABLE",
-      "trendStrength": -0.017519744669226678,
+      "trendStrength": 0.005559913226884761,
       "daysOfData": 16,
       "sourcesAgree": false,
-      "maxDivergence": 0.5624279765838708
+      "maxDivergence": 0.2990259173289379
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
-      "shortRatio1d": 0.7836455895416141,
-      "shortRatio5d": 0.655466730871866,
-      "shortRatio20d": 0.5339698634444805,
+      "shortRatio1d": 0.7192134833322014,
+      "shortRatio5d": 0.6435431790943158,
+      "shortRatio20d": 0.530243753513996,
       "trend": "INCREASING",
-      "trendStrength": 0.12149686742738552,
+      "trendStrength": 0.1132994255803198,
       "daysOfData": 16,
       "sourcesAgree": false,
-      "maxDivergence": 0.4807173314101562
+      "maxDivergence": 0.23029217966625248
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
-      "shortRatio1d": 0.7726279111680717,
-      "shortRatio5d": 0.7349429149372804,
-      "shortRatio20d": 0.7455792003893963,
+      "shortRatio1d": 0.6615451125746238,
+      "shortRatio5d": 0.722720859622995,
+      "shortRatio20d": 0.7417598081036821,
       "trend": "STABLE",
-      "trendStrength": -0.010636285452115923,
+      "trendStrength": -0.0190389484806871,
       "daysOfData": 16,
       "sourcesAgree": false,
-      "maxDivergence": 0.10166223759226922
+      "maxDivergence": 0.17378340087891836
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
-      "shortRatio1d": 0.6949305563504182,
-      "shortRatio5d": 0.5965849348655669,
-      "shortRatio20d": 0.6063232430486377,
-      "trend": "STABLE",
-      "trendStrength": -0.009738308183070865,
+      "shortRatio1d": 0.39513020169260404,
+      "shortRatio5d": 0.5647040246007363,
+      "shortRatio20d": 0.5963604585908783,
+      "trend": "DECREASING",
+      "trendStrength": -0.03165643399014195,
       "daysOfData": 16,
       "sourcesAgree": true,
-      "maxDivergence": 0.09748971760293024
+      "maxDivergence": 0.07262057309559483
     }
   ],
   "optionsData": [
     {
       "ticker": "XLK",
       "sector": "Technology",
-      "putVolume": 1598,
-      "callVolume": 631,
-      "putCallRatio": 2.532488114104596,
-      "putOpenInterest": 2944,
-      "callOpenInterest": 3903,
-      "putCallOIRatio": 0.7542915705867281,
-      "impliedVolatility": 0.27899890930175786,
-      "date": "2026-08-28"
+      "putVolume": 324,
+      "callVolume": 99,
+      "putCallRatio": 3.272727272727273,
+      "putOpenInterest": 715,
+      "callOpenInterest": 517,
+      "putCallOIRatio": 1.3829787234042554,
+      "impliedVolatility": 0.2855296057128906,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLF",
       "sector": "Financial",
-      "putVolume": 1319,
-      "callVolume": 874,
-      "putCallRatio": 1.5091533180778032,
-      "putOpenInterest": 37871,
-      "callOpenInterest": 27874,
-      "putCallOIRatio": 1.3586496376551624,
-      "impliedVolatility": 0.1674481042480469,
-      "date": "2026-08-28"
+      "putVolume": 2038,
+      "callVolume": 564,
+      "putCallRatio": 3.6134751773049647,
+      "putOpenInterest": 37845,
+      "callOpenInterest": 28033,
+      "putCallOIRatio": 1.3500160525095424,
+      "impliedVolatility": 0.16449810119628905,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLE",
       "sector": "Energy",
-      "putVolume": 933,
-      "callVolume": 732,
-      "putCallRatio": 1.2745901639344261,
-      "putOpenInterest": 10323,
-      "callOpenInterest": 32468,
-      "putCallOIRatio": 0.31794382160896884,
-      "impliedVolatility": 0.5062408207233138,
-      "date": "2026-08-28"
+      "putVolume": 1594,
+      "callVolume": 5942,
+      "putCallRatio": 0.2682598451699764,
+      "putOpenInterest": 10394,
+      "callOpenInterest": 31358,
+      "putCallOIRatio": 0.33146246571847693,
+      "impliedVolatility": 0.26843993286132806,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLV",
       "sector": "Healthcare",
-      "putVolume": 516,
-      "callVolume": 89,
-      "putCallRatio": 5.797752808988764,
-      "putOpenInterest": 759,
-      "callOpenInterest": 726,
-      "putCallOIRatio": 1.0454545454545454,
-      "impliedVolatility": 0.28207217820111447,
-      "date": "2026-08-28"
+      "putVolume": 510,
+      "callVolume": 137,
+      "putCallRatio": 3.7226277372262775,
+      "putOpenInterest": 620,
+      "callOpenInterest": 976,
+      "putCallOIRatio": 0.6352459016393442,
+      "impliedVolatility": 0.2885609881591797,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLY",
       "sector": "Consumer Cyclical",
-      "putVolume": 12,
+      "putVolume": 34,
       "callVolume": 29,
-      "putCallRatio": 0.41379310344827586,
-      "putOpenInterest": 37,
-      "callOpenInterest": 111,
-      "putCallOIRatio": 0.3333333333333333,
-      "impliedVolatility": 0.36272813385009767,
-      "date": "2026-08-28"
+      "putCallRatio": 1.1724137931034482,
+      "putOpenInterest": 58,
+      "callOpenInterest": 44,
+      "putCallOIRatio": 1.3181818181818181,
+      "impliedVolatility": 0.38668826208496093,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLP",
       "sector": "Consumer Defensive",
-      "putVolume": 400,
-      "callVolume": 1242,
-      "putCallRatio": 0.322061191626409,
-      "putOpenInterest": 1022,
-      "callOpenInterest": 1058,
-      "putCallOIRatio": 0.9659735349716446,
-      "impliedVolatility": 0.23680659964425224,
-      "date": "2026-08-28"
+      "putVolume": 531,
+      "callVolume": 484,
+      "putCallRatio": 1.0971074380165289,
+      "putOpenInterest": 3207,
+      "callOpenInterest": 816,
+      "putCallOIRatio": 3.9301470588235294,
+      "impliedVolatility": 0.48641678267629523,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLI",
       "sector": "Industrials",
-      "putVolume": 62,
-      "callVolume": 277,
-      "putCallRatio": 0.22382671480144403,
-      "putOpenInterest": 245,
-      "callOpenInterest": 868,
-      "putCallOIRatio": 0.28225806451612906,
-      "impliedVolatility": 0.30042203491210934,
-      "date": "2026-08-28"
+      "putVolume": 70,
+      "callVolume": 2029,
+      "putCallRatio": 0.03449975357318876,
+      "putOpenInterest": 253,
+      "callOpenInterest": 3183,
+      "putCallOIRatio": 0.07948476280238768,
+      "impliedVolatility": 0.2996285858154296,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLB",
       "sector": "Basic Materials",
-      "putVolume": 56,
-      "callVolume": 108,
-      "putCallRatio": 0.5185185185185185,
-      "putOpenInterest": 170,
-      "callOpenInterest": 793,
-      "putCallOIRatio": 0.21437578814627994,
-      "impliedVolatility": 0.5175097077636719,
-      "date": "2026-08-28"
+      "putVolume": 177,
+      "callVolume": 43,
+      "putCallRatio": 4.116279069767442,
+      "putOpenInterest": 84475,
+      "callOpenInterest": 92,
+      "putCallOIRatio": 918.2065217391304,
+      "impliedVolatility": 0.6140175317382812,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLC",
       "sector": "Communication Services",
-      "putVolume": 27,
-      "callVolume": 103,
-      "putCallRatio": 0.2621359223300971,
-      "putOpenInterest": 40,
-      "callOpenInterest": 109,
-      "putCallOIRatio": 0.3669724770642202,
-      "impliedVolatility": 0.36143216699218744,
-      "date": "2026-08-28"
+      "putVolume": 9,
+      "callVolume": 31,
+      "putCallRatio": 0.2903225806451613,
+      "putOpenInterest": 18,
+      "callOpenInterest": 47,
+      "putCallOIRatio": 0.3829787234042553,
+      "impliedVolatility": 0.39018350708007815,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLRE",
       "sector": "Real Estate",
-      "putVolume": 56,
-      "callVolume": 106,
-      "putCallRatio": 0.5283018867924528,
-      "putOpenInterest": 926,
-      "callOpenInterest": 2099,
-      "putCallOIRatio": 0.4411624583134826,
-      "impliedVolatility": 0.21826953613281252,
-      "date": "2026-08-28"
+      "putVolume": 113,
+      "callVolume": 131,
+      "putCallRatio": 0.8625954198473282,
+      "putOpenInterest": 927,
+      "callOpenInterest": 2138,
+      "putCallOIRatio": 0.43358278765201125,
+      "impliedVolatility": 0.25407646972656256,
+      "date": "2026-08-31"
     },
     {
       "ticker": "XLU",
       "sector": "Utilities",
-      "putVolume": 124,
-      "callVolume": 159,
-      "putCallRatio": 0.779874213836478,
-      "putOpenInterest": 3642,
-      "callOpenInterest": 6255,
-      "putCallOIRatio": 0.5822541966426859,
-      "impliedVolatility": 0.29085995605468745,
-      "date": "2026-08-28"
+      "putVolume": 363,
+      "callVolume": 807,
+      "putCallRatio": 0.44981412639405205,
+      "putOpenInterest": 2091,
+      "callOpenInterest": 1377,
+      "putCallOIRatio": 1.5185185185185186,
+      "impliedVolatility": 0.20465205078125,
+      "date": "2026-08-31"
     }
   ],
   "sectorTrends": [
     {
       "ticker": "XLE",
       "label": "Energy",
-      "sma20": 2.32,
-      "sma50": 7.79,
-      "sma200": 15.32,
-      "rsi": 62.07,
+      "sma20": 3.97,
+      "sma50": 9.6,
+      "sma200": 17.47,
+      "rsi": 67.61,
       "trendPhase": "ESTABLISHED_UPTREND"
     },
     {
       "ticker": "XLV",
       "label": "Healthcare",
-      "sma20": 1.13,
-      "sma50": 4.53,
-      "sma200": 10.52,
-      "rsi": 57.12,
+      "sma20": 0.52,
+      "sma50": 3.88,
+      "sma200": 10.04,
+      "rsi": 55.39,
       "trendPhase": "ESTABLISHED_UPTREND"
     },
     {
       "ticker": "XLF",
       "label": "Financial",
-      "sma20": 0.46,
-      "sma50": 2.94,
-      "sma200": 8.88,
-      "rsi": 58.48,
+      "sma20": -0.25,
+      "sma50": 2.1,
+      "sma200": 8.11,
+      "rsi": 53.54,
+      "trendPhase": "ESTABLISHED_UPTREND"
+    },
+    {
+      "ticker": "XLK",
+      "label": "Technology",
+      "sma20": 0.28,
+      "sma50": 2.09,
+      "sma200": 16.9,
+      "rsi": 54.15,
       "trendPhase": "ESTABLISHED_UPTREND"
     },
     {
       "ticker": "XLB",
       "label": "Basic Materials",
-      "sma20": 0.88,
-      "sma50": 2.84,
-      "sma200": 6.69,
-      "rsi": 56.89,
-      "trendPhase": "ESTABLISHED_UPTREND"
+      "sma20": -0.2,
+      "sma50": 1.85,
+      "sma200": 5.61,
+      "rsi": 51.93,
+      "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "XLC",
       "label": "Communication Services",
-      "sma20": 1.21,
-      "sma50": 2.63,
-      "sma200": -0.91,
-      "rsi": 56.26,
-      "trendPhase": "EARLY_UPTREND"
-    },
-    {
-      "ticker": "XLK",
-      "label": "Technology",
-      "sma20": 0.07,
-      "sma50": 1.59,
-      "sma200": 16.54,
-      "rsi": 53,
+      "sma20": -0.16,
+      "sma50": 1.2,
+      "sma200": -2.24,
+      "rsi": 50.61,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "XLY",
       "label": "Consumer Cyclical",
-      "sma20": -0.65,
-      "sma50": 0.88,
-      "sma200": 0.18,
-      "rsi": 50.82,
+      "sma20": -1.1,
+      "sma50": 0.36,
+      "sma200": -0.34,
+      "rsi": 48.69,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "XLP",
       "label": "Consumer Defensive",
-      "sma20": -0.14,
-      "sma50": 0.68,
-      "sma200": 2.79,
-      "rsi": 49.79,
+      "sma20": -0.7,
+      "sma50": 0.09,
+      "sma200": 2.18,
+      "rsi": 47.49,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "XLRE",
       "label": "Real Estate",
-      "sma20": -0.96,
-      "sma50": -0.89,
-      "sma200": 3.45,
-      "rsi": 43.31,
+      "sma20": -1.67,
+      "sma50": -1.73,
+      "sma200": 2.56,
+      "rsi": 39.13,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "XLI",
       "label": "Industrials",
-      "sma20": -3.2,
-      "sma50": -2.61,
-      "sma200": 4.07,
-      "rsi": 37.81,
+      "sma20": -4.09,
+      "sma50": -3.65,
+      "sma200": 2.83,
+      "rsi": 33.93,
       "trendPhase": "EARLY_DOWNTREND"
     },
     {
       "ticker": "XLU",
       "label": "Utilities",
-      "sma20": -2.08,
-      "sma50": -4.38,
-      "sma200": -4.43,
-      "rsi": 35.79,
+      "sma20": -2.99,
+      "sma50": -5.39,
+      "sma200": -5.52,
+      "rsi": 31.97,
       "trendPhase": "ESTABLISHED_DOWNTREND"
     }
   ],
   "assetClassTrends": [
     {
-      "ticker": "GDX",
-      "label": "Gold Miners",
-      "sma20": 7.33,
-      "sma50": 20.91,
-      "sma200": 11.56,
-      "rsi": 62.88,
-      "trendPhase": "EXTENDED"
-    },
-    {
       "ticker": "IBIT",
       "label": "Bitcoin ETF",
-      "sma20": 12.3,
-      "sma50": 18.4,
-      "sma200": 2.93,
-      "rsi": 70.87,
+      "sma20": 13.04,
+      "sma50": 19.89,
+      "sma200": 4.9,
+      "rsi": 72.89,
       "trendPhase": "ESTABLISHED_UPTREND"
     },
     {
       "ticker": "BITO",
       "label": "Bitcoin Futures",
-      "sma20": 12.14,
-      "sma50": 17.92,
-      "sma200": -0.55,
-      "rsi": 70.32,
+      "sma20": 12.86,
+      "sma50": 19.4,
+      "sma200": 1.43,
+      "rsi": 72.32,
       "trendPhase": "EARLY_UPTREND"
+    },
+    {
+      "ticker": "GDX",
+      "label": "Gold Miners",
+      "sma20": 4.83,
+      "sma50": 19.06,
+      "sma200": 10.15,
+      "rsi": 60.71,
+      "trendPhase": "EXTENDED"
     },
     {
       "ticker": "USO",
       "label": "Oil",
-      "sma20": 2.59,
-      "sma50": 7.22,
-      "sma200": 22.63,
-      "rsi": 53.85,
-      "trendPhase": "ESTABLISHED_UPTREND"
+      "sma20": 5.27,
+      "sma50": 10.18,
+      "sma200": 26.05,
+      "rsi": 58.54,
+      "trendPhase": "EXTENDED"
     },
     {
       "ticker": "DBC",
       "label": "Commodity Index",
-      "sma20": 2.48,
-      "sma50": 6.58,
-      "sma200": 14.43,
-      "rsi": 60.06,
+      "sma20": 3.76,
+      "sma50": 8.07,
+      "sma200": 16.13,
+      "rsi": 64.62,
       "trendPhase": "ESTABLISHED_UPTREND"
     },
     {
       "ticker": "GLD",
       "label": "Gold",
-      "sma20": 1,
-      "sma50": 5.91,
-      "sma200": -1.42,
-      "rsi": 54.56,
+      "sma20": 0.43,
+      "sma50": 5.67,
+      "sma200": -1.57,
+      "rsi": 54.2,
       "trendPhase": "EARLY_UPTREND"
     },
     {
       "ticker": "EFA",
       "label": "Developed Markets",
-      "sma20": -0.19,
-      "sma50": 2.14,
-      "sma200": 6.35,
-      "rsi": 54.42,
-      "trendPhase": "ESTABLISHED_UPTREND"
-    },
-    {
-      "ticker": "SPY",
-      "label": "S&P 500",
-      "sma20": 0.02,
-      "sma50": 2.04,
-      "sma200": 8.38,
-      "rsi": 56.61,
-      "trendPhase": "ESTABLISHED_UPTREND"
+      "sma20": -0.5,
+      "sma50": 1.83,
+      "sma200": 6.02,
+      "rsi": 52.44,
+      "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "EEM",
       "label": "Emerging Markets",
-      "sma20": 1.36,
-      "sma50": 1.81,
-      "sma200": 9.29,
-      "rsi": 55.14,
+      "sma20": 0.97,
+      "sma50": 1.74,
+      "sma200": 8.99,
+      "rsi": 54.47,
+      "trendPhase": "NEUTRAL"
+    },
+    {
+      "ticker": "SPY",
+      "label": "S&P 500",
+      "sma20": -0.34,
+      "sma50": 1.68,
+      "sma200": 7.99,
+      "rsi": 54.04,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "BIL",
       "label": "T-Bills / Cash",
-      "sma20": 0.13,
-      "sma50": 0.11,
-      "sma200": 0.14,
-      "rsi": 68.19,
+      "sma20": 0.12,
+      "sma50": 0.12,
+      "sma200": 0.15,
+      "rsi": 69.51,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "SHY",
       "label": "1-3 Yr Treasury",
-      "sma20": -0.08,
-      "sma50": -0.08,
+      "sma20": -0.09,
+      "sma50": -0.07,
       "sma200": -0.67,
       "rsi": 44.36,
       "trendPhase": "NEUTRAL"
@@ -2497,19 +2506,19 @@
     {
       "ticker": "IEF",
       "label": "7-10 Yr Treasury",
-      "sma20": -0.23,
-      "sma50": -0.7,
-      "sma200": -2.45,
-      "rsi": 44.77,
+      "sma20": -0.35,
+      "sma50": -0.78,
+      "sma200": -2.54,
+      "rsi": 43.32,
       "trendPhase": "NEUTRAL"
     },
     {
       "ticker": "TLT",
       "label": "20+ Yr Treasury",
-      "sma20": 0.46,
-      "sma50": -1.19,
-      "sma200": -4.11,
-      "rsi": 49.42,
+      "sma20": 0,
+      "sma50": -1.52,
+      "sma200": -4.48,
+      "rsi": 46.48,
       "trendPhase": "NEUTRAL"
     }
   ],
@@ -2517,15 +2526,17 @@
     "deploy_momentum": {
       "sector": [
         {
-          "ticker": "XLC",
-          "label": "Communication Services",
+          "ticker": "XLK",
+          "label": "Technology",
           "action": "BUY",
-          "confidence": 75,
-          "rationale": "New uptrend forming with capital inflow confirmation",
+          "confidence": 70,
+          "rationale": "Near SMA20 with cooling RSI in confirmed uptrend — dip forming",
           "factors": [
-            "Trend: early uptrend",
-            "RSI 56 (neutral)",
-            "Rotation: INFLOW (rank Δ: +9)"
+            "Trend: established uptrend",
+            "RSI 54 (neutral)",
+            "Rotation: INFLOW (rank Δ: +8)",
+            "MAs stacked bullish (20>50>200)",
+            "Price approaching 20-day MA support"
           ]
         },
         {
@@ -2536,8 +2547,8 @@
           "rationale": "Confirmed uptrend — maintain position, no urgency to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 62 (elevated)",
-            "Rotation: OUTFLOW (rank Δ: -7)",
+            "RSI 68 (elevated)",
+            "Rotation: NEUTRAL (rank Δ: +1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -2549,8 +2560,8 @@
           "rationale": "Confirmed uptrend — maintain position, no urgency to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -10)",
+            "RSI 55 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -9)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -2562,36 +2573,32 @@
           "rationale": "Confirmed uptrend — maintain position, no urgency to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 58 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -1)",
-            "MAs stacked bullish (20>50>200)"
+            "RSI 54 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
           "ticker": "XLB",
           "label": "Basic Materials",
           "action": "HOLD",
-          "confidence": 60,
-          "rationale": "Confirmed uptrend with inflow but no dip yet (0.9% above SMA20) — wait for pullback to add",
+          "confidence": 35,
+          "rationale": "No clear signal — wait for trend to develop",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: INFLOW (rank Δ: 0)",
-            "MAs stacked bullish (20>50>200)",
-            "No dip: price still above 20-day MA"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: -1)"
           ]
         },
         {
-          "ticker": "XLK",
-          "label": "Technology",
+          "ticker": "XLC",
+          "label": "Communication Services",
           "action": "HOLD",
           "confidence": 35,
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 53 (neutral)",
-            "Rotation: INFLOW (rank Δ: +6)",
-            "MAs stacked bullish (20>50>200)"
+            "RSI 51 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: +5)"
           ]
         },
         {
@@ -2602,8 +2609,8 @@
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 51 (neutral)",
-            "Rotation: INFLOW (rank Δ: +4)"
+            "RSI 49 (neutral)",
+            "Rotation: INFLOW (rank Δ: +5)"
           ]
         },
         {
@@ -2614,8 +2621,8 @@
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 50 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: +1)"
+            "RSI 47 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -2626,8 +2633,8 @@
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 43 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -2)"
+            "RSI 39 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -6)"
           ]
         },
         {
@@ -2638,8 +2645,8 @@
           "rationale": "Below both SMA50 and SMA200 — confirmed bear trend, avoid",
           "factors": [
             "Trend: established downtrend",
-            "RSI 36 (depressed)",
-            "Rotation: NEUTRAL (rank Δ: +4)",
+            "RSI 32 (depressed)",
+            "Rotation: NEUTRAL (rank Δ: +3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -2651,8 +2658,8 @@
           "rationale": "Trend breaking below SMA50 with capital outflow",
           "factors": [
             "Trend: early downtrend",
-            "RSI 38 (depressed)",
-            "Rotation: OUTFLOW (rank Δ: -4)"
+            "RSI 34 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         }
       ],
@@ -2665,21 +2672,20 @@
           "rationale": "New uptrend forming with capital inflow confirmation",
           "factors": [
             "Trend: early uptrend",
-            "RSI 55 (neutral)",
-            "Flow: INFLOW (score 59.8)"
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 30.3)"
           ]
         },
         {
           "ticker": "EFA",
           "label": "Developed Markets",
           "action": "BUY",
-          "confidence": 70,
-          "rationale": "Near SMA20 with cooling RSI in confirmed uptrend — dip forming",
+          "confidence": 45,
+          "rationale": "No clear trend but capital flowing in — small position justified",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: INFLOW (score 3.3)",
-            "Price approaching 20-day MA support"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Flow: INFLOW (score 3.3)"
           ]
         },
         {
@@ -2690,9 +2696,21 @@
           "rationale": "No clear trend but capital flowing in — small position justified",
           "factors": [
             "Trend: neutral",
-            "RSI 55 (neutral)",
+            "RSI 54 (neutral)",
             "Flow: INFLOW (score 3.3)",
             "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "SPY",
+          "label": "S&P 500",
+          "action": "BUY",
+          "confidence": 45,
+          "rationale": "No clear trend but capital flowing in — small position justified",
+          "factors": [
+            "Trend: neutral",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 3.9)"
           ]
         },
         {
@@ -2700,26 +2718,13 @@
           "label": "Bitcoin ETF",
           "action": "HOLD",
           "confidence": 60,
-          "rationale": "Confirmed uptrend with inflow but no dip yet (12.3% above SMA20) — wait for pullback to add",
+          "rationale": "Confirmed uptrend with inflow but no dip yet (13.0% above SMA20) — wait for pullback to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 71 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 73 (overbought)",
+            "Flow: INFLOW (score 27.0)",
             "MAs stacked bullish (20>50>200)",
             "No dip: price still above 20-day MA"
-          ]
-        },
-        {
-          "ticker": "USO",
-          "label": "Oil",
-          "action": "HOLD",
-          "confidence": 60,
-          "rationale": "Confirmed uptrend — maintain position, no urgency to add",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -2727,24 +2732,11 @@
           "label": "Commodity Index",
           "action": "HOLD",
           "confidence": 60,
-          "rationale": "Confirmed uptrend — maintain position, no urgency to add",
+          "rationale": "Confirmed uptrend with inflow but no dip yet (3.8% above SMA20) — wait for pullback to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 60 (elevated)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "SPY",
-          "label": "S&P 500",
-          "action": "HOLD",
-          "confidence": 60,
-          "rationale": "Confirmed uptrend with inflow but no dip yet (0.0% above SMA20) — wait for pullback to add",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Flow: INFLOW (score 5.0)",
+            "RSI 65 (elevated)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)",
             "No dip: price still above 20-day MA"
           ]
@@ -2757,8 +2749,9 @@
           "rationale": "Early uptrend but RSI elevated — wait for pullback entry",
           "factors": [
             "Trend: early uptrend",
-            "RSI 70 (overbought)",
-            "Flow: INFLOW (score 33.0)"
+            "RSI 72 (overbought)",
+            "Flow: INFLOW (score 27.0)",
+            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -2769,8 +2762,8 @@
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 68 (elevated)",
-            "Flow: NEUTRAL (score 0.1)",
+            "RSI 70 (elevated)",
+            "Flow: NEUTRAL (score 0.4)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -2783,7 +2776,7 @@
           "factors": [
             "Trend: neutral",
             "RSI 44 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -2795,8 +2788,8 @@
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 45 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "RSI 43 (neutral)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -2808,8 +2801,8 @@
           "rationale": "No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 49 (neutral)",
-            "Flow: NEUTRAL (score -2.1)"
+            "RSI 46 (neutral)",
+            "Flow: NEUTRAL (score -2.3)"
           ]
         },
         {
@@ -2820,8 +2813,21 @@
           "rationale": "Far from MAs — reduce exposure, mean reversion risk rising",
           "factors": [
             "Trend: extended",
-            "RSI 63 (elevated)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 61 (elevated)",
+            "Flow: INFLOW (score 30.3)",
+            "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "USO",
+          "label": "Oil",
+          "action": "TRIM",
+          "confidence": 55,
+          "rationale": "Far from MAs — reduce exposure, mean reversion risk rising",
+          "factors": [
+            "Trend: extended",
+            "RSI 59 (neutral)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)"
           ]
         }
@@ -2837,10 +2843,22 @@
           "rationale": "Below all MAs with depressed RSI — accumulation zone",
           "factors": [
             "Trend: established downtrend",
-            "RSI 36 (depressed)",
-            "Rotation: NEUTRAL (rank Δ: +4)",
+            "RSI 32 (depressed)",
+            "Rotation: NEUTRAL (rank Δ: +3)",
             "MAs stacked bearish (price < all MAs)",
             "Price washed out — smart money often accumulates here"
+          ]
+        },
+        {
+          "ticker": "XLI",
+          "label": "Industrials",
+          "action": "BUY",
+          "confidence": 60,
+          "rationale": "Early decline with oversold RSI — contrarian entry if support holds",
+          "factors": [
+            "Trend: early downtrend",
+            "RSI 34 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -2851,8 +2869,8 @@
           "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 62 (elevated)",
-            "Rotation: OUTFLOW (rank Δ: -7)",
+            "RSI 68 (elevated)",
+            "Rotation: NEUTRAL (rank Δ: +1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -2864,8 +2882,8 @@
           "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -10)",
+            "RSI 55 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -9)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -2877,8 +2895,20 @@
           "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 58 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -1)",
+            "RSI 54 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
+          ]
+        },
+        {
+          "ticker": "XLK",
+          "label": "Technology",
+          "action": "HOLD",
+          "confidence": 50,
+          "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 54 (neutral)",
+            "Rotation: INFLOW (rank Δ: +8)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -2886,50 +2916,24 @@
           "ticker": "XLB",
           "label": "Basic Materials",
           "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
+          "confidence": 35,
+          "rationale": "No extreme — contrarian has no edge here",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: INFLOW (rank Δ: 0)",
-            "MAs stacked bullish (20>50>200)"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: -1)"
           ]
         },
         {
           "ticker": "XLC",
           "label": "Communication Services",
           "action": "HOLD",
-          "confidence": 45,
-          "rationale": "Trend forming — contrarian prefers buying deeper discounts",
-          "factors": [
-            "Trend: early uptrend",
-            "RSI 56 (neutral)",
-            "Rotation: INFLOW (rank Δ: +9)"
-          ]
-        },
-        {
-          "ticker": "XLI",
-          "label": "Industrials",
-          "action": "HOLD",
-          "confidence": 40,
-          "rationale": "Breaking down but not oversold — too early for contrarian entry",
-          "factors": [
-            "Trend: early downtrend",
-            "RSI 38 (depressed)",
-            "Rotation: OUTFLOW (rank Δ: -4)"
-          ]
-        },
-        {
-          "ticker": "XLK",
-          "label": "Technology",
-          "action": "HOLD",
           "confidence": 35,
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 53 (neutral)",
-            "Rotation: INFLOW (rank Δ: +6)",
-            "MAs stacked bullish (20>50>200)"
+            "RSI 51 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: +5)"
           ]
         },
         {
@@ -2940,8 +2944,8 @@
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 51 (neutral)",
-            "Rotation: INFLOW (rank Δ: +4)"
+            "RSI 49 (neutral)",
+            "Rotation: INFLOW (rank Δ: +5)"
           ]
         },
         {
@@ -2952,8 +2956,8 @@
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 50 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: +1)"
+            "RSI 47 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -2964,25 +2968,12 @@
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 43 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -2)"
+            "RSI 39 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -6)"
           ]
         }
       ],
       "assetClass": [
-        {
-          "ticker": "USO",
-          "label": "Oil",
-          "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
         {
           "ticker": "DBC",
           "label": "Commodity Index",
@@ -2991,33 +2982,8 @@
           "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 60 (elevated)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "EFA",
-          "label": "Developed Markets",
-          "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: INFLOW (score 3.3)"
-          ]
-        },
-        {
-          "ticker": "SPY",
-          "label": "S&P 500",
-          "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Uptrend intact — no contrarian edge, wait for extreme",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Flow: INFLOW (score 5.0)",
+            "RSI 65 (elevated)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3029,8 +2995,8 @@
           "rationale": "Trend forming — contrarian prefers buying deeper discounts",
           "factors": [
             "Trend: early uptrend",
-            "RSI 55 (neutral)",
-            "Flow: INFLOW (score 59.8)"
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 30.3)"
           ]
         },
         {
@@ -3041,8 +3007,21 @@
           "rationale": "New uptrend but already overbought — too late for contrarian",
           "factors": [
             "Trend: early uptrend",
-            "RSI 70 (overbought)",
-            "Flow: INFLOW (score 33.0)"
+            "RSI 72 (overbought)",
+            "Flow: INFLOW (score 27.0)",
+            "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "EFA",
+          "label": "Developed Markets",
+          "action": "HOLD",
+          "confidence": 35,
+          "rationale": "No extreme — contrarian has no edge here",
+          "factors": [
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Flow: INFLOW (score 3.3)"
           ]
         },
         {
@@ -3053,9 +3032,21 @@
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 55 (neutral)",
+            "RSI 54 (neutral)",
             "Flow: INFLOW (score 3.3)",
             "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "SPY",
+          "label": "S&P 500",
+          "action": "HOLD",
+          "confidence": 35,
+          "rationale": "No extreme — contrarian has no edge here",
+          "factors": [
+            "Trend: neutral",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 3.9)"
           ]
         },
         {
@@ -3067,7 +3058,7 @@
           "factors": [
             "Trend: neutral",
             "RSI 44 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3079,8 +3070,8 @@
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 45 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "RSI 43 (neutral)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3092,8 +3083,8 @@
           "rationale": "No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 49 (neutral)",
-            "Flow: NEUTRAL (score -2.1)"
+            "RSI 46 (neutral)",
+            "Flow: NEUTRAL (score -2.3)"
           ]
         },
         {
@@ -3104,8 +3095,8 @@
           "rationale": "Crowded trade — everyone bullish, reduce before mean reversion",
           "factors": [
             "Trend: extended",
-            "RSI 63 (elevated)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 61 (elevated)",
+            "Flow: INFLOW (score 30.3)",
             "MAs stacked bullish (20>50>200)",
             "All MAs aligned + elevated RSI = consensus too strong"
           ]
@@ -3118,10 +3109,23 @@
           "rationale": "Strong consensus + overbought — contrarian trims into strength",
           "factors": [
             "Trend: established uptrend",
-            "RSI 71 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 73 (overbought)",
+            "Flow: INFLOW (score 27.0)",
             "MAs stacked bullish (20>50>200)",
             "Inflow with high RSI = late buyers arriving"
+          ]
+        },
+        {
+          "ticker": "USO",
+          "label": "Oil",
+          "action": "TRIM",
+          "confidence": 55,
+          "rationale": "Overextended — contrarian says take profits here",
+          "factors": [
+            "Trend: extended",
+            "RSI 59 (neutral)",
+            "Flow: INFLOW (score 6.1)",
+            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -3132,8 +3136,8 @@
           "rationale": "No trend but overbought — contrarian lightens",
           "factors": [
             "Trend: neutral",
-            "RSI 68 (elevated)",
-            "Flow: NEUTRAL (score 0.1)",
+            "RSI 70 (elevated)",
+            "Flow: NEUTRAL (score 0.4)",
             "MAs stacked bullish (20>50>200)"
           ]
         }
@@ -3142,42 +3146,43 @@
     "deploy_rotation": {
       "sector": [
         {
-          "ticker": "XLC",
-          "label": "Communication Services",
-          "action": "BUY",
-          "confidence": 80,
-          "rationale": "Strong rotation in (rank Δ: +9) with trend inflection — high-conviction entry",
-          "factors": [
-            "Trend: early uptrend",
-            "RSI 56 (neutral)",
-            "Rotation: INFLOW (rank Δ: +9)",
-            "Rank shift: +9 (moving toward top)"
-          ]
-        },
-        {
           "ticker": "XLK",
           "label": "Technology",
           "action": "BUY",
           "confidence": 70,
-          "rationale": "Rapidly improving relative rank (+6) — rotating into leadership",
+          "rationale": "Rapidly improving relative rank (+8) — rotating into leadership",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 54 (neutral)",
+            "Rotation: INFLOW (rank Δ: +8)",
+            "MAs stacked bullish (20>50>200)",
+            "Rank shift: +8 (moving toward top)"
+          ]
+        },
+        {
+          "ticker": "XLC",
+          "label": "Communication Services",
+          "action": "BUY",
+          "confidence": 70,
+          "rationale": "Rapidly improving relative rank (+5) — rotating into leadership",
           "factors": [
             "Trend: neutral",
-            "RSI 53 (neutral)",
-            "Rotation: INFLOW (rank Δ: +6)",
-            "MAs stacked bullish (20>50>200)",
-            "Rank shift: +6 (moving toward top)"
+            "RSI 51 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: +5)",
+            "Rank shift: +5 (moving toward top)"
           ]
         },
         {
           "ticker": "XLY",
           "label": "Consumer Cyclical",
           "action": "BUY",
-          "confidence": 60,
-          "rationale": "Relative position improving (rank Δ: +4) with room to run",
+          "confidence": 70,
+          "rationale": "Rapidly improving relative rank (+5) — rotating into leadership",
           "factors": [
             "Trend: neutral",
-            "RSI 51 (neutral)",
-            "Rotation: INFLOW (rank Δ: +4)"
+            "RSI 49 (neutral)",
+            "Rotation: INFLOW (rank Δ: +5)",
+            "Rank shift: +5 (moving toward top)"
           ]
         },
         {
@@ -3185,11 +3190,11 @@
           "label": "Utilities",
           "action": "BUY",
           "confidence": 60,
-          "rationale": "Relative position improving (rank Δ: +4) with room to run",
+          "rationale": "Relative position improving (rank Δ: +3) with room to run",
           "factors": [
             "Trend: established downtrend",
-            "RSI 36 (depressed)",
-            "Rotation: NEUTRAL (rank Δ: +4)",
+            "RSI 32 (depressed)",
+            "Rotation: NEUTRAL (rank Δ: +3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3201,8 +3206,20 @@
           "rationale": "Stable relative position in uptrend — maintain weight",
           "factors": [
             "Trend: established uptrend",
-            "RSI 58 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -1)",
+            "RSI 54 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
+          ]
+        },
+        {
+          "ticker": "XLE",
+          "label": "Energy",
+          "action": "HOLD",
+          "confidence": 40,
+          "rationale": "No significant rank change — no rotation signal",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 68 (elevated)",
+            "Rotation: NEUTRAL (rank Δ: +1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3210,25 +3227,12 @@
           "ticker": "XLB",
           "label": "Basic Materials",
           "action": "HOLD",
-          "confidence": 55,
-          "rationale": "Stable relative position in uptrend — maintain weight",
+          "confidence": 40,
+          "rationale": "No significant rank change — no rotation signal",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: INFLOW (rank Δ: 0)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "XLI",
-          "label": "Industrials",
-          "action": "HOLD",
-          "confidence": 45,
-          "rationale": "Slight rank deterioration (Δ: -4) — monitor for acceleration",
-          "factors": [
-            "Trend: early downtrend",
-            "RSI 38 (depressed)",
-            "Rotation: OUTFLOW (rank Δ: -4)"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: -1)"
           ]
         },
         {
@@ -3239,34 +3243,20 @@
           "rationale": "No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 50 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: +1)"
-          ]
-        },
-        {
-          "ticker": "XLRE",
-          "label": "Real Estate",
-          "action": "HOLD",
-          "confidence": 40,
-          "rationale": "No significant rank change — no rotation signal",
-          "factors": [
-            "Trend: neutral",
-            "RSI 43 (neutral)",
+            "RSI 47 (neutral)",
             "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
-          "ticker": "XLE",
-          "label": "Energy",
-          "action": "SELL",
-          "confidence": 65,
-          "rationale": "Falling from leadership (rank Δ: -7) — capital rotating elsewhere",
+          "ticker": "XLI",
+          "label": "Industrials",
+          "action": "HOLD",
+          "confidence": 40,
+          "rationale": "No significant rank change — no rotation signal",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 62 (elevated)",
-            "Rotation: OUTFLOW (rank Δ: -7)",
-            "MAs stacked bullish (20>50>200)",
-            "Rank shift: -7 (falling from leadership)"
+            "Trend: early downtrend",
+            "RSI 34 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -3274,13 +3264,26 @@
           "label": "Healthcare",
           "action": "SELL",
           "confidence": 65,
-          "rationale": "Falling from leadership (rank Δ: -10) — capital rotating elsewhere",
+          "rationale": "Falling from leadership (rank Δ: -9) — capital rotating elsewhere",
           "factors": [
             "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -10)",
+            "RSI 55 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -9)",
             "MAs stacked bullish (20>50>200)",
-            "Rank shift: -10 (falling from leadership)"
+            "Rank shift: -9 (falling from leadership)"
+          ]
+        },
+        {
+          "ticker": "XLRE",
+          "label": "Real Estate",
+          "action": "SELL",
+          "confidence": 65,
+          "rationale": "Falling from leadership (rank Δ: -6) — capital rotating elsewhere",
+          "factors": [
+            "Trend: neutral",
+            "RSI 39 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -6)",
+            "Rank shift: -6 (falling from leadership)"
           ]
         }
       ],
@@ -3293,8 +3296,9 @@
           "rationale": "Strong rotation in (rank Δ: +0) with trend inflection — high-conviction entry",
           "factors": [
             "Trend: early uptrend",
-            "RSI 70 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 72 (overbought)",
+            "Flow: INFLOW (score 27.0)",
+            "MAs stacked bullish (20>50>200)",
             "Rank shift: +0 (moving toward top)"
           ]
         },
@@ -3306,8 +3310,8 @@
           "rationale": "Strong rotation in (rank Δ: +0) with trend inflection — high-conviction entry",
           "factors": [
             "Trend: early uptrend",
-            "RSI 55 (neutral)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 30.3)",
             "Rank shift: +0 (moving toward top)"
           ]
         },
@@ -3319,8 +3323,36 @@
           "rationale": "Rapidly improving relative rank (+0) — rotating into leadership",
           "factors": [
             "Trend: extended",
-            "RSI 63 (elevated)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 61 (elevated)",
+            "Flow: INFLOW (score 30.3)",
+            "MAs stacked bullish (20>50>200)",
+            "Rank shift: +0 (moving toward top)"
+          ]
+        },
+        {
+          "ticker": "USO",
+          "label": "Oil",
+          "action": "BUY",
+          "confidence": 70,
+          "rationale": "Rapidly improving relative rank (+0) — rotating into leadership",
+          "factors": [
+            "Trend: extended",
+            "RSI 59 (neutral)",
+            "Flow: INFLOW (score 6.1)",
+            "MAs stacked bullish (20>50>200)",
+            "Rank shift: +0 (moving toward top)"
+          ]
+        },
+        {
+          "ticker": "DBC",
+          "label": "Commodity Index",
+          "action": "BUY",
+          "confidence": 70,
+          "rationale": "Rapidly improving relative rank (+0) — rotating into leadership",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 65 (elevated)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)",
             "Rank shift: +0 (moving toward top)"
           ]
@@ -3332,22 +3364,9 @@
           "confidence": 60,
           "rationale": "Relative position improving (rank Δ: +0) with room to run",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
+            "Trend: neutral",
+            "RSI 52 (neutral)",
             "Flow: INFLOW (score 3.3)"
-          ]
-        },
-        {
-          "ticker": "SPY",
-          "label": "S&P 500",
-          "action": "BUY",
-          "confidence": 60,
-          "rationale": "Relative position improving (rank Δ: +0) with room to run",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Flow: INFLOW (score 5.0)",
-            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -3358,9 +3377,21 @@
           "rationale": "Relative position improving (rank Δ: +0) with room to run",
           "factors": [
             "Trend: neutral",
-            "RSI 55 (neutral)",
+            "RSI 54 (neutral)",
             "Flow: INFLOW (score 3.3)",
             "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "SPY",
+          "label": "S&P 500",
+          "action": "BUY",
+          "confidence": 60,
+          "rationale": "Relative position improving (rank Δ: +0) with room to run",
+          "factors": [
+            "Trend: neutral",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 3.9)"
           ]
         },
         {
@@ -3371,36 +3402,10 @@
           "rationale": "Rank improving (+0) but RSI elevated — enter on any dip",
           "factors": [
             "Trend: established uptrend",
-            "RSI 71 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 73 (overbought)",
+            "Flow: INFLOW (score 27.0)",
             "MAs stacked bullish (20>50>200)",
             "Rank shift: +0 (moving toward top)"
-          ]
-        },
-        {
-          "ticker": "USO",
-          "label": "Oil",
-          "action": "HOLD",
-          "confidence": 55,
-          "rationale": "Stable relative position in uptrend — maintain weight",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "DBC",
-          "label": "Commodity Index",
-          "action": "HOLD",
-          "confidence": 40,
-          "rationale": "No significant rank change — no rotation signal",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 60 (elevated)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -3411,8 +3416,8 @@
           "rationale": "No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 68 (elevated)",
-            "Flow: NEUTRAL (score 0.1)",
+            "RSI 70 (elevated)",
+            "Flow: NEUTRAL (score 0.4)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3425,7 +3430,7 @@
           "factors": [
             "Trend: neutral",
             "RSI 44 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3437,8 +3442,8 @@
           "rationale": "No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 45 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "RSI 43 (neutral)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3450,8 +3455,8 @@
           "rationale": "No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 49 (neutral)",
-            "Flow: NEUTRAL (score -2.1)"
+            "RSI 46 (neutral)",
+            "Flow: NEUTRAL (score -2.3)"
           ]
         }
       ]
@@ -3459,15 +3464,17 @@
     "rotate_momentum": {
       "sector": [
         {
-          "ticker": "XLC",
-          "label": "Communication Services",
+          "ticker": "XLK",
+          "label": "Technology",
           "action": "BUY",
-          "confidence": 70,
-          "rationale": "Overweight — New uptrend forming with capital inflow confirmation",
+          "confidence": 65,
+          "rationale": "Overweight — Near SMA20 with cooling RSI in confirmed uptrend — dip forming",
           "factors": [
-            "Trend: early uptrend",
-            "RSI 56 (neutral)",
-            "Rotation: INFLOW (rank Δ: +9)",
+            "Trend: established uptrend",
+            "RSI 54 (neutral)",
+            "Rotation: INFLOW (rank Δ: +8)",
+            "MAs stacked bullish (20>50>200)",
+            "Price approaching 20-day MA support",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -3479,8 +3486,8 @@
           "rationale": "Maintain weight — Confirmed uptrend — maintain position, no urgency to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 62 (elevated)",
-            "Rotation: OUTFLOW (rank Δ: -7)",
+            "RSI 68 (elevated)",
+            "Rotation: NEUTRAL (rank Δ: +1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3492,8 +3499,8 @@
           "rationale": "Maintain weight — Confirmed uptrend — maintain position, no urgency to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -10)",
+            "RSI 55 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -9)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3505,36 +3512,32 @@
           "rationale": "Maintain weight — Confirmed uptrend — maintain position, no urgency to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 58 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -1)",
-            "MAs stacked bullish (20>50>200)"
+            "RSI 54 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
           "ticker": "XLB",
           "label": "Basic Materials",
           "action": "HOLD",
-          "confidence": 60,
-          "rationale": "Maintain weight — Confirmed uptrend with inflow but no dip yet (0.9% above SMA20) — wait for pullback to add",
+          "confidence": 35,
+          "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: INFLOW (rank Δ: 0)",
-            "MAs stacked bullish (20>50>200)",
-            "No dip: price still above 20-day MA"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: -1)"
           ]
         },
         {
-          "ticker": "XLK",
-          "label": "Technology",
+          "ticker": "XLC",
+          "label": "Communication Services",
           "action": "HOLD",
           "confidence": 35,
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 53 (neutral)",
-            "Rotation: INFLOW (rank Δ: +6)",
-            "MAs stacked bullish (20>50>200)"
+            "RSI 51 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: +5)"
           ]
         },
         {
@@ -3545,8 +3548,8 @@
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 51 (neutral)",
-            "Rotation: INFLOW (rank Δ: +4)"
+            "RSI 49 (neutral)",
+            "Rotation: INFLOW (rank Δ: +5)"
           ]
         },
         {
@@ -3557,8 +3560,8 @@
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 50 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: +1)"
+            "RSI 47 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -3569,8 +3572,8 @@
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 43 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -2)"
+            "RSI 39 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -6)"
           ]
         },
         {
@@ -3581,8 +3584,8 @@
           "rationale": "Underweight — Below both SMA50 and SMA200 — confirmed bear trend, avoid",
           "factors": [
             "Trend: established downtrend",
-            "RSI 36 (depressed)",
-            "Rotation: NEUTRAL (rank Δ: +4)",
+            "RSI 32 (depressed)",
+            "Rotation: NEUTRAL (rank Δ: +3)",
             "MAs stacked bearish (price < all MAs)",
             "Rotate mode: shift weight from this to outperformers"
           ]
@@ -3595,8 +3598,8 @@
           "rationale": "Underweight — Trend breaking below SMA50 with capital outflow",
           "factors": [
             "Trend: early downtrend",
-            "RSI 38 (depressed)",
-            "Rotation: OUTFLOW (rank Δ: -4)",
+            "RSI 34 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -2)",
             "Rotate mode: shift weight from this to outperformers"
           ]
         }
@@ -3610,8 +3613,8 @@
           "rationale": "Overweight — New uptrend forming with capital inflow confirmation",
           "factors": [
             "Trend: early uptrend",
-            "RSI 55 (neutral)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 30.3)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -3619,13 +3622,12 @@
           "ticker": "EFA",
           "label": "Developed Markets",
           "action": "BUY",
-          "confidence": 65,
-          "rationale": "Overweight — Near SMA20 with cooling RSI in confirmed uptrend — dip forming",
+          "confidence": 40,
+          "rationale": "Overweight — No clear trend but capital flowing in — small position justified",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
+            "Trend: neutral",
+            "RSI 52 (neutral)",
             "Flow: INFLOW (score 3.3)",
-            "Price approaching 20-day MA support",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -3637,9 +3639,22 @@
           "rationale": "Overweight — No clear trend but capital flowing in — small position justified",
           "factors": [
             "Trend: neutral",
-            "RSI 55 (neutral)",
+            "RSI 54 (neutral)",
             "Flow: INFLOW (score 3.3)",
             "MAs stacked bullish (20>50>200)",
+            "Rotate mode: shift weight from underperformers into this"
+          ]
+        },
+        {
+          "ticker": "SPY",
+          "label": "S&P 500",
+          "action": "BUY",
+          "confidence": 40,
+          "rationale": "Overweight — No clear trend but capital flowing in — small position justified",
+          "factors": [
+            "Trend: neutral",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 3.9)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -3648,26 +3663,13 @@
           "label": "Bitcoin ETF",
           "action": "HOLD",
           "confidence": 60,
-          "rationale": "Maintain weight — Confirmed uptrend with inflow but no dip yet (12.3% above SMA20) — wait for pullback to add",
+          "rationale": "Maintain weight — Confirmed uptrend with inflow but no dip yet (13.0% above SMA20) — wait for pullback to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 71 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 73 (overbought)",
+            "Flow: INFLOW (score 27.0)",
             "MAs stacked bullish (20>50>200)",
             "No dip: price still above 20-day MA"
-          ]
-        },
-        {
-          "ticker": "USO",
-          "label": "Oil",
-          "action": "HOLD",
-          "confidence": 60,
-          "rationale": "Maintain weight — Confirmed uptrend — maintain position, no urgency to add",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -3675,24 +3677,11 @@
           "label": "Commodity Index",
           "action": "HOLD",
           "confidence": 60,
-          "rationale": "Maintain weight — Confirmed uptrend — maintain position, no urgency to add",
+          "rationale": "Maintain weight — Confirmed uptrend with inflow but no dip yet (3.8% above SMA20) — wait for pullback to add",
           "factors": [
             "Trend: established uptrend",
-            "RSI 60 (elevated)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "SPY",
-          "label": "S&P 500",
-          "action": "HOLD",
-          "confidence": 60,
-          "rationale": "Maintain weight — Confirmed uptrend with inflow but no dip yet (0.0% above SMA20) — wait for pullback to add",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Flow: INFLOW (score 5.0)",
+            "RSI 65 (elevated)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)",
             "No dip: price still above 20-day MA"
           ]
@@ -3705,8 +3694,9 @@
           "rationale": "Maintain weight — Early uptrend but RSI elevated — wait for pullback entry",
           "factors": [
             "Trend: early uptrend",
-            "RSI 70 (overbought)",
-            "Flow: INFLOW (score 33.0)"
+            "RSI 72 (overbought)",
+            "Flow: INFLOW (score 27.0)",
+            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -3717,8 +3707,8 @@
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 68 (elevated)",
-            "Flow: NEUTRAL (score 0.1)",
+            "RSI 70 (elevated)",
+            "Flow: NEUTRAL (score 0.4)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3731,7 +3721,7 @@
           "factors": [
             "Trend: neutral",
             "RSI 44 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3743,8 +3733,8 @@
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 45 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "RSI 43 (neutral)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -3756,8 +3746,8 @@
           "rationale": "Maintain weight — No clear signal — wait for trend to develop",
           "factors": [
             "Trend: neutral",
-            "RSI 49 (neutral)",
-            "Flow: NEUTRAL (score -2.1)"
+            "RSI 46 (neutral)",
+            "Flow: NEUTRAL (score -2.3)"
           ]
         },
         {
@@ -3768,8 +3758,22 @@
           "rationale": "Reduce weight — Far from MAs — reduce exposure, mean reversion risk rising",
           "factors": [
             "Trend: extended",
-            "RSI 63 (elevated)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 61 (elevated)",
+            "Flow: INFLOW (score 30.3)",
+            "MAs stacked bullish (20>50>200)",
+            "Rotate mode: trim to fund overweight positions"
+          ]
+        },
+        {
+          "ticker": "USO",
+          "label": "Oil",
+          "action": "TRIM",
+          "confidence": 55,
+          "rationale": "Reduce weight — Far from MAs — reduce exposure, mean reversion risk rising",
+          "factors": [
+            "Trend: extended",
+            "RSI 59 (neutral)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)",
             "Rotate mode: trim to fund overweight positions"
           ]
@@ -3786,10 +3790,23 @@
           "rationale": "Overweight — Below all MAs with depressed RSI — accumulation zone",
           "factors": [
             "Trend: established downtrend",
-            "RSI 36 (depressed)",
-            "Rotation: NEUTRAL (rank Δ: +4)",
+            "RSI 32 (depressed)",
+            "Rotation: NEUTRAL (rank Δ: +3)",
             "MAs stacked bearish (price < all MAs)",
             "Price washed out — smart money often accumulates here",
+            "Rotate mode: shift weight from underperformers into this"
+          ]
+        },
+        {
+          "ticker": "XLI",
+          "label": "Industrials",
+          "action": "BUY",
+          "confidence": 55,
+          "rationale": "Overweight — Early decline with oversold RSI — contrarian entry if support holds",
+          "factors": [
+            "Trend: early downtrend",
+            "RSI 34 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -2)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -3801,8 +3818,8 @@
           "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 62 (elevated)",
-            "Rotation: OUTFLOW (rank Δ: -7)",
+            "RSI 68 (elevated)",
+            "Rotation: NEUTRAL (rank Δ: +1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3814,8 +3831,8 @@
           "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -10)",
+            "RSI 55 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -9)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3827,8 +3844,20 @@
           "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 58 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -1)",
+            "RSI 54 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
+          ]
+        },
+        {
+          "ticker": "XLK",
+          "label": "Technology",
+          "action": "HOLD",
+          "confidence": 50,
+          "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 54 (neutral)",
+            "Rotation: INFLOW (rank Δ: +8)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3836,50 +3865,24 @@
           "ticker": "XLB",
           "label": "Basic Materials",
           "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
+          "confidence": 35,
+          "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: INFLOW (rank Δ: 0)",
-            "MAs stacked bullish (20>50>200)"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: -1)"
           ]
         },
         {
           "ticker": "XLC",
           "label": "Communication Services",
           "action": "HOLD",
-          "confidence": 45,
-          "rationale": "Maintain weight — Trend forming — contrarian prefers buying deeper discounts",
-          "factors": [
-            "Trend: early uptrend",
-            "RSI 56 (neutral)",
-            "Rotation: INFLOW (rank Δ: +9)"
-          ]
-        },
-        {
-          "ticker": "XLI",
-          "label": "Industrials",
-          "action": "HOLD",
-          "confidence": 40,
-          "rationale": "Maintain weight — Breaking down but not oversold — too early for contrarian entry",
-          "factors": [
-            "Trend: early downtrend",
-            "RSI 38 (depressed)",
-            "Rotation: OUTFLOW (rank Δ: -4)"
-          ]
-        },
-        {
-          "ticker": "XLK",
-          "label": "Technology",
-          "action": "HOLD",
           "confidence": 35,
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 53 (neutral)",
-            "Rotation: INFLOW (rank Δ: +6)",
-            "MAs stacked bullish (20>50>200)"
+            "RSI 51 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: +5)"
           ]
         },
         {
@@ -3890,8 +3893,8 @@
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 51 (neutral)",
-            "Rotation: INFLOW (rank Δ: +4)"
+            "RSI 49 (neutral)",
+            "Rotation: INFLOW (rank Δ: +5)"
           ]
         },
         {
@@ -3902,8 +3905,8 @@
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 50 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: +1)"
+            "RSI 47 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -3914,25 +3917,12 @@
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 43 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -2)"
+            "RSI 39 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -6)"
           ]
         }
       ],
       "assetClass": [
-        {
-          "ticker": "USO",
-          "label": "Oil",
-          "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
         {
           "ticker": "DBC",
           "label": "Commodity Index",
@@ -3941,33 +3931,8 @@
           "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
           "factors": [
             "Trend: established uptrend",
-            "RSI 60 (elevated)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "EFA",
-          "label": "Developed Markets",
-          "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: INFLOW (score 3.3)"
-          ]
-        },
-        {
-          "ticker": "SPY",
-          "label": "S&P 500",
-          "action": "HOLD",
-          "confidence": 50,
-          "rationale": "Maintain weight — Uptrend intact — no contrarian edge, wait for extreme",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Flow: INFLOW (score 5.0)",
+            "RSI 65 (elevated)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -3979,8 +3944,8 @@
           "rationale": "Maintain weight — Trend forming — contrarian prefers buying deeper discounts",
           "factors": [
             "Trend: early uptrend",
-            "RSI 55 (neutral)",
-            "Flow: INFLOW (score 59.8)"
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 30.3)"
           ]
         },
         {
@@ -3991,8 +3956,21 @@
           "rationale": "Maintain weight — New uptrend but already overbought — too late for contrarian",
           "factors": [
             "Trend: early uptrend",
-            "RSI 70 (overbought)",
-            "Flow: INFLOW (score 33.0)"
+            "RSI 72 (overbought)",
+            "Flow: INFLOW (score 27.0)",
+            "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "EFA",
+          "label": "Developed Markets",
+          "action": "HOLD",
+          "confidence": 35,
+          "rationale": "Maintain weight — No extreme — contrarian has no edge here",
+          "factors": [
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Flow: INFLOW (score 3.3)"
           ]
         },
         {
@@ -4003,9 +3981,21 @@
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 55 (neutral)",
+            "RSI 54 (neutral)",
             "Flow: INFLOW (score 3.3)",
             "MAs stacked bullish (20>50>200)"
+          ]
+        },
+        {
+          "ticker": "SPY",
+          "label": "S&P 500",
+          "action": "HOLD",
+          "confidence": 35,
+          "rationale": "Maintain weight — No extreme — contrarian has no edge here",
+          "factors": [
+            "Trend: neutral",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 3.9)"
           ]
         },
         {
@@ -4017,7 +4007,7 @@
           "factors": [
             "Trend: neutral",
             "RSI 44 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -4029,8 +4019,8 @@
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 45 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "RSI 43 (neutral)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -4042,8 +4032,8 @@
           "rationale": "Maintain weight — No extreme — contrarian has no edge here",
           "factors": [
             "Trend: neutral",
-            "RSI 49 (neutral)",
-            "Flow: NEUTRAL (score -2.1)"
+            "RSI 46 (neutral)",
+            "Flow: NEUTRAL (score -2.3)"
           ]
         },
         {
@@ -4054,8 +4044,8 @@
           "rationale": "Reduce weight — Crowded trade — everyone bullish, reduce before mean reversion",
           "factors": [
             "Trend: extended",
-            "RSI 63 (elevated)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 61 (elevated)",
+            "Flow: INFLOW (score 30.3)",
             "MAs stacked bullish (20>50>200)",
             "All MAs aligned + elevated RSI = consensus too strong",
             "Rotate mode: trim to fund overweight positions"
@@ -4069,10 +4059,24 @@
           "rationale": "Reduce weight — Strong consensus + overbought — contrarian trims into strength",
           "factors": [
             "Trend: established uptrend",
-            "RSI 71 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 73 (overbought)",
+            "Flow: INFLOW (score 27.0)",
             "MAs stacked bullish (20>50>200)",
             "Inflow with high RSI = late buyers arriving",
+            "Rotate mode: trim to fund overweight positions"
+          ]
+        },
+        {
+          "ticker": "USO",
+          "label": "Oil",
+          "action": "TRIM",
+          "confidence": 55,
+          "rationale": "Reduce weight — Overextended — contrarian says take profits here",
+          "factors": [
+            "Trend: extended",
+            "RSI 59 (neutral)",
+            "Flow: INFLOW (score 6.1)",
+            "MAs stacked bullish (20>50>200)",
             "Rotate mode: trim to fund overweight positions"
           ]
         },
@@ -4084,8 +4088,8 @@
           "rationale": "Reduce weight — No trend but overbought — contrarian lightens",
           "factors": [
             "Trend: neutral",
-            "RSI 68 (elevated)",
-            "Flow: NEUTRAL (score 0.1)",
+            "RSI 70 (elevated)",
+            "Flow: NEUTRAL (score 0.4)",
             "MAs stacked bullish (20>50>200)",
             "Rotate mode: trim to fund overweight positions"
           ]
@@ -4095,31 +4099,31 @@
     "rotate_rotation": {
       "sector": [
         {
-          "ticker": "XLC",
-          "label": "Communication Services",
-          "action": "BUY",
-          "confidence": 75,
-          "rationale": "Overweight — Strong rotation in (rank Δ: +9) with trend inflection — high-conviction entry",
-          "factors": [
-            "Trend: early uptrend",
-            "RSI 56 (neutral)",
-            "Rotation: INFLOW (rank Δ: +9)",
-            "Rank shift: +9 (moving toward top)",
-            "Rotate mode: shift weight from underperformers into this"
-          ]
-        },
-        {
           "ticker": "XLK",
           "label": "Technology",
           "action": "BUY",
           "confidence": 65,
-          "rationale": "Overweight — Rapidly improving relative rank (+6) — rotating into leadership",
+          "rationale": "Overweight — Rapidly improving relative rank (+8) — rotating into leadership",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 54 (neutral)",
+            "Rotation: INFLOW (rank Δ: +8)",
+            "MAs stacked bullish (20>50>200)",
+            "Rank shift: +8 (moving toward top)",
+            "Rotate mode: shift weight from underperformers into this"
+          ]
+        },
+        {
+          "ticker": "XLC",
+          "label": "Communication Services",
+          "action": "BUY",
+          "confidence": 65,
+          "rationale": "Overweight — Rapidly improving relative rank (+5) — rotating into leadership",
           "factors": [
             "Trend: neutral",
-            "RSI 53 (neutral)",
-            "Rotation: INFLOW (rank Δ: +6)",
-            "MAs stacked bullish (20>50>200)",
-            "Rank shift: +6 (moving toward top)",
+            "RSI 51 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: +5)",
+            "Rank shift: +5 (moving toward top)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -4127,12 +4131,13 @@
           "ticker": "XLY",
           "label": "Consumer Cyclical",
           "action": "BUY",
-          "confidence": 55,
-          "rationale": "Overweight — Relative position improving (rank Δ: +4) with room to run",
+          "confidence": 65,
+          "rationale": "Overweight — Rapidly improving relative rank (+5) — rotating into leadership",
           "factors": [
             "Trend: neutral",
-            "RSI 51 (neutral)",
-            "Rotation: INFLOW (rank Δ: +4)",
+            "RSI 49 (neutral)",
+            "Rotation: INFLOW (rank Δ: +5)",
+            "Rank shift: +5 (moving toward top)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -4141,11 +4146,11 @@
           "label": "Utilities",
           "action": "BUY",
           "confidence": 55,
-          "rationale": "Overweight — Relative position improving (rank Δ: +4) with room to run",
+          "rationale": "Overweight — Relative position improving (rank Δ: +3) with room to run",
           "factors": [
             "Trend: established downtrend",
-            "RSI 36 (depressed)",
-            "Rotation: NEUTRAL (rank Δ: +4)",
+            "RSI 32 (depressed)",
+            "Rotation: NEUTRAL (rank Δ: +3)",
             "MAs stacked bearish (price < all MAs)",
             "Rotate mode: shift weight from underperformers into this"
           ]
@@ -4158,8 +4163,20 @@
           "rationale": "Maintain weight — Stable relative position in uptrend — maintain weight",
           "factors": [
             "Trend: established uptrend",
-            "RSI 58 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -1)",
+            "RSI 54 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
+          ]
+        },
+        {
+          "ticker": "XLE",
+          "label": "Energy",
+          "action": "HOLD",
+          "confidence": 40,
+          "rationale": "Maintain weight — No significant rank change — no rotation signal",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 68 (elevated)",
+            "Rotation: NEUTRAL (rank Δ: +1)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -4167,25 +4184,12 @@
           "ticker": "XLB",
           "label": "Basic Materials",
           "action": "HOLD",
-          "confidence": 55,
-          "rationale": "Maintain weight — Stable relative position in uptrend — maintain weight",
+          "confidence": 40,
+          "rationale": "Maintain weight — No significant rank change — no rotation signal",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: INFLOW (rank Δ: 0)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "XLI",
-          "label": "Industrials",
-          "action": "HOLD",
-          "confidence": 45,
-          "rationale": "Maintain weight — Slight rank deterioration (Δ: -4) — monitor for acceleration",
-          "factors": [
-            "Trend: early downtrend",
-            "RSI 38 (depressed)",
-            "Rotation: OUTFLOW (rank Δ: -4)"
+            "Trend: neutral",
+            "RSI 52 (neutral)",
+            "Rotation: NEUTRAL (rank Δ: -1)"
           ]
         },
         {
@@ -4196,35 +4200,20 @@
           "rationale": "Maintain weight — No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 50 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: +1)"
-          ]
-        },
-        {
-          "ticker": "XLRE",
-          "label": "Real Estate",
-          "action": "HOLD",
-          "confidence": 40,
-          "rationale": "Maintain weight — No significant rank change — no rotation signal",
-          "factors": [
-            "Trend: neutral",
-            "RSI 43 (neutral)",
+            "RSI 47 (neutral)",
             "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
-          "ticker": "XLE",
-          "label": "Energy",
-          "action": "SELL",
-          "confidence": 60,
-          "rationale": "Underweight — Falling from leadership (rank Δ: -7) — capital rotating elsewhere",
+          "ticker": "XLI",
+          "label": "Industrials",
+          "action": "HOLD",
+          "confidence": 40,
+          "rationale": "Maintain weight — No significant rank change — no rotation signal",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 62 (elevated)",
-            "Rotation: OUTFLOW (rank Δ: -7)",
-            "MAs stacked bullish (20>50>200)",
-            "Rank shift: -7 (falling from leadership)",
-            "Rotate mode: shift weight from this to outperformers"
+            "Trend: early downtrend",
+            "RSI 34 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -2)"
           ]
         },
         {
@@ -4232,13 +4221,27 @@
           "label": "Healthcare",
           "action": "SELL",
           "confidence": 60,
-          "rationale": "Underweight — Falling from leadership (rank Δ: -10) — capital rotating elsewhere",
+          "rationale": "Underweight — Falling from leadership (rank Δ: -9) — capital rotating elsewhere",
           "factors": [
             "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Rotation: OUTFLOW (rank Δ: -10)",
+            "RSI 55 (neutral)",
+            "Rotation: OUTFLOW (rank Δ: -9)",
             "MAs stacked bullish (20>50>200)",
-            "Rank shift: -10 (falling from leadership)",
+            "Rank shift: -9 (falling from leadership)",
+            "Rotate mode: shift weight from this to outperformers"
+          ]
+        },
+        {
+          "ticker": "XLRE",
+          "label": "Real Estate",
+          "action": "SELL",
+          "confidence": 60,
+          "rationale": "Underweight — Falling from leadership (rank Δ: -6) — capital rotating elsewhere",
+          "factors": [
+            "Trend: neutral",
+            "RSI 39 (depressed)",
+            "Rotation: OUTFLOW (rank Δ: -6)",
+            "Rank shift: -6 (falling from leadership)",
             "Rotate mode: shift weight from this to outperformers"
           ]
         }
@@ -4252,8 +4255,9 @@
           "rationale": "Overweight — Strong rotation in (rank Δ: +0) with trend inflection — high-conviction entry",
           "factors": [
             "Trend: early uptrend",
-            "RSI 70 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 72 (overbought)",
+            "Flow: INFLOW (score 27.0)",
+            "MAs stacked bullish (20>50>200)",
             "Rank shift: +0 (moving toward top)",
             "Rotate mode: shift weight from underperformers into this"
           ]
@@ -4266,8 +4270,8 @@
           "rationale": "Overweight — Strong rotation in (rank Δ: +0) with trend inflection — high-conviction entry",
           "factors": [
             "Trend: early uptrend",
-            "RSI 55 (neutral)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 30.3)",
             "Rank shift: +0 (moving toward top)",
             "Rotate mode: shift weight from underperformers into this"
           ]
@@ -4280,8 +4284,38 @@
           "rationale": "Overweight — Rapidly improving relative rank (+0) — rotating into leadership",
           "factors": [
             "Trend: extended",
-            "RSI 63 (elevated)",
-            "Flow: INFLOW (score 59.8)",
+            "RSI 61 (elevated)",
+            "Flow: INFLOW (score 30.3)",
+            "MAs stacked bullish (20>50>200)",
+            "Rank shift: +0 (moving toward top)",
+            "Rotate mode: shift weight from underperformers into this"
+          ]
+        },
+        {
+          "ticker": "USO",
+          "label": "Oil",
+          "action": "BUY",
+          "confidence": 65,
+          "rationale": "Overweight — Rapidly improving relative rank (+0) — rotating into leadership",
+          "factors": [
+            "Trend: extended",
+            "RSI 59 (neutral)",
+            "Flow: INFLOW (score 6.1)",
+            "MAs stacked bullish (20>50>200)",
+            "Rank shift: +0 (moving toward top)",
+            "Rotate mode: shift weight from underperformers into this"
+          ]
+        },
+        {
+          "ticker": "DBC",
+          "label": "Commodity Index",
+          "action": "BUY",
+          "confidence": 65,
+          "rationale": "Overweight — Rapidly improving relative rank (+0) — rotating into leadership",
+          "factors": [
+            "Trend: established uptrend",
+            "RSI 65 (elevated)",
+            "Flow: INFLOW (score 6.1)",
             "MAs stacked bullish (20>50>200)",
             "Rank shift: +0 (moving toward top)",
             "Rotate mode: shift weight from underperformers into this"
@@ -4294,23 +4328,9 @@
           "confidence": 55,
           "rationale": "Overweight — Relative position improving (rank Δ: +0) with room to run",
           "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
+            "Trend: neutral",
+            "RSI 52 (neutral)",
             "Flow: INFLOW (score 3.3)",
-            "Rotate mode: shift weight from underperformers into this"
-          ]
-        },
-        {
-          "ticker": "SPY",
-          "label": "S&P 500",
-          "action": "BUY",
-          "confidence": 55,
-          "rationale": "Overweight — Relative position improving (rank Δ: +0) with room to run",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 57 (neutral)",
-            "Flow: INFLOW (score 5.0)",
-            "MAs stacked bullish (20>50>200)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -4322,9 +4342,22 @@
           "rationale": "Overweight — Relative position improving (rank Δ: +0) with room to run",
           "factors": [
             "Trend: neutral",
-            "RSI 55 (neutral)",
+            "RSI 54 (neutral)",
             "Flow: INFLOW (score 3.3)",
             "MAs stacked bullish (20>50>200)",
+            "Rotate mode: shift weight from underperformers into this"
+          ]
+        },
+        {
+          "ticker": "SPY",
+          "label": "S&P 500",
+          "action": "BUY",
+          "confidence": 55,
+          "rationale": "Overweight — Relative position improving (rank Δ: +0) with room to run",
+          "factors": [
+            "Trend: neutral",
+            "RSI 54 (neutral)",
+            "Flow: INFLOW (score 3.9)",
             "Rotate mode: shift weight from underperformers into this"
           ]
         },
@@ -4336,37 +4369,11 @@
           "rationale": "Overweight — Rank improving (+0) but RSI elevated — enter on any dip",
           "factors": [
             "Trend: established uptrend",
-            "RSI 71 (overbought)",
-            "Flow: INFLOW (score 33.0)",
+            "RSI 73 (overbought)",
+            "Flow: INFLOW (score 27.0)",
             "MAs stacked bullish (20>50>200)",
             "Rank shift: +0 (moving toward top)",
             "Rotate mode: shift weight from underperformers into this"
-          ]
-        },
-        {
-          "ticker": "USO",
-          "label": "Oil",
-          "action": "HOLD",
-          "confidence": 55,
-          "rationale": "Maintain weight — Stable relative position in uptrend — maintain weight",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 54 (neutral)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
-          ]
-        },
-        {
-          "ticker": "DBC",
-          "label": "Commodity Index",
-          "action": "HOLD",
-          "confidence": 40,
-          "rationale": "Maintain weight — No significant rank change — no rotation signal",
-          "factors": [
-            "Trend: established uptrend",
-            "RSI 60 (elevated)",
-            "Flow: NEUTRAL (score 1.9)",
-            "MAs stacked bullish (20>50>200)"
           ]
         },
         {
@@ -4377,8 +4384,8 @@
           "rationale": "Maintain weight — No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 68 (elevated)",
-            "Flow: NEUTRAL (score 0.1)",
+            "RSI 70 (elevated)",
+            "Flow: NEUTRAL (score 0.4)",
             "MAs stacked bullish (20>50>200)"
           ]
         },
@@ -4391,7 +4398,7 @@
           "factors": [
             "Trend: neutral",
             "RSI 44 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -4403,8 +4410,8 @@
           "rationale": "Maintain weight — No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 45 (neutral)",
-            "Flow: NEUTRAL (score -2.1)",
+            "RSI 43 (neutral)",
+            "Flow: NEUTRAL (score -2.3)",
             "MAs stacked bearish (price < all MAs)"
           ]
         },
@@ -4416,8 +4423,8 @@
           "rationale": "Maintain weight — No significant rank change — no rotation signal",
           "factors": [
             "Trend: neutral",
-            "RSI 49 (neutral)",
-            "Flow: NEUTRAL (score -2.1)"
+            "RSI 46 (neutral)",
+            "Flow: NEUTRAL (score -2.3)"
           ]
         }
       ]
